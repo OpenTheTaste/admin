@@ -1,0 +1,13 @@
+BRANCH_NAME=$(git branch --show-current)
+
+if echo "$BRANCH_NAME" | grep -q "^hotfix/"; then
+  exit 0
+fi
+
+JIRA_TICKET=$(echo "$BRANCH_NAME" | grep -o '[A-Z]\+-[0-9]\+' || true)
+
+COMMIT_MSG_FILE=$1
+
+if [ -n "$JIRA_TICKET" ] && [ -f "$COMMIT_MSG_FILE" ] && ! grep -q "\[$JIRA_TICKET\]" "$COMMIT_MSG_FILE"; then
+  sed -i.bak "1s/^/[$JIRA_TICKET] /" "$COMMIT_MSG_FILE" && rm -f "$COMMIT_MSG_FILE.bak"
+fi

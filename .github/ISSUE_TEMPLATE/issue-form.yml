@@ -1,0 +1,55 @@
+name: "이슈 생성"
+description: "Repo에 이슈를 생성하며, 생성된 이슈는 Jira와 연동됩니다."
+title: "이슈 이름을 작성해주세요"
+labels: [Feat]
+
+body:
+  - type: input
+    id: parentKey
+    attributes:
+      label: "🎟️ 상위 작업 (Ticket Number)"
+      description: "상위 작업의 Ticket Number를 기입해주세요"
+      placeholder: "OT-00"
+    validations:
+      required: true
+
+  - type: input
+    id: branch
+    attributes:
+      label: "🌳 브랜치명 (Branch)"
+      description: "영어로 브랜치명을 작성해주세요"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "📝 상세 내용 (Description)"
+      description: "이슈에 대해서 간략히 설명해주세요"
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "✅ TO-DO LIST"
+      description: "해당 이슈에 대해 구체적인 할 일을 작성해주세요"
+      value: |
+        - [ ] Task1
+        - [ ] Task2
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: "📌 기타 사항"
+      description: |
+        참고사항, 논의 필요 사항, 스크린샷 링크,
+        Jira에 남기기 애매한 메모 등을 자유롭게 작성해주세요.
+      placeholder: |
+        - 관련 문서 링크
+        - 논의가 필요한 부분
+        - 추후 작업 예정 사항
+    validations:
+      required: false
