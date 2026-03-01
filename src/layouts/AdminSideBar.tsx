@@ -50,7 +50,11 @@ export const AdminSideBar = () => {
 
   return (
     <aside className="flex flex-col bg-ot-gray-800 w-1/7">
-      <p className="font-bold text-4xl ml-3 my-4 px-3">O+T</p>
+      <Link href="/series" className="block ml-3 my-4 px-3">
+        <span className="font-bold text-4xl text-ot-text hover:text-ot-gray-600">
+          O+T
+        </span>
+      </Link>
 
       <nav className="flex flex-col px-3">
         {menus.map((menu) => {
