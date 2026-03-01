@@ -2,14 +2,8 @@
 
 import Image from "next/image";
 import { Bookmark, X } from "lucide-react";
-import {
-  CATEGORY_STYLE_MAP,
-  TAG_STYLE_MAP,
-  badgeBase,
-} from "@features/series-manage/constants";
 import { AdminBadge } from "@shared/components";
 import { AdminSeries } from "@shared/mocks/mockAdminSeries";
-import { cn } from "@shared/utils";
 
 interface AdminSeriesDetailModalProps {
   series: AdminSeries | null;
@@ -95,7 +89,7 @@ export function AdminSeriesDetailModal({
               카테고리
             </p>
             <span
-              className={cn(badgeBase, CATEGORY_STYLE_MAP[series.category])}
+            // className={cn(badgeBase, CATEGORY_STYLE_MAP[series.category])}
             >
               {series.category}
             </span>
@@ -107,10 +101,10 @@ export function AdminSeriesDetailModal({
               {series.tags.map((tag) => (
                 <span
                   key={tag}
-                  className={cn(
-                    badgeBase,
-                    TAG_STYLE_MAP[tag] ?? "bg-ot-gray-600 text-ot-text",
-                  )}
+                  // className={cn(
+                  //   badgeBase,
+                  //   TAG_STYLE_MAP[tag] ?? "bg-ot-gray-600 text-ot-text",
+                  // )}
                 >
                   {tag}
                 </span>

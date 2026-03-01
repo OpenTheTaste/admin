@@ -3,16 +3,14 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import {
-  AdminPosterUpload,
-  PosterState,
-} from "@features/upload/AdminPosterUpload";
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { AdminTagDropdown } from "@entities/tag/components";
 import {
+  AdminPosterUpload,
   AdminPublicStatus,
   AdminTextInput,
   CommonButton,
+  PosterState,
 } from "@shared/components";
 import { Category } from "@shared/types";
 

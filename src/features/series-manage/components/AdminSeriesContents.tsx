@@ -5,11 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Edit } from "lucide-react";
 import { AdminSeriesEditModal } from "@features/series-manage/components";
-import {
-  CATEGORY_STYLE_MAP,
-  TAG_STYLE_MAP,
-  badgeBase,
-} from "@features/series-manage/constants";
 import { AdminSeriesDetailModal } from "@entities/series/components";
 import { AdminBadge } from "@shared/components";
 import { AdminSeries, mockAdminSeries } from "@shared/mocks/mockAdminSeries";
@@ -94,10 +89,10 @@ export function AdminSeriesContents() {
 
                 <td className="py-3 text-center">
                   <span
-                    className={cn(
-                      badgeBase,
-                      CATEGORY_STYLE_MAP[content.category],
-                    )}
+                  // className={cn(
+                  //   badgeBase,
+                  //   CATEGORY_STYLE_MAP[content.category],
+                  // )}
                   >
                     {content.category}
                   </span>
@@ -108,10 +103,10 @@ export function AdminSeriesContents() {
                     {content.tags.map((tag) => (
                       <span
                         key={tag}
-                        className={cn(
-                          badgeBase,
-                          TAG_STYLE_MAP[tag] ?? "bg-ot-gray-600 text-ot-text",
-                        )}
+                        // className={cn(
+                        //   badgeBase,
+                        //   TAG_STYLE_MAP[tag] ?? "bg-ot-gray-600 text-ot-text",
+                        // )}
                       >
                         {tag}
                       </span>

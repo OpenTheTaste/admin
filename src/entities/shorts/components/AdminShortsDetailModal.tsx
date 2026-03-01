@@ -3,11 +3,6 @@
 import Image from "next/image";
 import { Bookmark, X } from "lucide-react";
 import { AdminBadge } from "@shared/components";
-// import {
-//   badgeBase,
-//   CATEGORY_STYLE_MAP,
-//   TAG_STYLE_MAP,
-// } from "@/domains/admin/series/constants/seriesStyles";
 import { ShortsType } from "@shared/mocks/mockAdminShorts";
 
 interface AdminShortsDetailModalProps {

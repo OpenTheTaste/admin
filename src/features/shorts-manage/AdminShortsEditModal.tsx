@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import { AdminPosterUpload, PosterState } from "@features/upload";
 import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
 import {
+  AdminPosterUpload,
   AdminPublicStatus,
   AdminTextInput,
   CommonButton,
+  PosterState,
 } from "@shared/components";
 import { ShortsType } from "@shared/mocks/mockAdminShorts";
 
