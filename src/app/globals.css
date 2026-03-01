@@ -1,15 +1,82 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #242424;
+  --foreground: #fafaf8;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Pretendard */
+  --font-pretendard:
+    "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+
+  --font-sans: var(--font-pretendard);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Colors */
+  --color-ot-primary-50: #ffecef;
+  --color-ot-primary-100: #ffd1d7;
+  --color-ot-primary-200: #ffa4b2;
+  --color-ot-primary-300: #ff768f;
+  --color-ot-primary-400: #ff396c; /* Primary 메인 */
+  --color-ot-primary-500: #f10059;
+  --color-ot-primary-600: #c90049;
+  --color-ot-primary-700: #9d0037;
+  --color-ot-primary-800: #700025;
+  --color-ot-primary-900: #430013;
+  --color-ot-primary-950: #2c0009;
+
+  --color-ot-secondary-50: #eff0f5;
+  --color-ot-secondary-100: #d9dce8;
+  --color-ot-secondary-200: #b7bcd4;
+  --color-ot-secondary-300: #99a1c2;
+  --color-ot-secondary-400: #7d88b2;
+  --color-ot-secondary-500: #65719d;
+  --color-ot-secondary-600: #525c81;
+  --color-ot-secondary-700: #404866; /* secondary 메인 */
+  --color-ot-secondary-800: #2f354d;
+  --color-ot-secondary-900: #1a1e2d;
+  --color-ot-secondary-950: #0e101b;
+
+  --color-ot-gray-100: #f7f7f7;
+  --color-ot-gray-200: #f0f0f0;
+  --color-ot-gray-300: #e8e8e8;
+  --color-ot-gray-400: #e1e1e1;
+  --color-ot-gray-500: #d9d9d9;
+  --color-ot-gray-600: #aeaeae;
+  --color-ot-gray-700: #828282;
+  --color-ot-gray-800: #575757;
+  --color-ot-gray-900: #2b2b2b;
+
+  --color-ot-text: #fafaf8;
+  --color-ot-background: #242424;
+  --color-ot-placeholder: #aeaeae;
+
+  --color-ot-red: #fd6986;
+  --color-ot-pink: #ff5ccf;
+  --color-ot-orange: #ff8a00;
+  --color-ot-green: #89ce3a;
+  --color-ot-blue: #529cff;
+  --color-ot-mint: #00c2c0;
+
+  --gradient-ot-primary-diagonal: linear-gradient(
+    180deg,
+    #ff6a87 0%,
+    #d7526c 100%
+  );
+}
+
+/* 스크롤바 숨김 유틸리티 추가 */
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +86,84 @@
   }
 }
 
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+html,
+body {
+  height: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+.bg-ot-primary-gradient {
+  background: var(--gradient-ot-primary-diagonal);
+  color: #fafaf8;
+}
+
+.bg-ot-primary-gradient-btn {
+  background: var(--gradient-ot-primary-diagonal);
+  color: #fafaf8;
+}
+
+.bg-ot-primary-gradient-btn:hover {
+  background-image: none;
+  background-color: var(--color-ot-primary-700);
+}
+
+.bg-ot-primary-gradient-btn:active {
+  background-image: none;
+  background-color: var(--color-ot-primary-700);
+}
+/* 
+.custom-checkbox {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  background-image: url("/icons/checkboxOff.svg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.custom-checkbox:checked {
+  background-image: url("/icons/checkboxOn.svg");
+} */
+
+.text-ot-primary-gradient {
+  background: var(--gradient-ot-primary-diagonal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* 북마크 스크롤 방지 */
+body[style*="overflow: hidden"] .w-full.h-100 {
+  overflow: hidden;
 }
