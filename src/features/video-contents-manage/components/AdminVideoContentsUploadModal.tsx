@@ -9,9 +9,9 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Category, VideoFileMeta, ContentType } from "@shared/types";
-import { AdminCategoryDropdown } from "@entities/category";
-import { AdminSeriesDropdown } from "@entities/series";
-import { AdminTagDropdown } from "@entities/tag";
+import { AdminCategoryDropdown } from "@entities/category/components";
+import { AdminSeriesDropdown } from "@entities/series/components";
+import { AdminTagDropdown } from "@entities/tag/components";
 import {
   AdminFileUpload,
   AdminPosterUpload,

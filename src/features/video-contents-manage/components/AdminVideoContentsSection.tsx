@@ -1,7 +1,7 @@
 "use client";
 
 import { AdminSearch } from "@shared/components";
-import { AdminVideoContentsList } from "@features/video-contents-manage/components"; // index 에서 변경 예정
+import { AdminVideoContentsList } from "@features/video-contents-manage/components";
 import { useState } from "react";
 import { PublicType } from "@shared/types/admin";
 

@@ -9,7 +9,7 @@ import {
   CommonButton,
 } from "@shared/components";
 import { X } from "lucide-react";
-import { AdminOriginalContentsDropdown } from "@entities/video-contents";
+import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
 import {
   AdminFileUpload,
   AdminPosterUpload,

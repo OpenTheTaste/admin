@@ -6,7 +6,7 @@ import { Edit } from "lucide-react";
 import Image from "next/image";
 import { PublicType } from "@shared/types/admin";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AdminVideoContentsDetailModal } from "@entities/video-contents";
+import { AdminVideoContentsDetailModal } from "@entities/video-contents/components";
 import { AdminVideoContentsEditModal } from "@features/video-contents-manage/components";
 import { AdminContentsDetailType } from "@shared/types/admin";
 import { useState } from "react";

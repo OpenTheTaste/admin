@@ -6,7 +6,7 @@ import { Edit } from "lucide-react";
 import Image from "next/image";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { AdminShortsDetailModal } from "@entities/shorts";
+import { AdminShortsDetailModal } from "@entities/shorts/components";
 import { useState } from "react";
 import { AdminShortsEditModal } from "@features/shorts-manage";
 

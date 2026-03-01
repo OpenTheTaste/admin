@@ -9,11 +9,11 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Category } from "@shared/types";
-import { AdminCategoryDropdown } from "@entities/category";
+import { AdminCategoryDropdown } from "@entities/category/components";
 import AdminPosterUpload, {
   PosterState,
 } from "@/features/upload/AdminPosterUpload";
-import { AdminTagDropdown } from "@/entities/tag";
+import { AdminTagDropdown } from "@/entities/tag/components";
 
 interface AdminSeriesUploadModalProps {
   open: boolean;

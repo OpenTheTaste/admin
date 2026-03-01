@@ -8,7 +8,7 @@ import {
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { AdminOriginalContentsDropdown } from "@entities/video-contents";
+import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
 import { ShortsType } from "@shared/mocks/mockAdminShorts";
 import { PosterState, AdminPosterUpload } from "@features/upload";
 

@@ -10,12 +10,12 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Category } from "@shared/types";
 
-import { AdminSeries } from "@/shared/mocks/mockAdminSeries";
+import { AdminSeries } from "@shared/mocks/mockAdminSeries";
 import AdminPosterUpload, {
   PosterState,
-} from "@/features/upload/AdminPosterUpload";
-import { AdminCategoryDropdown } from "@/entities/category";
-import { AdminTagDropdown } from "@/entities/tag";
+} from "@features/upload/AdminPosterUpload";
+import { AdminCategoryDropdown } from "@entities/category/components";
+import { AdminTagDropdown } from "@entities/tag/components";
 
 interface AdminSeriesFixModalProps {
   series: AdminSeries;

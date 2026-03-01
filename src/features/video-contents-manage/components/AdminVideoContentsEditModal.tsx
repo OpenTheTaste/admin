@@ -5,18 +5,17 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import AdminPosterUpload, {
   PosterState,
-} from "@/features/upload/AdminPosterUpload";
+} from "@features/upload/AdminPosterUpload";
 import {
   CommonButton,
   AdminPublicStatus,
   AdminTextInput,
 } from "@shared/components";
-import { AdminCategoryDropdown } from "@entities/category";
-
-import { AdminTagDropdown } from "@entities/tag";
+import { AdminCategoryDropdown } from "@entities/category/components";
+import { AdminTagDropdown } from "@entities/tag/components";
 import { Category, ContentType } from "@shared/types";
 import { AdminContentsDetailType } from "@shared/types/admin";
-import { AdminSeriesDropdown } from "@/entities/series";
+import { AdminSeriesDropdown } from "@entities/series/components";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 
 const SERIES_LIST = [

@@ -13,7 +13,7 @@ import {
   CATEGORY_STYLE_MAP,
   TAG_STYLE_MAP,
 } from "@features/series-manage/constants";
-import { AdminSeriesDetailModal } from "@entities/series";
+import { AdminSeriesDetailModal } from "@entities/series/components";
 
 export function AdminSeriesContents() {
   const [data, setData] = useState<AdminSeries[]>(mockAdminSeries);
