@@ -39,7 +39,12 @@ export default function AdminSearch({
           placeholder={placeholder}
           onChange={(e) => onSearch?.(e.target.value)}
         />
-        <Search size={18} className="stroke-ot-placeholder shrink-0" />
+        <button className="cursor-pointer ">
+          <Search
+            size={18}
+            className="stroke-ot-text hover:stroke-ot-gray-600 shrink-0"
+          />
+        </button>
       </div>
 
       {options && (

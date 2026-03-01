@@ -12,7 +12,7 @@ export const AdminHeader = () => {
       <p className="text-2xl font-semibold">관리자 페이지</p>
       {/* 추후 로그아웃 연결 */}
       <button className="cursor-pointer" onClick={handleLogout}>
-        <LogOut className="stroke-ot-text" size={22} />
+        <LogOut className="stroke-ot-text hover:stroke-ot-gray-600" size={22} />
       </button>
     </header>
   );
