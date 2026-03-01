@@ -1,1 +1,1 @@
-export { default as AdminShortsDetailModal } from "./AdminShortsDetailModal";
+export { AdminShortsDetailModal } from "./AdminShortsDetailModal";

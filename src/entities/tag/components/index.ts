@@ -1,1 +1,1 @@
-export { default as AdminTagDropdown } from "./AdminTagDropdown";
+export { AdminTagDropdown } from "./AdminTagDropdown";

@@ -12,9 +12,7 @@ interface AdminUserContentsProps {
   filterRole?: UserType | null;
 }
 
-export default function AdminUserContents({
-  filterRole,
-}: AdminUserContentsProps) {
+export function AdminUserContents({ filterRole }: AdminUserContentsProps) {
   const data = filterRole
     ? mockAdminUsers.filter((user) => user.type === filterRole)
     : mockAdminUsers;

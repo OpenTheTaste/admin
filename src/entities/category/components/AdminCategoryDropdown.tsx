@@ -11,7 +11,7 @@ export interface AdminCategoryDropdownProps {
   onChange: (category: Category | null) => void;
 }
 
-export default function AdminCategoryDropdown({
+export function AdminCategoryDropdown({
   value,
   onChange,
 }: AdminCategoryDropdownProps) {

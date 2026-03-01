@@ -13,9 +13,7 @@ interface AdminShortsListProps {
   filterPublic?: PublicType | null;
 }
 
-export default function AdminShortsList({
-  filterPublic,
-}: AdminShortsListProps) {
+export function AdminShortsList({ filterPublic }: AdminShortsListProps) {
   const [data, setData] = useState<ShortsType[]>(mockAdminShorts);
 
   const filteredData = filterPublic

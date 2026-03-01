@@ -3,7 +3,7 @@
 import { AdminShortsUploadModal } from "@features/shorts-manage";
 import { UploadButton } from "@shared/components";
 
-export default function AdminShortsUploadButton() {
+export function AdminShortsUploadButton() {
   return (
     <UploadButton
       label="숏폼 업로드"

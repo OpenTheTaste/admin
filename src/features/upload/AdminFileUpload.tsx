@@ -24,10 +24,7 @@ const formatDuration = (seconds: number) => {
     : `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 };
 
-export default function AdminFileUpload({
-  value,
-  onChange,
-}: AdminFileUploadProps) {
+export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

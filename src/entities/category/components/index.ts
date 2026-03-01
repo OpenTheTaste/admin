@@ -1,1 +1,1 @@
-export { default as AdminCategoryDropdown } from "./AdminCategoryDropdown";
+export { AdminCategoryDropdown } from "./AdminCategoryDropdown";

@@ -6,11 +6,7 @@ export interface AdminTitleProps {
   action?: ReactNode; // 버튼 영역
 }
 
-export default function AdminTitle({
-  title,
-  description,
-  action,
-}: AdminTitleProps) {
+export function AdminTitle({ title, description, action }: AdminTitleProps) {
   return (
     <div className="px-12 py-8">
       <div className="flex items-center justify-between">

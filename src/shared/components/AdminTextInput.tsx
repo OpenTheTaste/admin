@@ -6,7 +6,7 @@ export interface AdminTextInputProps {
   onChange: (value: string) => void;
 }
 
-export default function AdminTextInput({
+export function AdminTextInput({
   label,
   placeholder,
   multiline = false,

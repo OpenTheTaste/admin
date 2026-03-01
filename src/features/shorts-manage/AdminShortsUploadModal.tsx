@@ -32,7 +32,7 @@ const ORIGINAL_LIST = [
   "대탈출 4",
   "대탈출 5",
 ];
-export default function AdminShortsUploadModal({
+export function AdminShortsUploadModal({
   open,
   onClose,
 }: AdminShortsUploadModalProps) {

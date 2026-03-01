@@ -9,7 +9,7 @@ import {
   mockAdminCategoryStatistics,
 } from "@shared/mocks/mockAdminCategoryStatistics";
 
-export default function StatisticsContents() {
+export function StatisticsContents() {
   const [activeCategory, setActiveCategory] = useState<CategoryType>("영화");
   const currentStatData = mockAdminCategoryStatistics[activeCategory];
 

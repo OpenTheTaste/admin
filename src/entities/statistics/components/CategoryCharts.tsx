@@ -23,7 +23,7 @@ interface CategoryChartsProps {
   data: CategoryStatistic;
 }
 
-export default function CategoryCharts({ data }: CategoryChartsProps) {
+export function CategoryCharts({ data }: CategoryChartsProps) {
   const chartData = {
     labels: data.labels,
     datasets: [

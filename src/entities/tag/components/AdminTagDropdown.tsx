@@ -12,7 +12,7 @@ export interface AdminTagDropdownProps {
   onChange: (tags: string[]) => void;
 }
 
-export default function AdminTagDropdown({
+export function AdminTagDropdown({
   category,
   value,
   onChange,

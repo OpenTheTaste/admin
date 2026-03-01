@@ -1,3 +1,3 @@
-export { default as AdminFileUpload } from "./AdminFileUpload";
-export { default as AdminPosterUpload } from "./AdminPosterUpload";
+export { AdminFileUpload } from "./AdminFileUpload";
+export { AdminPosterUpload } from "./AdminPosterUpload";
 export type { PosterState } from "./AdminPosterUpload";

@@ -1,3 +1,3 @@
-export { default as StatisticsContents } from "./StatisticsContents";
-export { default as CategoryCharts } from "./CategoryCharts";
-export { default as MonitoringCategoryTabs } from "./MonitoringCategoryTabs";
+export { StatisticsContents } from "./StatisticsContents";
+export { CategoryCharts } from "./CategoryCharts";
+export { MonitoringCategoryTabs } from "./MonitoringCategoryTabs";

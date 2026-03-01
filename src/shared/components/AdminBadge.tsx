@@ -18,7 +18,7 @@ const variantStyle: Record<AdminBadgeVariant, string> = {
   중지됨: "bg-ot-gray-900 text-ot-text",
 };
 
-export default function AdminBadge({ variant, className }: AdminBadgeProps) {
+export function AdminBadge({ variant, className }: AdminBadgeProps) {
   return (
     <div
       className={cn(

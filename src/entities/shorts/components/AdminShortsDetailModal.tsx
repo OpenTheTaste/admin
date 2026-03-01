@@ -15,7 +15,7 @@ interface AdminShortsDetailModalProps {
   onClose: () => void;
 }
 
-export default function AdminShortsDetailModal({
+export function AdminShortsDetailModal({
   shorts,
   onClose,
 }: AdminShortsDetailModalProps) {

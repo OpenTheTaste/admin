@@ -30,7 +30,7 @@ interface AdminShortsEditModalProps {
   onUpdate: (updated: ShortsType) => void;
 }
 
-export default function AdminShortsEditModal({
+export function AdminShortsEditModal({
   shorts,
   onClose,
   onUpdate,

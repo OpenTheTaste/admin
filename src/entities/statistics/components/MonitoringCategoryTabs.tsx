@@ -9,7 +9,7 @@ interface MonitoringCategoryTabsProps {
   onCategoryChange: (category: CategoryType) => void;
 }
 
-export default function MonitoringCategoryTabs({
+export function MonitoringCategoryTabs({
   activeCategory,
   onCategoryChange,
 }: MonitoringCategoryTabsProps) {

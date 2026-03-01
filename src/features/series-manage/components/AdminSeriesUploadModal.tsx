@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import AdminPosterUpload, {
+import {
+  AdminPosterUpload,
   PosterState,
 } from "@features/upload/AdminPosterUpload";
 import { AdminCategoryDropdown } from "@entities/category/components";
@@ -20,7 +21,7 @@ interface AdminSeriesUploadModalProps {
   onClose: () => void;
 }
 
-export default function AdminSeriesUploadModal({
+export function AdminSeriesUploadModal({
   open,
   onClose,
 }: AdminSeriesUploadModalProps) {

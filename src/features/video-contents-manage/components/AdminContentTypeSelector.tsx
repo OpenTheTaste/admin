@@ -7,7 +7,7 @@ export interface AdminContentTypeSelectorProps {
   onChange: (value: ContentType) => void;
 }
 
-export default function AdminContentTypeSelector({
+export function AdminContentTypeSelector({
   value,
   onChange,
 }: AdminContentTypeSelectorProps) {

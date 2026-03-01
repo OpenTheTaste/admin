@@ -10,7 +10,7 @@ export interface AdminOriginalContentsDropdownProps {
   onChange: (original: string | null) => void;
 }
 
-export default function AdminOriginalContentsDropdown({
+export function AdminOriginalContentsDropdown({
   value,
   onChange,
   originalList,

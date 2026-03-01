@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import AdminPosterUpload, {
+import {
+  AdminPosterUpload,
   PosterState,
 } from "@features/upload/AdminPosterUpload";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
@@ -33,7 +34,7 @@ interface AdminVideoContentsEditModalProps {
   onUpdate: (updated: AdminContentsDetailType) => void;
 }
 
-export default function AdminVideoContentsEditModal({
+export function AdminVideoContentsEditModal({
   contents,
   onClose,
   onUpdate,

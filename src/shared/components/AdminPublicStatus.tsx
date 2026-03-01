@@ -7,7 +7,7 @@ export interface AdminPublicStatusProps {
   onChange: (value: boolean) => void;
 }
 
-export default function AdminPublicStatus({
+export function AdminPublicStatus({
   isPublic,
   onChange,
 }: AdminPublicStatusProps) {

@@ -11,7 +11,7 @@ const formatSize = (bytes: number) => {
   return `${(bytes / 1024).toFixed(1)}KB`;
 };
 
-export default function MonitoringContents() {
+export function MonitoringContents() {
   const uploadstatusdata = mockAdminUploadStatus;
 
   return (

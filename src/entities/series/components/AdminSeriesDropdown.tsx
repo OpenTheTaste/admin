@@ -11,7 +11,7 @@ export interface AdminSeriesDropdownProps {
   disabled?: boolean;
 }
 
-export default function AdminSeriesDropdown({
+export function AdminSeriesDropdown({
   seriesList,
   value,
   onChange,

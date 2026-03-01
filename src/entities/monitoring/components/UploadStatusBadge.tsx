@@ -6,7 +6,7 @@ interface UploadStatusBadgeProps {
   className?: string;
 }
 
-export default function UploadStatusBadge({
+export function UploadStatusBadge({
   text,
   status = "ORIGIN_UPLOADED",
   className,

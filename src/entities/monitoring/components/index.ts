@@ -1,3 +1,3 @@
-export { default as MonitoringContents } from "./MonitoringContents";
-export { default as UploadStatusBadge } from "./UploadStatusBadge";
-export { default as UploadProgressBar } from "./UploadProgressBar";
+export { MonitoringContents } from "./MonitoringContents";
+export { UploadStatusBadge } from "./UploadStatusBadge";
+export { UploadProgressBar } from "./UploadProgressBar";

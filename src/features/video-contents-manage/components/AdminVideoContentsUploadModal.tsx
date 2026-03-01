@@ -33,7 +33,7 @@ const SERIES_LIST = [
   "대탈출 1",
 ];
 
-export default function AdminVideoContentsUploadModal({
+export function AdminVideoContentsUploadModal({
   open,
   onClose,
 }: AdminUploadModalProps) {

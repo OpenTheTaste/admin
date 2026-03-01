@@ -12,7 +12,7 @@ interface AdminSearchProps {
   onSelect?: (value: string) => void;
 }
 
-export default function AdminSearch({
+export function AdminSearch({
   placeholder = "검색어를 입력하세요",
   options,
   onSearch,

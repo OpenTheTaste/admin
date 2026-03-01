@@ -7,7 +7,7 @@ import { PublicType } from "@shared/types/admin";
 
 const PUBLIC_FILTER_OPTIONS = ["전체", "공개", "비공개"] as const;
 
-export default function AdminVideoContentsSection() {
+export function AdminVideoContentsSection() {
   const [filterPublic, setFilterPublic] = useState<PublicType | null>(null);
 
   const handleSelect = (option: string) => {

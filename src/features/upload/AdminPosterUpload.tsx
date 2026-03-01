@@ -15,7 +15,7 @@ export interface AdminPosterUploadProps {
   isShorts?: boolean;
 }
 
-export default function AdminPosterUpload({
+export function AdminPosterUpload({
   value,
   onChange,
   isShorts = false,

@@ -5,7 +5,7 @@ interface UploadProgressBarProps {
   className?: string;
 }
 
-export default function UploadProgressBar({
+export function UploadProgressBar({
   progress = 0,
   className,
 }: UploadProgressBarProps) {

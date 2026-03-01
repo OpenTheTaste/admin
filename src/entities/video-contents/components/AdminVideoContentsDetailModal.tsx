@@ -5,15 +5,15 @@ import { Bookmark, X } from "lucide-react";
 import { AdminBadge } from "@shared/components";
 import { AdminContentsDetailType } from "@shared/types/admin";
 
-interface AdminContentsDetailModalProps {
+interface AdminVideoContentsDetailModalProps {
   contents: AdminContentsDetailType | null;
   onClose: () => void;
 }
 
-export default function AdminContentsDetailModal({
+export function AdminVideoContentsDetailModal({
   contents,
   onClose,
-}: AdminContentsDetailModalProps) {
+}: AdminVideoContentsDetailModalProps) {
   if (!contents) return null;
 
   const formatSize = (bytes: number) => {

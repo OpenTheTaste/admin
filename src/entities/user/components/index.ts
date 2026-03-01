@@ -1,2 +1,2 @@
-export { default as AdminUserContents } from "./AdminUserContents";
-export { default as AdminUserSection } from "./AdminUserSection";
+export { AdminUserContents } from "./AdminUserContents";
+export { AdminUserSection } from "./AdminUserSection";

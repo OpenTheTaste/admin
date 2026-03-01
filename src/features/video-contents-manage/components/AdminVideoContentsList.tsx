@@ -15,7 +15,7 @@ interface AdminVideoContentsListProps {
   filterPublic?: PublicType | null;
 }
 
-export default function AdminVideoContentsList({
+export function AdminVideoContentsList({
   filterPublic,
 }: AdminVideoContentsListProps) {
   const [data, setData] =
