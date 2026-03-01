@@ -1,4 +1,11 @@
-export const CATEGORIES = ["영화", "드라마", "예능", "다큐", "뉴스", "스포츠"] as const;
+export const CATEGORIES = [
+  "영화",
+  "드라마",
+  "예능",
+  "다큐",
+  "뉴스",
+  "스포츠",
+] as const;
 
 export type CategoryType = (typeof CATEGORIES)[number];
 
@@ -7,13 +14,25 @@ export interface CategoryStatistic {
   data: number[];
 }
 
-export const mockAdminCategoryStatistics: Record<CategoryType, CategoryStatistic> = {
+export const mockAdminCategoryStatistics: Record<
+  CategoryType,
+  CategoryStatistic
+> = {
   영화: {
     labels: ["로맨스", "사극", "액션", "코미디", "SF", "호러", "뮤지컬"],
     data: [52, 84, 5, 32, 38, 21, 10],
   },
   드라마: {
-    labels: ["로맨스", "코미디", "가족", "의학", "법정", "스릴러", "역사", "판타지"],
+    labels: [
+      "로맨스",
+      "코미디",
+      "가족",
+      "의학",
+      "법정",
+      "스릴러",
+      "역사",
+      "판타지",
+    ],
     data: [70, 45, 30, 60, 25, 80, 40, 55],
   },
   예능: {

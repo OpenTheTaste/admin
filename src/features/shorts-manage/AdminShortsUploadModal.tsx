@@ -1,20 +1,20 @@
 "use client";
 
-import { VideoFileMeta } from "@shared/types";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  AdminPublicStatus,
-  AdminTextInput,
-  CommonButton,
-} from "@shared/components";
 import { X } from "lucide-react";
-import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
 import {
   AdminFileUpload,
   AdminPosterUpload,
   PosterState,
 } from "@features/upload";
+import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
+import {
+  AdminPublicStatus,
+  AdminTextInput,
+  CommonButton,
+} from "@shared/components";
+import { VideoFileMeta } from "@shared/types";
 
 interface AdminShortsUploadModalProps {
   open: boolean;

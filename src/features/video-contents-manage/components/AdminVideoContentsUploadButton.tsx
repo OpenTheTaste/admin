@@ -1,7 +1,7 @@
 "use client";
 
-import { UploadButton } from "@shared/components";
 import { AdminVideoContentsUploadModal } from "@features/video-contents-manage/components";
+import { UploadButton } from "@shared/components";
 
 export default function AdminVideoContentsUploadButton() {
   return (

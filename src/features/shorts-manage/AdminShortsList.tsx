@@ -1,14 +1,13 @@
 "use client";
-import { mockAdminShorts, ShortsType } from "@shared/mocks/mockAdminShorts";
-import { PublicType } from "@shared/types/admin";
-import { AdminBadge } from "@shared/components";
-import { Edit } from "lucide-react";
 import Image from "next/image";
-
 import { useRouter, useSearchParams } from "next/navigation";
-import { AdminShortsDetailModal } from "@entities/shorts/components";
 import { useState } from "react";
+import { Edit } from "lucide-react";
 import { AdminShortsEditModal } from "@features/shorts-manage";
+import { AdminShortsDetailModal } from "@entities/shorts/components";
+import { AdminBadge } from "@shared/components";
+import { ShortsType, mockAdminShorts } from "@shared/mocks/mockAdminShorts";
+import { PublicType } from "@shared/types/admin";
 
 interface AdminShortsListProps {
   filterPublic?: PublicType | null;

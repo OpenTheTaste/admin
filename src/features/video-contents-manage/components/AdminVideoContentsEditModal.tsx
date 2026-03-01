@@ -1,22 +1,22 @@
 "use client";
 
-import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 import AdminPosterUpload, {
   PosterState,
 } from "@features/upload/AdminPosterUpload";
+import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
+import { AdminCategoryDropdown } from "@entities/category/components";
+import { AdminSeriesDropdown } from "@entities/series/components";
+import { AdminTagDropdown } from "@entities/tag/components";
 import {
-  CommonButton,
   AdminPublicStatus,
   AdminTextInput,
+  CommonButton,
 } from "@shared/components";
-import { AdminCategoryDropdown } from "@entities/category/components";
-import { AdminTagDropdown } from "@entities/tag/components";
 import { Category, ContentType } from "@shared/types";
 import { AdminContentsDetailType } from "@shared/types/admin";
-import { AdminSeriesDropdown } from "@entities/series/components";
-import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 
 const SERIES_LIST = [
   "시리즈 없음",

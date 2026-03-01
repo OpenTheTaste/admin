@@ -1,15 +1,15 @@
 "use client";
 
-import { AdminBadge } from "@shared/components";
-import { mockAdminContents } from "@/shared/mocks/mockAdminContents";
-import { Edit } from "lucide-react";
 import Image from "next/image";
-import { PublicType } from "@shared/types/admin";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AdminVideoContentsDetailModal } from "@entities/video-contents/components";
-import { AdminVideoContentsEditModal } from "@features/video-contents-manage/components";
-import { AdminContentsDetailType } from "@shared/types/admin";
 import { useState } from "react";
+import { Edit } from "lucide-react";
+import { AdminVideoContentsEditModal } from "@features/video-contents-manage/components";
+import { AdminVideoContentsDetailModal } from "@entities/video-contents/components";
+import { AdminBadge } from "@shared/components";
+import { mockAdminContents } from "@shared/mocks/mockAdminContents";
+import { PublicType } from "@shared/types/admin";
+import { AdminContentsDetailType } from "@shared/types/admin";
 
 interface AdminVideoContentsListProps {
   filterPublic?: PublicType | null;

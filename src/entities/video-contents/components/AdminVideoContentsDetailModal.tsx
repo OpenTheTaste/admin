@@ -1,8 +1,8 @@
 "use client";
 
-import { AdminBadge } from "@shared/components";
-import { Bookmark, X } from "lucide-react";
 import Image from "next/image";
+import { Bookmark, X } from "lucide-react";
+import { AdminBadge } from "@shared/components";
 import { AdminContentsDetailType } from "@shared/types/admin";
 
 interface AdminContentsDetailModalProps {

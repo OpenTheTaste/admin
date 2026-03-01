@@ -1,9 +1,9 @@
 import {
-  UploadStatusBadge,
   UploadProgressBar,
+  UploadStatusBadge,
 } from "@entities/monitoring/components";
-import { mockAdminUploadStatus } from "@shared/mocks/mockAdminUploadStatus";
 import { AdminSearch } from "@shared/components";
+import { mockAdminUploadStatus } from "@shared/mocks/mockAdminUploadStatus";
 
 const formatSize = (bytes: number) => {
   if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)}GB`;

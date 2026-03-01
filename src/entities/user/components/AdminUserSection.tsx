@@ -1,9 +1,9 @@
 "use client";
 
-import { AdminSearch } from "@shared/components";
-import { type UserType } from "@shared/mocks/mockAdminUsers";
 import { useState } from "react";
 import { AdminUserContents } from "@entities/user/components";
+import { AdminSearch } from "@shared/components";
+import { type UserType } from "@shared/mocks/mockAdminUsers";
 
 const ROLE_OPTIONS = ["전체사용자", "사용자", "관리자", "에디터"];
 

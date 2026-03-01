@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { AdminSearch } from "@shared/components";
 import { AdminSeriesContents } from "@features/series-manage/components";
+import { AdminSearch } from "@shared/components";
 
 export default function SeiresPage() {
   return (

@@ -1,15 +1,15 @@
 "use client";
 
-import { cn } from "@shared/utils";
-import {
-  Drama,
-  Clapperboard,
-  Users,
-  LineChart,
-  SquarePlay,
-} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Clapperboard,
+  Drama,
+  LineChart,
+  SquarePlay,
+  Users,
+} from "lucide-react";
+import { cn } from "@shared/utils";
 
 const menus = [
   {

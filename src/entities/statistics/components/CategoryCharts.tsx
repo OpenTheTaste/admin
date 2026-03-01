@@ -1,13 +1,13 @@
+import { Bar } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
 import { CategoryStatistic } from "@shared/mocks/mockAdminCategoryStatistics";
 
 ChartJS.register(

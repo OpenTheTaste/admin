@@ -1,8 +1,8 @@
 "use client";
 
-import { VideoFileMeta } from "@shared/types";
-import { Film, Upload, X } from "lucide-react";
 import { useRef } from "react";
+import { Film, Upload, X } from "lucide-react";
+import { VideoFileMeta } from "@shared/types";
 
 export interface AdminFileUploadProps {
   value: VideoFileMeta | null;

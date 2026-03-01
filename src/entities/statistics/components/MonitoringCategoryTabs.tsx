@@ -1,8 +1,8 @@
-import { cn } from "@shared/utils";
 import {
   CATEGORIES,
   CategoryType,
 } from "@shared/mocks/mockAdminCategoryStatistics";
+import { cn } from "@shared/utils";
 
 interface MonitoringCategoryTabsProps {
   activeCategory: CategoryType;

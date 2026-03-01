@@ -1,9 +1,9 @@
 "use client";
 
+import { useRef, useState } from "react";
+import { ChevronDown, Search } from "lucide-react";
 import { useOutsideClick } from "@shared/hooks";
 import { cn } from "@shared/utils";
-import { ChevronDown, Search } from "lucide-react";
-import { useRef, useState } from "react";
 
 interface AdminSearchProps {
   placeholder?: string;

@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from "react";
+import { RefObject, useEffect } from "react";
 
 // 외부클릭 관련 hooks
 export const useOutsideClick = (

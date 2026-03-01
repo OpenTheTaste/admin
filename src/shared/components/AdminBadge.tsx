@@ -1,4 +1,4 @@
-import { UserType } from "@/shared/mocks/mockAdminUsers";
+import { UserType } from "@shared/mocks/mockAdminUsers";
 import { cn } from "@shared/utils";
 
 type AdminBadgeVariant = "공개" | "비공개" | UserType;

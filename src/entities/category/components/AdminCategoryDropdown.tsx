@@ -1,10 +1,10 @@
 "use client";
 
+import { useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Badge } from "@shared/components";
 import { useOutsideClick } from "@shared/hooks";
 import { Category, TAGS } from "@shared/types";
-import { ChevronDown } from "lucide-react";
-import { useRef, useState } from "react";
 
 export interface AdminCategoryDropdownProps {
   value: Category | null;

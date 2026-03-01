@@ -1,15 +1,15 @@
 "use client";
 
-import { AdminBadge } from "@shared/components";
-import { AdminSeries } from "@/shared/mocks/mockAdminSeries";
-import { cn } from "@shared/utils";
-import { Bookmark, X } from "lucide-react";
 import Image from "next/image";
+import { Bookmark, X } from "lucide-react";
 import {
   CATEGORY_STYLE_MAP,
   TAG_STYLE_MAP,
   badgeBase,
 } from "@features/series-manage/constants";
+import { AdminBadge } from "@shared/components";
+import { AdminSeries } from "@shared/mocks/mockAdminSeries";
+import { cn } from "@shared/utils";
 
 interface AdminSeriesDetailModalProps {
   series: AdminSeries | null;

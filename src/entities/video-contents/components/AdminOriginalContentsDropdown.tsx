@@ -1,8 +1,8 @@
 "use client";
 
-import { useOutsideClick } from "@shared/hooks";
+import { useRef, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
-import { useState, useRef } from "react";
+import { useOutsideClick } from "@shared/hooks";
 
 export interface AdminOriginalContentsDropdownProps {
   originalList: string[];

@@ -1,7 +1,7 @@
 "use client";
 
-import { UploadButton } from "@shared/components";
 import { AdminSeriesUploadModal } from "@features/series-manage/components";
+import { UploadButton } from "@shared/components";
 
 export function AdminSeriesUploadButton() {
   return (

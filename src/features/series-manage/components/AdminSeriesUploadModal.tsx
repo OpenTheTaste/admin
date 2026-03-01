@@ -1,19 +1,19 @@
 "use client";
 
-import {
-  CommonButton,
-  AdminTextInput,
-  AdminPublicStatus,
-} from "@shared/components";
-import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Category } from "@shared/types";
-import { AdminCategoryDropdown } from "@entities/category/components";
+import { X } from "lucide-react";
 import AdminPosterUpload, {
   PosterState,
-} from "@/features/upload/AdminPosterUpload";
-import { AdminTagDropdown } from "@/entities/tag/components";
+} from "@features/upload/AdminPosterUpload";
+import { AdminCategoryDropdown } from "@entities/category/components";
+import { AdminTagDropdown } from "@entities/tag/components";
+import {
+  AdminPublicStatus,
+  AdminTextInput,
+  CommonButton,
+} from "@shared/components";
+import { Category } from "@shared/types";
 
 interface AdminSeriesUploadModalProps {
   open: boolean;

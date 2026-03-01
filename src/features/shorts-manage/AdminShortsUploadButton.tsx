@@ -1,7 +1,7 @@
 "use client";
 
-import { UploadButton } from "@shared/components";
 import { AdminShortsUploadModal } from "@features/shorts-manage";
+import { UploadButton } from "@shared/components";
 
 export default function AdminShortsUploadButton() {
   return (

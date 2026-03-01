@@ -1,8 +1,8 @@
 "use client";
 
-import { useOutsideClick } from "@shared/hooks";
-import { ChevronDown, Search } from "lucide-react";
 import { useRef, useState } from "react";
+import { ChevronDown, Search } from "lucide-react";
+import { useOutsideClick } from "@shared/hooks";
 
 export interface AdminSeriesDropdownProps {
   seriesList: string[];

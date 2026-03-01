@@ -1,5 +1,5 @@
 import { AdminBadge } from "@shared/components";
-import { mockAdminUsers, type UserType } from "@shared/mocks/mockAdminUsers";
+import { type UserType, mockAdminUsers } from "@shared/mocks/mockAdminUsers";
 
 const TYPE_STYLE_MAP: Record<UserType, string> = {
   관리자: "bg-ot-primary-400 text-ot-text",

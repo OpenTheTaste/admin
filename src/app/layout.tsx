@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { AdminHeader, AdminSideBar } from "@layouts";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Admin",

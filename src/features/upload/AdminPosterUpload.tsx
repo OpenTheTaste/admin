@@ -1,8 +1,8 @@
 "use client";
 
-import { ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 import { useRef } from "react";
+import { ImageIcon, X } from "lucide-react";
 
 export interface PosterState {
   vertical: string | null;

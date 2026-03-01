@@ -1,5 +1,5 @@
-import { AdminVideoContentsUploadButton } from "@features/video-contents-manage/components";
 import { AdminTitle } from "@layouts";
+import { AdminVideoContentsUploadButton } from "@features/video-contents-manage/components";
 
 export default function VideoContentsLayout({
   children,

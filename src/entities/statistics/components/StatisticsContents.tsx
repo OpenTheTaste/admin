@@ -5,8 +5,8 @@ import {
   MonitoringCategoryTabs,
 } from "@entities/statistics/components";
 import {
-  mockAdminCategoryStatistics,
   CategoryType,
+  mockAdminCategoryStatistics,
 } from "@shared/mocks/mockAdminCategoryStatistics";
 
 export default function StatisticsContents() {

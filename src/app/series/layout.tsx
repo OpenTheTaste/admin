@@ -1,5 +1,5 @@
-import { AdminSeriesUploadButton } from "@features/series-manage/components";
 import { AdminTitle } from "@layouts";
+import { AdminSeriesUploadButton } from "@features/series-manage/components";
 
 export default function SeriesLayout({
   children,

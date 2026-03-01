@@ -1,10 +1,8 @@
 "use client";
 
-import { AdminBadge } from "@shared/components";
-import { Bookmark, X } from "lucide-react";
 import Image from "next/image";
-
-import { cn } from "@shared/utils";
+import { Bookmark, X } from "lucide-react";
+import { AdminBadge } from "@shared/components";
 // import {
 //   badgeBase,
 //   CATEGORY_STYLE_MAP,
