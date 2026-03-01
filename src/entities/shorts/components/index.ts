@@ -1,0 +1,1 @@
+export { AdminShortsDetailModal } from "./AdminShortsDetailModal";
