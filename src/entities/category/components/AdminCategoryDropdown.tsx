@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Badge } from "@shared/components";
+import { CategoryBadge } from "@entities/category/components";
 import { useOutsideClick } from "@shared/hooks";
 import { Category, TAGS } from "@shared/types";
 
@@ -40,11 +40,7 @@ export function AdminCategoryDropdown({
 
         {value && (
           <div className="flex flex-wrap gap-1.5 mt-2">
-            <Badge
-              text={value}
-              variant="admin"
-              onRemove={() => onChange(null)}
-            />
+            <CategoryBadge category={value} onRemove={() => onChange(null)} />
           </div>
         )}
 

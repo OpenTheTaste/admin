@@ -1,4 +1,4 @@
-import { Category } from "./category";
+import { Category } from "@shared/types";
 
 export const TAGS: Record<Category, string[]> = {
   영화: ["로맨스", "사극", "액션", "코미디", "호러", "SF", "뮤지컬"],

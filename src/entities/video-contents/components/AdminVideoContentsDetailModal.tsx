@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { Bookmark, X } from "lucide-react";
+import { CategoryBadge } from "@entities/category/components";
+import { TagBadge } from "@entities/tag/components";
 import { AdminBadge } from "@shared/components";
 import { AdminContentsDetailType } from "@shared/types/admin";
 
@@ -121,14 +123,7 @@ export function AdminVideoContentsDetailModal({
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">카테고리</p>
                 <div className="flex items-center">
-                  <span
-                  // className={cn(
-                  //   badgeBase,
-                  //   CATEGORY_STYLE_MAP[contents.category],
-                  // )}
-                  >
-                    {contents.category}
-                  </span>
+                  <CategoryBadge category={contents.category} />
                 </div>
               </div>
 
@@ -136,15 +131,11 @@ export function AdminVideoContentsDetailModal({
                 <p className="text-base font-semibold">태그</p>
                 <div className="flex items-center gap-2 flex-wrap">
                   {contents.tags.map((tag) => (
-                    <span
+                    <TagBadge
                       key={tag}
-                      // className={cn(
-                      //   badgeBase,
-                      //   TAG_STYLE_MAP[tag] ?? "bg-ot-gray-600 text-ot-text",
-                      // )}
-                    >
-                      {tag}
-                    </span>
+                      label={tag}
+                      category={contents.category}
+                    />
                   ))}
                 </div>
               </div>

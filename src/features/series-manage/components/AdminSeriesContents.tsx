@@ -3,20 +3,21 @@
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Edit } from "lucide-react";
+import { TagBadge } from "@/entities/tag/components/TagBagde";
+import { Edit, Tag } from "lucide-react";
 import { AdminSeriesEditModal } from "@features/series-manage/components";
+import { CategoryBadge } from "@entities/category/components/CategoryBadge";
 import { AdminSeriesDetailModal } from "@entities/series/components";
 import { AdminBadge } from "@shared/components";
 import { AdminSeries, mockAdminSeries } from "@shared/mocks/mockAdminSeries";
-import { cn } from "@shared/utils";
 
 export function AdminSeriesContents() {
   const [data, setData] = useState<AdminSeries[]>(mockAdminSeries);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const selectedId = searchParams?.get("id");
-  const action = searchParams?.get("action");
+  const selectedId = searchParams.get("id");
+  const action = searchParams.get("action");
 
   const selectedSeries = selectedId
     ? (data.find((s) => s.id === Number(selectedId)) ?? null)
@@ -88,28 +89,19 @@ export function AdminSeriesContents() {
                 </td>
 
                 <td className="py-3 text-center">
-                  <span
-                  // className={cn(
-                  //   badgeBase,
-                  //   CATEGORY_STYLE_MAP[content.category],
-                  // )}
-                  >
-                    {content.category}
-                  </span>
+                  <div className="flex justify-center">
+                    <CategoryBadge category={content.category} />
+                  </div>
                 </td>
 
                 <td className="py-3 text-center">
                   <div className="flex flex-wrap gap-1 justify-center">
                     {content.tags.map((tag) => (
-                      <span
+                      <TagBadge
                         key={tag}
-                        // className={cn(
-                        //   badgeBase,
-                        //   TAG_STYLE_MAP[tag] ?? "bg-ot-gray-600 text-ot-text",
-                        // )}
-                      >
-                        {tag}
-                      </span>
+                        label={tag}
+                        category={content.category}
+                      />
                     ))}
                   </div>
                 </td>

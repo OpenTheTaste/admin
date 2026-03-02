@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { Bookmark, X } from "lucide-react";
+import { CategoryBadge } from "@entities/category/components";
+import { TagBadge } from "@entities/tag/components";
 import { AdminBadge } from "@shared/components";
 import { AdminSeries } from "@shared/mocks/mockAdminSeries";
 
@@ -88,26 +90,14 @@ export function AdminSeriesDetailModal({
             <p className="text-base text-ot-background font-semibold">
               카테고리
             </p>
-            <span
-            // className={cn(badgeBase, CATEGORY_STYLE_MAP[series.category])}
-            >
-              {series.category}
-            </span>
+            <CategoryBadge category={series.category} />
           </div>
 
           <div className="flex flex-col gap-1">
             <p className="text-base text-ot-background font-semibold">태그</p>
             <div className="flex flex-wrap gap-1">
               {series.tags.map((tag) => (
-                <span
-                  key={tag}
-                  // className={cn(
-                  //   badgeBase,
-                  //   TAG_STYLE_MAP[tag] ?? "bg-ot-gray-600 text-ot-text",
-                  // )}
-                >
-                  {tag}
-                </span>
+                <TagBadge key={tag} label={tag} category={series.category} />
               ))}
             </div>
           </div>
