@@ -79,6 +79,16 @@
   scrollbar-width: none; /* Firefox */
 }
 
+@layer base {
+  button {
+    @apply cursor-pointer;
+  }
+
+  button:disabled {
+    @apply cursor-not-allowed;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -139,21 +149,6 @@ body {
   background-image: none;
   background-color: var(--color-ot-primary-700);
 }
-/* 
-.custom-checkbox {
-  appearance: none;
-  width: 1rem;
-  height: 1rem;
-  cursor: pointer;
-  background-image: url("/icons/checkboxOff.svg");
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.custom-checkbox:checked {
-  background-image: url("/icons/checkboxOn.svg");
-} */
 
 .text-ot-primary-gradient {
   background: var(--gradient-ot-primary-diagonal);
