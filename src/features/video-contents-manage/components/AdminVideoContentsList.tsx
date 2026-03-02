@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Edit } from "lucide-react";
 import { AdminVideoContentsEditModal } from "@features/video-contents-manage/components";
 import { AdminVideoContentsDetailModal } from "@entities/video-contents/components";
-import { AdminBadge } from "@shared/components";
+import { AdminPublicBadge } from "@shared/components";
 import { mockAdminContents } from "@shared/mocks/mockAdminContents";
 import { PublicType } from "@shared/types/admin";
 import { AdminContentsDetailType } from "@shared/types/admin";
@@ -110,13 +110,8 @@ export function AdminVideoContentsList({
                 </td>
 
                 <td className="py-3 text-center">
-                  <AdminBadge
-                    variant={content.isPublic ? "공개" : "비공개"}
-                    className={
-                      content.isPublic
-                        ? "bg-[#CCFBF1] text-[#298880]"
-                        : "bg-ot-primary-100 text-[#882929]"
-                    }
+                  <AdminPublicBadge
+                    isPublic={content.isPublic ? true : false}
                   />
                 </td>
                 <td className="py-3 text-center font-semibold text-sm">

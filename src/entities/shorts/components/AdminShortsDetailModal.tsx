@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Bookmark, X } from "lucide-react";
 import { CategoryBadge } from "@entities/category/components";
 import { TagBadge } from "@entities/tag/components";
-import { AdminBadge } from "@shared/components";
+import { AdminBadge, AdminPublicBadge } from "@shared/components";
 import { ShortsType } from "@shared/mocks/mockAdminShorts";
 
 interface AdminShortsDetailModalProps {
@@ -124,8 +124,11 @@ export function AdminShortsDetailModal({
 
             {/* 공개 여부 */}
             <div>
-              <p className="text-base font-semibold">공개 여부</p>
-              <AdminBadge variant={shorts.isPublic ? "공개" : "비공개"} />
+              <p className="text-base font-semibold mb-0.5">공개 여부</p>
+              <AdminPublicBadge
+                context="modal"
+                isPublic={shorts.isPublic ? true : false}
+              />
             </div>
 
             {/* 북마크 | 업로드 일자 */}

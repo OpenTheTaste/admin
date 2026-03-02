@@ -15,7 +15,7 @@ export function CategoryBadge({ category, onRemove }: CategoryBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${config.className}`}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${config.className}`}
     >
       {category}
 

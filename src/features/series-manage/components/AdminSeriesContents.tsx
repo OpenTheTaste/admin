@@ -4,11 +4,11 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { TagBadge } from "@/entities/tag/components/TagBagde";
-import { Edit, Tag } from "lucide-react";
+import { Edit } from "lucide-react";
 import { AdminSeriesEditModal } from "@features/series-manage/components";
 import { CategoryBadge } from "@entities/category/components/CategoryBadge";
 import { AdminSeriesDetailModal } from "@entities/series/components";
-import { AdminBadge } from "@shared/components";
+import { AdminPublicBadge } from "@shared/components";
 import { AdminSeries, mockAdminSeries } from "@shared/mocks/mockAdminSeries";
 
 export function AdminSeriesContents() {
@@ -107,7 +107,9 @@ export function AdminSeriesContents() {
                 </td>
 
                 <td className="py-3 text-center">
-                  <AdminBadge variant={content.isPublic ? "공개" : "비공개"} />
+                  <AdminPublicBadge
+                    isPublic={content.isPublic ? true : false}
+                  />
                 </td>
 
                 <td

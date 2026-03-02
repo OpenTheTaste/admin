@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Bookmark, X } from "lucide-react";
 import { CategoryBadge } from "@entities/category/components";
 import { TagBadge } from "@entities/tag/components";
-import { AdminBadge } from "@shared/components";
+import { AdminPublicBadge } from "@shared/components";
 import { AdminSeries } from "@shared/mocks/mockAdminSeries";
 
 interface AdminSeriesDetailModalProps {
@@ -106,7 +106,10 @@ export function AdminSeriesDetailModal({
             <p className="text-base text-ot-background font-semibold">
               공개여부
             </p>
-            <AdminBadge variant={series.isPublic ? "공개" : "비공개"} />
+            <AdminPublicBadge
+              context="modal"
+              isPublic={series.isPublic ? true : false}
+            />
           </div>
         </section>
 

@@ -1,17 +1,13 @@
 import { UserType } from "@shared/mocks/mockAdminUsers";
 import { cn } from "@shared/utils";
 
-type AdminBadgeVariant = "공개" | "비공개" | UserType;
-
 // 뱃지 또 추가할 것 있으면 추가하기
 export interface AdminBadgeProps {
-  variant: AdminBadgeVariant;
+  variant: UserType;
   className?: string;
 }
 
-const variantStyle: Record<AdminBadgeVariant, string> = {
-  공개: "bg-[#CCFBF1] text-[#298880]",
-  비공개: "bg-ot-primary-100 text-[#882929]",
+const variantStyle: Record<UserType, string> = {
   관리자: "bg-ot-primary-400 text-ot-text",
   사용자: "bg-ot-primary-500 text-ot-text",
   에디터: "bg-ot-primary-200 text-ot-background",

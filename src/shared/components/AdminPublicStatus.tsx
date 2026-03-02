@@ -1,6 +1,6 @@
 "use client";
 
-import { AdminBadge, AdminPublicToggle } from "@shared/components";
+import { AdminPublicBadge, AdminPublicToggle } from "@shared/components";
 
 export interface AdminPublicStatusProps {
   isPublic: boolean;
@@ -21,12 +21,20 @@ export function AdminPublicStatus({
         />
         {isPublic ? (
           <>
-            <AdminBadge variant="공개" className="ml-3 mr-1" />
+            <AdminPublicBadge
+              context="modal"
+              isPublic={true}
+              className="ml-3 mr-2"
+            />
             <p>모든 사용자가 볼 수 있습니다</p>
           </>
         ) : (
           <>
-            <AdminBadge variant="비공개" className="ml-3 mr-1" />
+            <AdminPublicBadge
+              context="modal"
+              isPublic={false}
+              className="ml-3 mr-2"
+            />
             <p>영상이 숨김 처리 됩니다</p>
           </>
         )}
