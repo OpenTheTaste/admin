@@ -10,12 +10,14 @@ interface EmailFieldProps {
 export function EmailField({ value, onChange }: EmailFieldProps) {
   return (
     <div>
-      <label className="flex items-center text-sm mb-2">
+      <label htmlFor="email" className="flex items-center text-sm mb-2">
         <Mail className="mr-2 text-ot-gray-600" size={18} />
         이메일
       </label>
       <input
-        type="text"
+        type="email"
+        id="email"
+        name="email"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="이메일을 입력해주세요"

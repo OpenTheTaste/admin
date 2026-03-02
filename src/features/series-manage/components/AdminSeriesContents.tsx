@@ -3,11 +3,11 @@
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { TagBadge } from "@/entities/tag/components/TagBagde";
 import { Edit } from "lucide-react";
 import { AdminSeriesEditModal } from "@features/series-manage/components";
 import { CategoryBadge } from "@entities/category/components/CategoryBadge";
 import { AdminSeriesDetailModal } from "@entities/series/components";
+import { TagBadge } from "@entities/tag/components/TagBagde";
 import { AdminPublicBadge } from "@shared/components";
 import { AdminSeries, mockAdminSeries } from "@shared/mocks/mockAdminSeries";
 

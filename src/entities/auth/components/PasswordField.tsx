@@ -17,13 +17,14 @@ export function PasswordField({
 }: PasswordFieldProps) {
   return (
     <div className="w-95">
-      <label className="flex items-center text-sm mb-2">
+      <label htmlFor="password" className="flex items-center text-sm mb-2">
         <Lock className="mr-2 text-ot-gray-600" size={18} />
         비밀번호
       </label>
 
       <div className="relative">
         <input
+          id="password"
           type={show ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}

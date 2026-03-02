@@ -30,7 +30,9 @@ export function LoginForm() {
         onToggle={() => setShowPassword((p) => !p)}
       />
 
-      <CommonButton className="w-95 py-2 font-semibold">로그인</CommonButton>
+      <CommonButton type="submit" className="w-95 py-2 font-semibold">
+        로그인
+      </CommonButton>
     </form>
   );
 }
