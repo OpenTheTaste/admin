@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Edit } from "lucide-react";
 import { AdminShortsEditModal } from "@features/shorts-manage";
 import { AdminShortsDetailModal } from "@entities/shorts/components";
-import { AdminBadge } from "@shared/components";
+import { AdminPublicBadge } from "@shared/components";
 import { ShortsType, mockAdminShorts } from "@shared/mocks/mockAdminShorts";
 import { PublicType } from "@shared/types/admin";
 
@@ -105,14 +105,7 @@ export function AdminShortsList({ filterPublic }: AdminShortsListProps) {
                 </td>
 
                 <td className="py-3 text-center">
-                  <AdminBadge
-                    variant={short.isPublic ? "공개" : "비공개"}
-                    className={
-                      short.isPublic
-                        ? "bg-[#CCFBF1] text-[#298880]"
-                        : "bg-ot-primary-100 text-[#882929]"
-                    }
-                  />
+                  <AdminPublicBadge isPublic={short.isPublic ? true : false} />
                 </td>
                 <td className="py-3 text-center font-semibold text-sm">
                   {short.uploadDate}

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import { useOutsideClick } from "@shared/hooks";
+import { cn } from "@shared/utils";
 
 export interface AdminOriginalContentsDropdownProps {
   originalList: string[];
@@ -34,6 +35,7 @@ export function AdminOriginalContentsDropdown({
   return (
     <div>
       <p className="font-semibold text-lg mb-2">원본 콘텐츠 선택</p>
+
       <div ref={dropdownRef} className="relative">
         <button
           type="button"
@@ -41,14 +43,22 @@ export function AdminOriginalContentsDropdown({
             setIsOpen((prev) => !prev);
             setSearch("");
           }}
-          className="w-full flex items-center justify-between border border-ot-gray-600 rounded-lg py-3 px-4 text-sm text-left bg-ot-text hover:bg-ot-gray-200 transition-colors cursor-pointer"
+          className={cn(
+            "w-full flex items-center justify-between border border-ot-gray-600 rounded-lg py-3 px-4 text-sm text-left bg-ot-text hover:bg-ot-gray-200 transition-colors cursor-pointer",
+          )}
         >
-          <span className={value ? "text-ot-background" : "text-ot-gray-600"}>
+          <span
+            className={cn(value ? "text-ot-background" : "text-ot-gray-600")}
+          >
             {value ?? "원본 콘텐츠 선택"}
           </span>
+
           <ChevronDown
             size={16}
-            className={`text-ot-gray-600 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            className={cn(
+              "text-ot-gray-600 shrink-0 transition-transform duration-200",
+              isOpen && "rotate-180",
+            )}
           />
         </button>
 
@@ -70,22 +80,28 @@ export function AdminOriginalContentsDropdown({
               />
               <Search size={15} className="text-ot-gray-600 shrink-0" />
             </div>
+
             <div className="max-h-48 overflow-y-auto">
               {filtered.length > 0 ? (
-                filtered.map((original) => (
-                  <button
-                    type="button"
-                    key={original}
-                    onClick={() => handleSelect(original)}
-                    className={`w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer ${
-                      value === original
-                        ? "bg-ot-primary-gradient text-ot-text"
-                        : "text-ot-background hover:bg-ot-gray-200"
-                    }`}
-                  >
-                    {original}
-                  </button>
-                ))
+                filtered.map((original) => {
+                  const isSelected = value === original;
+
+                  return (
+                    <button
+                      type="button"
+                      key={original}
+                      onClick={() => handleSelect(original)}
+                      className={cn(
+                        "w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer",
+                        isSelected
+                          ? "bg-ot-primary-gradient text-ot-text"
+                          : "text-ot-background hover:bg-ot-gray-200",
+                      )}
+                    >
+                      {original}
+                    </button>
+                  );
+                })
               ) : (
                 <p className="px-4 py-3 text-sm text-ot-gray-600">
                   검색 결과가 없습니다

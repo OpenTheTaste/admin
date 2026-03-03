@@ -8,4 +8,5 @@ export { AdminPublicStatus } from "./AdminPublicStatus";
 export { AdminSearch } from "./AdminSearch";
 export { AdminFileUpload } from "./AdminFileUpload";
 export { AdminPosterUpload } from "./AdminPosterUpload";
+export { AdminPublicBadge } from "./AdminPublicBadge";
 export type { PosterState } from "./AdminPosterUpload";

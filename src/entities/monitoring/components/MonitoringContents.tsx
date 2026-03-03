@@ -30,7 +30,7 @@ export function MonitoringContents() {
         </div>
 
         {/* 구분선 */}
-        <div className="h-0.5 bg-ot-gray-600 w-full" />
+        <div className="border-b border-ot-gray-600 w-full" />
       </div>
 
       {/* 테이블 전체 */}
@@ -38,22 +38,12 @@ export function MonitoringContents() {
         <div className="max-h-100 overflow-y-auto scrollbar-hide">
           <table className="w-full text-left border-collapse table-fixed">
             <thead className="sticky top-0 bg-ot-gray-700 z-10">
-              <tr className="border-b border-ot-gray-600">
-                <th className="pl-8 py-4 font-semibold text-ot-text w-[35%] text-center">
-                  파일명
-                </th>
-                <th className="px-3 py-4 font-semibold text-ot-text w-[15%] text-center">
-                  크기
-                </th>
-                <th className="px-3 py-4 font-semibold text-ot-text w-[15%] text-center">
-                  업로더
-                </th>
-                <th className="px-3 py-4 font-semibold text-ot-text w-[15%] text-center">
-                  상태
-                </th>
-                <th className="pr-8 py-4 font-semibold text-ot-text w-[20%] text-center">
-                  진행률
-                </th>
+              <tr className=" text-ot-text text-center font-semibold bg-ot-gray-800">
+                <th className="pl-8 py-3 w-[35%]">파일명</th>
+                <th className="px-3 w-[15%]">크기</th>
+                <th className="px-3 w-[15%]">업로더</th>
+                <th className="px-3 w-[15%]">상태</th>
+                <th className="pr-8 w-[20%]">진행률</th>
               </tr>
             </thead>
 
@@ -78,7 +68,7 @@ export function MonitoringContents() {
                       status={item.status}
                       text={
                         item.status === "ORIGIN_UPLOADED"
-                          ? "s3 업로드 완료"
+                          ? "S3 업로드 완료"
                           : item.status === "TRANSCODING"
                             ? "트랜스코딩"
                             : item.status === "UPLOADING"
