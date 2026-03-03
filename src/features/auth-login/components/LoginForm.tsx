@@ -1,19 +1,26 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { loginApi } from "@entities/auth/apis";
 import { EmailField, PasswordField } from "@entities/auth/components";
 import { CommonButton } from "@shared/components";
 
 export function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await loginApi({ email, password });
 
-    console.log({ email, password });
-    // 👉 여기서 API 호출
+      router.push("/");
+    } catch (error) {
+      alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+    }
   };
 
   return (
