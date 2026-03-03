@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { CATEGORY_DOT_COLOR } from "@entities/tag/constants";
 import type { Category } from "@shared/types";
+import { cn } from "@shared/utils";
 
 interface TagBadgeProps {
   label: string;
@@ -12,9 +13,13 @@ interface TagBadgeProps {
 
 export function TagBadge({ label, category, onRemove }: TagBadgeProps) {
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-ot-gray-800 text-ot-text text-xs font-semibold">
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 px-2 py-1 rounded-full bg-ot-gray-800 text-ot-text text-xs font-semibold",
+      )}
+    >
       <span
-        className={`w-2 h-2 rounded-full ${CATEGORY_DOT_COLOR[category]}`}
+        className={cn("w-2 h-2 rounded-full", CATEGORY_DOT_COLOR[category])}
       />
 
       {label}
@@ -26,7 +31,7 @@ export function TagBadge({ label, category, onRemove }: TagBadgeProps) {
             e.stopPropagation();
             onRemove();
           }}
-          className="ml-1 hover:text-ot-gray-600 transition-colors"
+          className={cn("ml-1 transition-colors hover:text-ot-gray-600")}
         >
           <X size={10} strokeWidth={2} />
         </button>

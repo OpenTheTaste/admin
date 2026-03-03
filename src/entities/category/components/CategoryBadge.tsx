@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { CATEGORY_CONFIG_COLOR } from "@entities/category/constants";
 import type { Category } from "@shared/types";
+import { cn } from "@shared/utils";
 
 interface CategoryBadgeProps {
   category: Category;
@@ -15,7 +16,10 @@ export function CategoryBadge({ category, onRemove }: CategoryBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${config.className}`}
+      className={cn(
+        "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold",
+        config.className,
+      )}
     >
       {category}
 
@@ -26,7 +30,7 @@ export function CategoryBadge({ category, onRemove }: CategoryBadgeProps) {
             e.stopPropagation();
             onRemove();
           }}
-          className="ml-1 hover:opacity-70 transition-opacity"
+          className={cn("ml-1 transition-opacity hover:opacity-70")}
         >
           <X size={12} strokeWidth={2} />
         </button>

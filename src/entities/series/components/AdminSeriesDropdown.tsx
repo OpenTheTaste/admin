@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import { useOutsideClick } from "@shared/hooks";
+import { cn } from "@shared/utils";
 
 export interface AdminSeriesDropdownProps {
   seriesList: string[];
@@ -36,6 +37,7 @@ export function AdminSeriesDropdown({
   return (
     <div>
       <p className="font-semibold text-lg mb-2">시리즈 선택</p>
+
       <div ref={dropdownRef} className="relative">
         <button
           type="button"
@@ -44,19 +46,25 @@ export function AdminSeriesDropdown({
             setIsOpen((prev) => !prev);
             setSearch("");
           }}
-          className={`w-full flex items-center justify-between border rounded-lg py-3 px-4 text-sm text-left transition-colors
-            ${
-              disabled
-                ? "bg-ot-gray-200 border-ot-gray-400 text-ot-gray-600 cursor-not-allowed"
-                : "border-ot-gray-600 bg-ot-text hover:bg-ot-gray-200 cursor-pointer"
-            }`}
+          className={cn(
+            "w-full flex items-center justify-between border rounded-lg py-3 px-4 text-sm text-left transition-colors",
+            disabled
+              ? "bg-ot-gray-200 border-ot-gray-400 text-ot-gray-600 cursor-not-allowed"
+              : "border-ot-gray-600 bg-ot-text hover:bg-ot-gray-200 cursor-pointer",
+          )}
         >
-          <span className={value ? "text-ot-background" : "text-ot-gray-600"}>
+          <span
+            className={cn(value ? "text-ot-background" : "text-ot-gray-600")}
+          >
             {value ?? "시리즈 선택"}
           </span>
+
           <ChevronDown
             size={16}
-            className={`text-ot-gray-600 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            className={cn(
+              "text-ot-gray-600 shrink-0 transition-transform duration-200",
+              isOpen && "rotate-180",
+            )}
           />
         </button>
 
@@ -78,23 +86,30 @@ export function AdminSeriesDropdown({
               />
               <Search size={15} className="text-ot-gray-600 shrink-0" />
             </div>
+
             <div className="max-h-48 overflow-y-auto">
               {filtered.length > 0 ? (
-                filtered.map((series) => (
-                  <button
-                    type="button"
-                    key={series}
-                    onClick={() => handleSelect(series)}
-                    className={`w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer ${
-                      value === series ||
-                      (series === "시리즈 없음" && value === null)
-                        ? "bg-ot-primary-gradient text-ot-text"
-                        : "text-ot-background hover:bg-ot-gray-200"
-                    }`}
-                  >
-                    {series}
-                  </button>
-                ))
+                filtered.map((series) => {
+                  const isSelected =
+                    value === series ||
+                    (series === "시리즈 없음" && value === null);
+
+                  return (
+                    <button
+                      type="button"
+                      key={series}
+                      onClick={() => handleSelect(series)}
+                      className={cn(
+                        "w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer",
+                        isSelected
+                          ? "bg-ot-primary-gradient text-ot-text"
+                          : "text-ot-background hover:bg-ot-gray-200",
+                      )}
+                    >
+                      {series}
+                    </button>
+                  );
+                })
               ) : (
                 <p className="px-4 py-3 text-sm text-ot-gray-600">
                   검색 결과가 없습니다
