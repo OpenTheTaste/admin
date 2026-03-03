@@ -8,18 +8,21 @@ import { cn } from "@shared/utils";
 interface AdminSearchProps {
   placeholder?: string;
   options?: string[];
-  onSearch?: (value: string) => void;
+  defaultValue?: string;
+  onSubmitSearch?: (value: string) => void;
   onSelect?: (value: string) => void;
 }
 
 export function AdminSearch({
   placeholder = "검색어를 입력하세요",
   options,
-  onSearch,
+  defaultValue = "",
+  onSubmitSearch,
   onSelect,
 }: AdminSearchProps) {
+  const [value, setValue] = useState(defaultValue);
+  const [selected, setSelected] = useState(options?.[0] ?? "");
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string>(options?.[0] ?? "");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick(dropdownRef, () => setIsOpen(false), isOpen);
@@ -37,9 +40,14 @@ export function AdminSearch({
           type="text"
           className="flex-1 bg-transparent py-3 text-ot-text placeholder:text-ot-placeholder outline-none text-sm"
           placeholder={placeholder}
-          onChange={(e) => onSearch?.(e.target.value)}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onSubmitSearch?.(value)}
         />
-        <button className="cursor-pointer ">
+        <button
+          className="cursor-pointer"
+          onClick={() => onSubmitSearch?.(value)}
+        >
           <Search
             size={18}
             className="stroke-ot-text hover:stroke-ot-gray-600 shrink-0"
