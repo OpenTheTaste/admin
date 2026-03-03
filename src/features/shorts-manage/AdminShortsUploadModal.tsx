@@ -42,8 +42,8 @@ export function AdminShortsUploadModal({
   const [videoFile, setVideoFile] = useState<VideoFileMeta | null>(null);
   const [selectedOriginal, setSelectedOriginal] = useState<string | null>(null);
   const [poster, setPoster] = useState<PosterState>({
-    vertical: null,
-    horizontal: null,
+    posterUrl: null,
+    thumbnailUrl: null,
   });
   useEffect(() => {
     setMounted(true);

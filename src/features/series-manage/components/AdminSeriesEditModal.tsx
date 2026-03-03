@@ -35,8 +35,8 @@ export function AdminSeriesEditModal({
   );
   const [selectedTags, setSelectedTags] = useState<string[]>(series.tags);
   const [poster, setPoster] = useState<PosterState>({
-    vertical: series.thumbnailVertical,
-    horizontal: series.thumbnailHorizontal,
+    posterUrl: null,
+    thumbnailUrl: null,
   });
 
   useEffect(() => {
@@ -72,8 +72,8 @@ export function AdminSeriesEditModal({
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean),
-      thumbnailVertical: poster.vertical ?? series.thumbnailVertical,
-      thumbnailHorizontal: poster.horizontal ?? series.thumbnailHorizontal,
+      posterUrl: poster.posterUrl ?? series.posterUrl,
+      thumbnailUrl: poster.thumbnailUrl ?? series.thumbnailUrl,
     });
   };
 

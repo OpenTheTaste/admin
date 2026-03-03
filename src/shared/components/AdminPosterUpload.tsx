@@ -5,8 +5,8 @@ import { useRef } from "react";
 import { ImageIcon, X } from "lucide-react";
 
 export interface PosterState {
-  vertical: string | null;
-  horizontal?: string | null;
+  posterUrl?: string | null;
+  thumbnailUrl: string | null;
 }
 
 export interface AdminPosterUploadProps {
@@ -26,24 +26,24 @@ export function AdminPosterUpload({
   const handleVertical = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    onChange({ ...value, vertical: URL.createObjectURL(file) });
+    onChange({ ...value, posterUrl: URL.createObjectURL(file) });
   };
 
   const handleHorizontal = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    onChange({ ...value, horizontal: URL.createObjectURL(file) });
+    onChange({ ...value, thumbnailUrl: URL.createObjectURL(file) });
   };
 
   const removeVertical = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onChange({ ...value, vertical: null });
+    onChange({ ...value, posterUrl: null });
     if (verticalInputRef.current) verticalInputRef.current.value = "";
   };
 
   const removeHorizontal = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onChange({ ...value, horizontal: null });
+    onChange({ ...value, thumbnailUrl: null });
     if (horizontalInputRef.current) horizontalInputRef.current.value = "";
   };
 
@@ -65,10 +65,10 @@ export function AdminPosterUpload({
             className="h-85 relative border border-dashed border-ot-gray-600 rounded-lg overflow-hidden cursor-pointer hover:bg-ot-gray-200 transition-colors aspect-5/7"
             onClick={() => verticalInputRef.current?.click()}
           >
-            {value.vertical ? (
+            {value.posterUrl ? (
               <>
                 <Image
-                  src={value.vertical}
+                  src={value.posterUrl}
                   fill
                   alt="세로 포스터 미리보기"
                   className="object-cover"
@@ -105,10 +105,10 @@ export function AdminPosterUpload({
               className="h-85 relative border border-dashed border-ot-gray-600 rounded-lg overflow-hidden cursor-pointer hover:bg-ot-gray-200 transition-colors aspect-4/3"
               onClick={() => horizontalInputRef.current?.click()}
             >
-              {value.horizontal ? (
+              {value.thumbnailUrl ? (
                 <>
                   <Image
-                    src={value.horizontal}
+                    src={value.thumbnailUrl}
                     fill
                     alt="가로 포스터 미리보기"
                     className="object-cover"

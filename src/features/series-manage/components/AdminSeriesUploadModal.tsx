@@ -34,8 +34,8 @@ export function AdminSeriesUploadModal({
   );
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [poster, setPoster] = useState<PosterState>({
-    vertical: null,
-    horizontal: null,
+    posterUrl: null,
+    thumbnailUrl: null,
   });
 
   useEffect(() => {

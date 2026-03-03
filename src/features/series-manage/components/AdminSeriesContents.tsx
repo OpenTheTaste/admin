@@ -74,7 +74,7 @@ export function AdminSeriesContents() {
                 <td className="py-3">
                   <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
                     <Image
-                      src={content.thumbnailVertical}
+                      src={content.posterUrl}
                       alt={content.title}
                       fill
                       className="object-cover rounded-md"

@@ -1,29 +1,27 @@
 "use client";
 
 import Image from "next/image";
+import { formatDuration, formatSize } from "@/shared/lib";
 import { Bookmark, X } from "lucide-react";
 import { CategoryBadge } from "@entities/category/components";
 import { TagBadge } from "@entities/tag/components";
-import { AdminBadge, AdminPublicBadge } from "@shared/components";
-import { AdminContentsDetailType } from "@shared/types/admin";
+import { useContentDetail } from "@entities/video-contents/hooks";
+import { AdminPublicBadge } from "@shared/components";
 
 interface AdminVideoContentsDetailModalProps {
-  contents: AdminContentsDetailType | null;
+  mediaId: number;
   onClose: () => void;
 }
 
 export function AdminVideoContentsDetailModal({
-  contents,
+  mediaId,
   onClose,
 }: AdminVideoContentsDetailModalProps) {
-  if (!contents) return null;
+  const { data, isLoading, isError } = useContentDetail(mediaId);
+  if (!data) return null;
 
-  const formatSize = (bytes: number) => {
-    if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)}GB`;
-    if (bytes >= 1024 ** 2) return `${(bytes / 1024 ** 2).toFixed(1)}MB`;
-    return `${(bytes / 1024).toFixed(1)}KB`;
-  };
-
+  if (isLoading) return <div>로딩중...</div>;
+  if (isError || !data) return <div>에러</div>;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -50,23 +48,23 @@ export function AdminVideoContentsDetailModal({
             <div className="flex flex-col gap-1 ">
               <p className="text-sm text-ot-background">세로 (5:7)</p>
               <div className="relative w-60 aspect-5/7 rounded-lg overflow-hidden">
-                <Image
-                  src={contents.thumbnailVertical || ""}
-                  alt={`${contents.title} 세로 썸네일`}
+                {/* <Image
+                  src={data.posterUrl || ""}
+                  alt={`${data.posterUrl} 세로 썸네일`}
                   fill
                   className="object-cover"
-                />
+                /> */}
               </div>
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-sm text-ot-background">가로 (4:3)</p>
               <div className="relative w-113 aspect-4/3 rounded-lg overflow-hidden">
-                <Image
-                  src={contents.thumbnailHorizontal || ""}
-                  alt={`${contents.title} 가로 썸네일`}
+                {/* <Image
+                  src={data.thumbnailUrl || ""}
+                  alt={`${data.thumbnailUrl} 가로 썸네일`}
                   fill
                   className="object-cover"
-                />
+                /> */}
               </div>
             </div>
           </div>
@@ -79,31 +77,31 @@ export function AdminVideoContentsDetailModal({
           <div className="flex flex-col gap-6">
             <div>
               <p className="text-base font-semibold">제목</p>
-              <p className="text-sm">{contents.title}</p>
+              <p className="text-sm">{data.title}</p>
             </div>
 
             <div>
               <p className="text-base font-semibold">설명</p>
-              <p className="text-sm leading-relaxed">{contents.description}</p>
+              <p className="text-sm leading-relaxed">{data.description}</p>
             </div>
 
-            {contents.cast.length > 0 && (
+            {data.actors.length > 0 && (
               <div>
                 <p className="text-base font-semibold">출연</p>
-                <p className="text-sm">{contents.cast.join(", ")}</p>
+                <p className="text-sm">{data.actors}</p>
               </div>
             )}
 
             <div>
               <p className="text-base font-semibold">시리즈</p>
               <p className="text-sm">
-                {contents.type === "시리즈" ? contents.seriesTitle : "-"}
+                {data.seriesTitle ? data.seriesTitle : "-"}
               </p>
             </div>
 
             <div>
               <p className="text-base font-semibold">업로더</p>
-              <p className="text-sm">{contents.uploader}</p>
+              <p className="text-sm">{data.uploaderNickname}</p>
             </div>
           </div>
 
@@ -111,30 +109,30 @@ export function AdminVideoContentsDetailModal({
           <div className="flex flex-col gap-6">
             <div>
               <p className="text-base font-semibold">재생 시간</p>
-              <p className="text-sm">{contents.duration}</p>
+              <p className="text-sm">{formatDuration(data.duration)}</p>
             </div>
 
             <div>
               <p className="text-base font-semibold">파일 크기</p>
-              <p className="text-sm">{formatSize(contents.size)}</p>
+              <p className="text-sm">{formatSize(data.videoSize)}</p>
             </div>
 
             <div className="flex gap-6">
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">카테고리</p>
                 <div className="flex items-center">
-                  <CategoryBadge category={contents.category} />
+                  <CategoryBadge category={data.categoryName} />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">태그</p>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {contents.tags.map((tag) => (
+                  {data.tagNameList.map((tag) => (
                     <TagBadge
                       key={tag}
                       label={tag}
-                      category={contents.category}
+                      category={data.categoryName}
                     />
                   ))}
                 </div>
@@ -145,7 +143,7 @@ export function AdminVideoContentsDetailModal({
               <p className="text-base font-semibold mb-0.5">공개 여부</p>
               <AdminPublicBadge
                 context="modal"
-                isPublic={contents.isPublic ? true : false}
+                isPublic={data.publicStatus === "PUBLIC"}
               />
             </div>
 
@@ -153,14 +151,13 @@ export function AdminVideoContentsDetailModal({
               <p className="text-base font-semibold">북마크</p>
               <p className="text-sm flex items-center gap-1">
                 <Bookmark size={14} />
-                {contents.bookmarkCount.toLocaleString()}
+                {data.bookmarkCount.toLocaleString()}
               </p>
             </div>
 
-            {/* 🔥 업로드일자 우측 하단 고정 */}
             <div>
               <p className="text-base font-semibold">업로드 일자</p>
-              <p className="text-sm">{contents.uploadDate}</p>
+              <p className="text-sm">{data.uploadedDate}</p>
             </div>
           </div>
         </section>

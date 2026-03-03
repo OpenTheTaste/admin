@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AdminVideoContentsList } from "@features/video-contents-manage/components";
 import { AdminSearch } from "@shared/components";
-import { PublicType } from "@shared/types/admin";
+import { PublicType } from "@shared/types";
 
 const PUBLIC_FILTER_OPTIONS = ["전체", "공개", "비공개"] as const;
 

@@ -2,30 +2,31 @@
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { Edit } from "lucide-react";
+import { Edit, Loader2 } from "lucide-react";
 import { AdminVideoContentsEditModal } from "@features/video-contents-manage/components";
+import "@entities/video-contents/apis";
 import { AdminVideoContentsDetailModal } from "@entities/video-contents/components";
+import { useInfiniteContentList } from "@entities/video-contents/hooks";
 import { AdminPublicBadge } from "@shared/components";
-import { mockAdminContents } from "@shared/mocks/mockAdminContents";
-import { PublicType } from "@shared/types/admin";
-import { AdminContentsDetailType } from "@shared/types/admin";
+import { toPublicStatus } from "@shared/lib";
+import { PublicType } from "@shared/types";
 
 interface AdminVideoContentsListProps {
   filterPublic?: PublicType | null;
+  searchWord?: string;
 }
 
 export function AdminVideoContentsList({
   filterPublic,
+  searchWord,
 }: AdminVideoContentsListProps) {
-  const [data, setData] =
-    useState<AdminContentsDetailType[]>(mockAdminContents);
+  const { data, observerRef, isLoading, isError, isFetchingNextPage } =
+    useInfiniteContentList({
+      searchWord,
+      publicStatus: toPublicStatus(filterPublic),
+    });
 
-  const filteredData = filterPublic
-    ? data.filter((content) =>
-        filterPublic === "공개" ? content.isPublic : !content.isPublic,
-      )
-    : data;
+  const contentList = data?.pages.flatMap((page) => page.dataList) ?? [];
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -34,7 +35,7 @@ export function AdminVideoContentsList({
   const action = searchParams.get("action");
 
   const selectedContents = selectedId
-    ? (data.find((s) => s.id === Number(selectedId)) ?? null)
+    ? (contentList.find((c) => c.mediaId === Number(selectedId)) ?? null)
     : null;
 
   const handleRowClick = (id: number) => {
@@ -49,10 +50,8 @@ export function AdminVideoContentsList({
     router.push(`?id=${id}&action=edit`, { scroll: false });
   };
 
-  const handleUpdate = (updated: AdminContentsDetailType) => {
-    setData((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
-    handleClose();
-  };
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (
     <>
@@ -77,22 +76,24 @@ export function AdminVideoContentsList({
           </thead>
 
           <tbody className="bg-ot-gray-700 divide-y divide-ot-gray-800">
-            {filteredData.map((content) => (
+            {contentList.map((content) => (
               <tr
-                key={content.id}
-                onClick={() => handleRowClick(content.id)}
-                className="hover:bg-ot-gray-800/30 transition-colors"
+                key={content.mediaId}
+                onClick={() => handleRowClick(content.mediaId)}
+                className="hover:bg-ot-gray-800/30 transition-colors cursor-pointer"
               >
                 <td className="py-3">
                   <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
-                    {content.thumbnailVertical ? (
-                      <Image
-                        src={content.thumbnailVertical}
-                        alt={content.title}
-                        fill
-                        className="object-cover rounded-md"
-                      />
+                    {content.posterUrl ? (
+                      <div>{content.posterUrl} 예시</div>
                     ) : (
+                      // TODO: 썸네일 넣어야 함
+                      // <Image
+                      //   src={content.posterUrl}
+                      //   alt={content.title}
+                      //   fill
+                      //   className="object-cover rounded-md"
+                      // />
                       <div
                         className="w-full h-full rounded-md bg-ot-gray-800"
                         aria-label="썸네일 없음"
@@ -103,26 +104,21 @@ export function AdminVideoContentsList({
                 <td className="py-3">
                   <div className="flex flex-col font-semibold">
                     <span>{content.title}</span>
-                    <span className="text-sm text-ot-placeholder mt-1">
-                      {content.duration}
-                    </span>
                   </div>
                 </td>
-
                 <td className="py-3 text-center">
                   <AdminPublicBadge
-                    isPublic={content.isPublic ? true : false}
+                    isPublic={content.publicStatus === "PUBLIC"}
                   />
                 </td>
                 <td className="py-3 text-center font-semibold text-sm">
-                  {content.uploadDate}
+                  {content.uploadedDate}
                 </td>
-
                 <td
                   className="py-3 text-center"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <button onClick={() => handleEditClick(content.id)}>
+                  <button onClick={() => handleEditClick(content.mediaId)}>
                     <Edit
                       size={20}
                       className="hover:stroke-ot-gray-600 cursor-pointer"
@@ -133,21 +129,27 @@ export function AdminVideoContentsList({
             ))}
           </tbody>
         </table>
+
+        {/* 무한스크롤 감지 타겟 */}
+        <div ref={observerRef} className="py-4 flex justify-center">
+          {isFetchingNextPage && (
+            <Loader2 className="animate-spin text-ot-placeholder" size={20} />
+          )}
+        </div>
       </div>
 
-      {action === "edit" && selectedContents ? (
+      {action === "edit" && selectedContents && (
         <AdminVideoContentsEditModal
-          contents={selectedContents}
+          mediaId={Number(selectedId)}
           onClose={handleClose}
-          onUpdate={handleUpdate}
+          onUpdate={() => handleClose()}
         />
-      ) : (
-        selectedContents && (
-          <AdminVideoContentsDetailModal
-            contents={selectedContents}
-            onClose={handleClose}
-          />
-        )
+      )}
+      {selectedId && (
+        <AdminVideoContentsDetailModal
+          mediaId={Number(selectedId)}
+          onClose={handleClose}
+        />
       )}
     </>
   );
