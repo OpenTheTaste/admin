@@ -26,9 +26,7 @@ export function AdminVideoContentsSection() {
         placeholder="콘텐츠 제목을 입력하세요."
         options={[...PUBLIC_FILTER_OPTIONS]}
         defaultValue={keyword}
-        onSubmitSearch={(value) =>
-          push("keyword", value.replace(/\s/g, "") || null)
-        }
+        onSubmitSearch={(value) => push("keyword", value || null)}
         onSelect={(option) => push("filter", option === "전체" ? null : option)}
       />
       <AdminVideoContentsList filterPublic={filter} searchWord={keyword} />
