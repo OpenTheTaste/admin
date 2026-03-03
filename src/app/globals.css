@@ -18,16 +18,16 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Colors */
-  --color-ot-primary-50: #ffecef;
-  --color-ot-primary-100: #ffd1d7;
-  --color-ot-primary-200: #ffa4b2;
-  --color-ot-primary-300: #ff768f;
-  --color-ot-primary-400: #ff396c; /* Primary 메인 */
-  --color-ot-primary-500: #f10059;
-  --color-ot-primary-600: #c90049;
-  --color-ot-primary-700: #9d0037;
-  --color-ot-primary-800: #700025;
-  --color-ot-primary-900: #430013;
+  --color-ot-primary-50: #ffecff;
+  --color-ot-primary-100: #ffd6db;
+  --color-ot-primary-200: #ffb2bd;
+  --color-ot-primary-300: #ff90a2;
+  --color-ot-primary-400: #ff6a87; /* Primary 메인 */
+  --color-ot-primary-500: #ff396c;
+  --color-ot-primary-600: #e00053;
+  --color-ot-primary-700: #ae003c;
+  --color-ot-primary-800: #790029;
+  --color-ot-primary-900: #460014;
   --color-ot-primary-950: #2c0009;
 
   --color-ot-secondary-50: #eff0f5;
