@@ -1,26 +1,28 @@
 "use client";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { Edit } from "lucide-react";
+import { Edit, Loader2 } from "lucide-react";
 import { AdminShortsEditModal } from "@features/shorts-manage";
 import { AdminShortsDetailModal } from "@entities/shorts/components";
+import { useInfiniteShortsList } from "@entities/shorts/hooks";
 import { AdminPublicBadge } from "@shared/components";
-import { ShortsType, mockAdminShorts } from "@shared/mocks/mockAdminShorts";
+import { toPublicStatus } from "@shared/lib";
 import { PublicType } from "@shared/types";
 
 interface AdminShortsListProps {
   filterPublic?: PublicType | null;
+  searchWord?: string;
 }
 
-export function AdminShortsList({ filterPublic }: AdminShortsListProps) {
-  const [data, setData] = useState<ShortsType[]>(mockAdminShorts);
-
-  const filteredData = filterPublic
-    ? data.filter((short) =>
-        filterPublic === "공개" ? short.isPublic : !short.isPublic,
-      )
-    : data;
+export function AdminShortsList({
+  filterPublic,
+  searchWord,
+}: AdminShortsListProps) {
+  const { shortsList, observerRef, isLoading, isError, isFetchingNextPage } =
+    useInfiniteShortsList({
+      searchWord,
+      publicStatus: toPublicStatus(filterPublic),
+    });
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -29,25 +31,23 @@ export function AdminShortsList({ filterPublic }: AdminShortsListProps) {
   const action = searchParams.get("action");
 
   const selectedshorts = selectedId
-    ? (data.find((s) => s.id === Number(selectedId)) ?? null)
+    ? (shortsList.find((s) => s.mediaId === Number(selectedId)) ?? null)
     : null;
 
-  const handleRowClick = (id: number) => {
-    router.push(`?id=${id}`, { scroll: false });
+  const handleRowClick = (mediaId: number) => {
+    router.push(`?id=${mediaId}`, { scroll: false });
   };
 
   const handleClose = () => {
     router.push("?", { scroll: false });
   };
 
-  const handleEditClick = (id: number) => {
-    router.push(`?id=${id}&action=edit`, { scroll: false });
+  const handleEditClick = (mediaId: number) => {
+    router.push(`?id=${mediaId}&action=edit`, { scroll: false });
   };
 
-  const handleUpdate = (updated: ShortsType) => {
-    setData((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
-    handleClose();
-  };
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (
     <>
@@ -72,22 +72,23 @@ export function AdminShortsList({ filterPublic }: AdminShortsListProps) {
           </thead>
 
           <tbody className="bg-ot-gray-700 divide-y divide-ot-gray-800">
-            {filteredData.map((short) => (
+            {shortsList.map((short) => (
               <tr
-                key={short.id}
-                onClick={() => handleRowClick(short.id)}
+                key={short.mediaId}
+                onClick={() => handleRowClick(short.mediaId)}
                 className="hover:bg-ot-gray-800/30 transition-colors"
               >
                 <td className="py-3">
                   <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
-                    {short.thumbnailUrl ? (
-                      <Image
-                        src={short.thumbnailUrl}
-                        alt={short.title}
-                        fill
-                        className="object-cover rounded-md"
-                      />
+                    {short.posterUrl ? (
+                      <div>{short.posterUrl} 예시</div>
                     ) : (
+                      // <Image
+                      //   src={short.thumbnailUrl}
+                      //   alt={short.title}
+                      //   fill
+                      //   className="object-cover rounded-md"
+                      // />
                       <div
                         className="w-full h-full rounded-md bg-ot-gray-800"
                         aria-label="썸네일 없음"
@@ -98,24 +99,23 @@ export function AdminShortsList({ filterPublic }: AdminShortsListProps) {
                 <td className="py-3">
                   <div className="flex flex-col font-semibold">
                     <span>{short.title}</span>
-                    <span className="text-sm text-ot-placeholder mt-1">
-                      {short.duration}
-                    </span>
                   </div>
                 </td>
 
                 <td className="py-3 text-center">
-                  <AdminPublicBadge isPublic={short.isPublic ? true : false} />
+                  <AdminPublicBadge
+                    isPublic={short.publicStatus === "PUBLIC"}
+                  />
                 </td>
                 <td className="py-3 text-center font-semibold text-sm">
-                  {short.uploadDate}
+                  {short.uploadedDate}
                 </td>
 
                 <td
                   className="py-3 text-center"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <button onClick={() => handleEditClick(short.id)}>
+                  <button onClick={() => handleEditClick(short.mediaId)}>
                     <Edit
                       size={20}
                       className="hover:stroke-ot-gray-600 cursor-pointer"
@@ -126,17 +126,25 @@ export function AdminShortsList({ filterPublic }: AdminShortsListProps) {
             ))}
           </tbody>
         </table>
+
+        {/* 무한스크롤 감지 타겟 */}
+        <div ref={observerRef} className="py-4 flex justify-center">
+          {isFetchingNextPage && (
+            <Loader2 className="animate-spin text-ot-placeholder" size={20} />
+          )}
+        </div>
       </div>
+
       {action === "edit" && selectedshorts ? (
         <AdminShortsEditModal
-          shorts={selectedshorts}
+          mediaId={Number(selectedId)}
           onClose={handleClose}
-          onUpdate={handleUpdate}
+          onUpdate={() => handleClose()} // FIXME: 수정 api 붙인 뒤 수정
         />
       ) : (
         selectedshorts && (
           <AdminShortsDetailModal
-            shorts={selectedshorts}
+            mediaId={Number(selectedId)}
             onClose={handleClose}
           />
         )
