@@ -30,9 +30,9 @@ export function AdminShortsList({
   const selectedId = searchParams.get("id");
   const action = searchParams.get("action");
 
-  const selectedshorts = selectedId
-    ? (shortsList.find((s) => s.mediaId === Number(selectedId)) ?? null)
-    : null;
+  const selectedMediaId = selectedId ? Number(selectedId) : null;
+  const hasSelectedMediaId =
+    selectedMediaId !== null && Number.isFinite(selectedMediaId);
 
   const handleRowClick = (mediaId: number) => {
     router.push(`?id=${mediaId}`, { scroll: false });
@@ -135,16 +135,16 @@ export function AdminShortsList({
         </div>
       </div>
 
-      {action === "edit" && selectedshorts ? (
+      {action === "edit" && hasSelectedMediaId ? (
         <AdminShortsEditModal
-          mediaId={Number(selectedId)}
+          mediaId={selectedMediaId}
           onClose={handleClose}
           onUpdate={() => handleClose()} // FIXME: 수정 api 붙인 뒤 수정
         />
       ) : (
-        selectedshorts && (
+        hasSelectedMediaId && (
           <AdminShortsDetailModal
-            mediaId={Number(selectedId)}
+            mediaId={selectedMediaId}
             onClose={handleClose}
           />
         )

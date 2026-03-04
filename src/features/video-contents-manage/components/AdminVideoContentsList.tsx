@@ -32,9 +32,9 @@ export function AdminVideoContentsList({
   const selectedId = searchParams.get("id");
   const action = searchParams.get("action");
 
-  const selectedContents = selectedId
-    ? (contentList.find((c) => c.mediaId === Number(selectedId)) ?? null)
-    : null;
+  const selectedMediaId = selectedId ? Number(selectedId) : null;
+  const hasSelectedMediaId =
+    selectedMediaId !== null && Number.isFinite(selectedMediaId);
 
   const handleRowClick = (id: number) => {
     router.push(`?id=${id}`, { scroll: false });
@@ -136,16 +136,16 @@ export function AdminVideoContentsList({
         </div>
       </div>
 
-      {action === "edit" && selectedContents && (
+      {action === "edit" && hasSelectedMediaId && (
         <AdminVideoContentsEditModal
-          mediaId={Number(selectedId)}
+          mediaId={selectedMediaId}
           onClose={handleClose}
           onUpdate={() => handleClose()} // FIXME: 수정 api 붙인 뒤 수정
         />
       )}
-      {selectedId && (
+      {hasSelectedMediaId && (
         <AdminVideoContentsDetailModal
-          mediaId={Number(selectedId)}
+          mediaId={selectedMediaId}
           onClose={handleClose}
         />
       )}
