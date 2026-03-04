@@ -41,6 +41,7 @@ export function AdminVideoContentsEditModal({
 }: AdminVideoContentsEditModalProps) {
   const { data, isLoading, isError } = useContentDetail(mediaId);
 
+  const [isInitialized, setIsInitialized] = useState<boolean>(false); // 초기 데이터 세팅 여부
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [cast, setCast] = useState<string>("");
@@ -56,7 +57,7 @@ export function AdminVideoContentsEditModal({
   });
 
   useEffect(() => {
-    if (!data) return;
+    if (!data || isInitialized) return;
     setTitle(data.title);
     setDescription(data.description);
     setCast(data.actors);
@@ -68,7 +69,8 @@ export function AdminVideoContentsEditModal({
       posterUrl: data.posterUrl,
       thumbnailUrl: data.thumbnailUrl,
     });
-  }, [data]);
+    setIsInitialized(true);
+  }, [data, isInitialized]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

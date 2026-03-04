@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import { useOutsideClick } from "@shared/hooks";
 import { cn } from "@shared/utils";
@@ -32,6 +32,10 @@ export function AdminSearch({
     setIsOpen(false);
     onSelect?.(option);
   };
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   return (
     <div className="flex gap-4">

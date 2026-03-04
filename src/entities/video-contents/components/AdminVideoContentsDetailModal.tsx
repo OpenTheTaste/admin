@@ -18,7 +18,6 @@ export function AdminVideoContentsDetailModal({
   onClose,
 }: AdminVideoContentsDetailModalProps) {
   const { data, isLoading, isError } = useContentDetail(mediaId);
-  if (!data) return null;
 
   if (isLoading) return <div>로딩중...</div>;
   if (isError || !data) return <div>에러</div>;
