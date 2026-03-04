@@ -20,13 +20,11 @@ export function AdminVideoContentsList({
   filterPublic,
   searchWord,
 }: AdminVideoContentsListProps) {
-  const { data, observerRef, isLoading, isError, isFetchingNextPage } =
+  const { contentList, observerRef, isLoading, isError, isFetchingNextPage } =
     useInfiniteContentList({
       searchWord,
       publicStatus: toPublicStatus(filterPublic),
     });
-
-  const contentList = data?.pages.flatMap((page) => page.dataList) ?? [];
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -142,7 +140,7 @@ export function AdminVideoContentsList({
         <AdminVideoContentsEditModal
           mediaId={Number(selectedId)}
           onClose={handleClose}
-          onUpdate={() => handleClose()}
+          onUpdate={() => handleClose()} // FIXME: 수정 api 붙인 뒤 수정
         />
       )}
       {selectedId && (
