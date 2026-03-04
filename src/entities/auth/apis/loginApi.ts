@@ -12,9 +12,6 @@ export interface AdminLoginResponse {
 }
 
 export const loginApi = async (body: AdminLoginRequest) => {
-  const res = await api.post<ApiResponse<AdminLoginResponse>>(
-    "/login",
-    body,
-  );
+  const res = await api.post<ApiResponse<AdminLoginResponse>>("/login", body);
   return res.data.data;
 };

@@ -1,2 +1,1 @@
-export { useContentList, useContentDetail } from "./useContentsList";
-export { useInfiniteContentList } from "./useInfiniteContentList";
+export { useInfiniteContentList, useContentDetail } from "./useContents";

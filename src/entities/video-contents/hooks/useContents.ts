@@ -1,10 +1,11 @@
-// 콘텐츠 리스트 훅
-
-"use client";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getContentListApi } from "@entities/video-contents/apis";
+import { PublicStatus } from "@/shared/types";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  ContentListItem,
+  getContentDetailApi,
+  getContentListApi,
+} from "@entities/video-contents/apis";
 import { useInfiniteScroll } from "@shared/hooks";
-import { PublicStatus } from "@shared/types";
 
 interface UseInfiniteContentListParams {
   size?: number;
@@ -18,7 +19,7 @@ export const useInfiniteContentList = ({
   publicStatus,
 }: UseInfiniteContentListParams) => {
   const query = useInfiniteQuery({
-    queryKey: ["contents", "list", { searchWord, publicStatus }],
+    queryKey: ["contents", "list", { size, searchWord, publicStatus }],
     queryFn: ({ pageParam = 0 }) =>
       getContentListApi({
         page: pageParam as number,
@@ -39,7 +40,16 @@ export const useInfiniteContentList = ({
     fetchNextPage: query.fetchNextPage,
   });
 
-  const contentList = query.data?.pages.flatMap((page) => page.dataList) ?? [];
+  const contentList: ContentListItem[] =
+    query.data?.pages.flatMap((page) => page.dataList) ?? [];
 
   return { ...query, contentList, observerRef };
+};
+
+export const useContentDetail = (mediaId: number) => {
+  return useQuery({
+    queryKey: ["contents", "detail", mediaId],
+    queryFn: () => getContentDetailApi(mediaId),
+    enabled: !!mediaId,
+  });
 };

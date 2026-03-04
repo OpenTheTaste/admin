@@ -6,7 +6,7 @@ import { ImageIcon, X } from "lucide-react";
 
 export interface PosterState {
   posterUrl?: string | null;
-  thumbnailUrl: string | null;
+  thumbnailUrl?: string | null;
 }
 
 export interface AdminPosterUploadProps {

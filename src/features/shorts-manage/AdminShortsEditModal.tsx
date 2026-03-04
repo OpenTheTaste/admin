@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { ShortsDetailResponse } from "@/entities/shorts/apis";
+import { useShortsDetail } from "@/entities/shorts/hooks";
+import { PublicStatus } from "@/shared/types";
 import { X } from "lucide-react";
+import { ContentListItem } from "@entities/video-contents/apis";
 import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
 import {
   AdminPosterUpload,
@@ -11,40 +15,50 @@ import {
   CommonButton,
   PosterState,
 } from "@shared/components";
-import { ShortsType } from "@shared/mocks/mockAdminShorts";
-
-const ORIGINAL_LIST = [
-  "더글로리",
-  "선재 업고 튀어",
-  "흑백 요리사 시즌1",
-  "흑백 요리사 시즌2",
-  "대탈출 1",
-  "대탈출 2",
-  "대탈출 3",
-  "대탈출 4",
-  "대탈출 5",
-];
 
 interface AdminShortsEditModalProps {
-  shorts: ShortsType;
+  mediaId: number;
   onClose: () => void;
-  onUpdate: (updated: ShortsType) => void;
+  onUpdate: (updated: ShortsDetailResponse) => void;
 }
 
 export function AdminShortsEditModal({
-  shorts,
+  mediaId,
   onClose,
   onUpdate,
 }: AdminShortsEditModalProps) {
-  const [title, setTitle] = useState<string>(shorts.title);
-  const [description, setDescription] = useState<string>(shorts.description);
-  const [selectedOriginal, setSelectedOriginal] = useState<string | null>(
-    shorts.originalContents.originalTitle,
-  );
-  const [isPublic, setIsPublic] = useState<boolean>(shorts.isPublic);
+  const { data, isLoading, isError } = useShortsDetail(mediaId);
+
+  const [isInitialized, setIsInitialized] = useState<boolean>(false); // 초기 데이터 세팅 여부
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [selectedOriginal, setSelectedOriginal] =
+    useState<ContentListItem | null>(null);
+  const [isPublic, setIsPublic] = useState<PublicStatus>("PUBLIC");
   const [poster, setPoster] = useState<PosterState>({
-    thumbnailUrl: shorts.thumbnailUrl,
+    posterUrl: null,
   });
+
+  useEffect(() => {
+    if (!data || isInitialized) return;
+    setTitle(data.title);
+    setDescription(data.description);
+    setIsPublic(data.publicStatus);
+    setSelectedOriginal(
+      data.originContentsTitle
+        ? {
+            mediaId: 0,
+            title: data.originContentsTitle,
+            posterUrl: "",
+            uploadedDate: "",
+          }
+        : null,
+    );
+    setPoster({
+      posterUrl: data.posterUrl,
+    });
+    setIsInitialized(true);
+  }, [data, isInitialized]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -61,23 +75,20 @@ export function AdminShortsEditModal({
     };
   }, []);
 
-  const handleOriginalContentsChange = (original: string | null) => {
-    setSelectedOriginal(original);
-  };
+  if (isLoading) return <div>로딩중...</div>;
+  if (isError || !data) return <div>에러</div>;
+
+  if (typeof document === "undefined") return null;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onUpdate({
-      ...shorts,
+      ...data,
       title,
       description,
-      originalContents: {
-        ...shorts.originalContents,
-        originalTitle:
-          selectedOriginal ?? shorts.originalContents.originalTitle,
-      },
-      isPublic,
-      thumbnailUrl: poster.thumbnailUrl ?? shorts.thumbnailUrl,
+      originContentsTitle: selectedOriginal?.title ?? data.originContentsTitle,
+      publicStatus: isPublic,
+      posterUrl: poster.posterUrl ?? data.posterUrl,
     });
   };
 
@@ -128,14 +139,16 @@ export function AdminShortsEditModal({
             <div className="flex flex-col gap-6">
               <AdminOriginalContentsDropdown
                 value={selectedOriginal}
-                onChange={handleOriginalContentsChange}
-                originalList={ORIGINAL_LIST}
+                onChange={setSelectedOriginal}
               />
-              <AdminPublicStatus isPublic={isPublic} onChange={setIsPublic} />
+              <AdminPublicStatus
+                isPublic={isPublic === "PUBLIC"}
+                onChange={(bool) => setIsPublic(bool ? "PUBLIC" : "PRIVATE")}
+              />
             </div>
 
             {/* 우측 */}
-            <AdminPosterUpload value={poster} onChange={setPoster} isShorts />
+            {/* <AdminPosterUpload value={poster} onChange={setPoster} isShorts /> */}
           </div>
 
           {/* 버튼 */}
