@@ -7,7 +7,7 @@ import { AdminShortsEditModal } from "@features/shorts-manage";
 import { AdminShortsDetailModal } from "@entities/shorts/components";
 import { AdminPublicBadge } from "@shared/components";
 import { ShortsType, mockAdminShorts } from "@shared/mocks/mockAdminShorts";
-import { PublicType } from "@shared/types/admin";
+import { PublicType } from "@shared/types";
 
 interface AdminShortsListProps {
   filterPublic?: PublicType | null;
@@ -80,9 +80,9 @@ export function AdminShortsList({ filterPublic }: AdminShortsListProps) {
               >
                 <td className="py-3">
                   <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
-                    {short.thumbnailShorts ? (
+                    {short.thumbnailUrl ? (
                       <Image
-                        src={short.thumbnailShorts}
+                        src={short.thumbnailUrl}
                         alt={short.title}
                         fill
                         className="object-cover rounded-md"

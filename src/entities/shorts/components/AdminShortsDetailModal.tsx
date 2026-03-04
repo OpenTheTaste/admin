@@ -50,9 +50,9 @@ export function AdminShortsDetailModal({
           <div className="flex flex-col gap-2">
             <p className="text-base font-semibold">썸네일 (5:7)</p>
             <div className="relative max-w-60 aspect-5/7 rounded-lg overflow-hidden">
-              {shorts.thumbnailShorts ? (
+              {shorts.thumbnailUrl ? (
                 <Image
-                  src={shorts.thumbnailShorts}
+                  src={shorts.thumbnailUrl}
                   alt={`${shorts.title} 세로 썸네일`}
                   fill
                   className="object-cover"

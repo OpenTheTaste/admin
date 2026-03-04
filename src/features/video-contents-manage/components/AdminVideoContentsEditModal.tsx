@@ -7,6 +7,8 @@ import { AdminContentTypeSelector } from "@features/video-contents-manage/compon
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { AdminSeriesDropdown } from "@entities/series/components";
 import { AdminTagDropdown } from "@entities/tag/components";
+import { ContentDetailResponse } from "@entities/video-contents/apis";
+import { useContentDetail } from "@entities/video-contents/hooks";
 import {
   AdminPosterUpload,
   AdminPublicStatus,
@@ -14,9 +16,9 @@ import {
   CommonButton,
   PosterState,
 } from "@shared/components";
-import { Category, ContentType } from "@shared/types";
-import { AdminContentsDetailType } from "@shared/types/admin";
+import { Category, ContentType, PublicStatus } from "@shared/types";
 
+// FIXME: series 조회 api 필요 (현재는 고정값)
 const SERIES_LIST = [
   "시리즈 없음",
   "더글로리 시즌1",
@@ -27,33 +29,48 @@ const SERIES_LIST = [
 ];
 
 interface AdminVideoContentsEditModalProps {
-  contents: AdminContentsDetailType;
+  mediaId: number;
   onClose: () => void;
-  onUpdate: (updated: AdminContentsDetailType) => void;
+  onUpdate: (updated: ContentDetailResponse) => void;
 }
 
 export function AdminVideoContentsEditModal({
-  contents,
+  mediaId,
   onClose,
   onUpdate,
 }: AdminVideoContentsEditModalProps) {
-  const [title, setTitle] = useState<string>(contents.title);
-  const [description, setDescription] = useState<string>(contents.description);
-  const [cast, setCast] = useState<string>(contents.cast.join(", "));
-  const [isPublic, setIsPublic] = useState<boolean>(contents.isPublic);
-  const [selectedSeries, setSelectedSeries] = useState<string | null>(
-    contents.seriesTitle,
-  );
+  const { data, isLoading, isError } = useContentDetail(mediaId);
+
+  const [isInitialized, setIsInitialized] = useState<boolean>(false); // 초기 데이터 세팅 여부
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [cast, setCast] = useState<string>("");
+  const [isPublic, setIsPublic] = useState<PublicStatus>("PUBLIC");
+  const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    contents.category,
+    null,
   );
-  const [selectedTags, setSelectedTags] = useState<string[]>(contents.tags);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [poster, setPoster] = useState<PosterState>({
-    vertical: contents.thumbnailVertical,
-    horizontal: contents.thumbnailHorizontal,
+    posterUrl: null,
+    thumbnailUrl: null,
   });
 
-  const [contentType, setContentType] = useState<ContentType>(contents.type);
+  useEffect(() => {
+    if (!data || isInitialized) return;
+    setTitle(data.title);
+    setDescription(data.description);
+    setCast(data.actors);
+    setIsPublic(data.publicStatus);
+    setSelectedSeries(data.seriesTitle);
+    setSelectedCategory(data.categoryName);
+    setSelectedTags(data.tagNameList);
+    setPoster({
+      posterUrl: data.posterUrl,
+      thumbnailUrl: data.thumbnailUrl,
+    });
+    setIsInitialized(true);
+  }, [data, isInitialized]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,6 +87,22 @@ export function AdminVideoContentsEditModal({
     };
   }, []);
 
+  if (isLoading) return <div>로딩중...</div>;
+  if (isError || !data) return <div>에러</div>;
+
+  if (typeof document === "undefined") return null;
+
+  // seriesTitle이 null이면 "단편", 값이 있으면 "시리즈"로 파생
+  const contentType: ContentType = selectedSeries ? "시리즈" : "단편";
+
+  const handleContentTypeChange = (type: ContentType) => {
+    if (type === "단편") {
+      setSelectedSeries(null);
+      return;
+    }
+    setSelectedSeries(data.seriesTitle ?? "시리즈 없음");
+  };
+
   const handleCategoryChange = (category: Category | null) => {
     setSelectedCategory(category);
     setSelectedTags([]);
@@ -78,24 +111,18 @@ export function AdminVideoContentsEditModal({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onUpdate({
-      ...contents,
-      type: contentType,
-      seriesTitle: contentType === "시리즈" ? selectedSeries : null,
+      ...data,
+      seriesTitle: selectedSeries ?? null,
       title,
       description,
-      category: selectedCategory ?? contents.category,
-      tags: selectedTags,
-      isPublic,
-      cast: cast
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
-      thumbnailVertical: poster.vertical ?? contents.thumbnailVertical,
-      thumbnailHorizontal: poster.horizontal ?? contents.thumbnailHorizontal,
+      categoryName: selectedCategory ?? data.categoryName,
+      tagNameList: selectedTags,
+      publicStatus: isPublic,
+      actors: cast,
+      posterUrl: poster.posterUrl ?? data.posterUrl,
+      thumbnailUrl: poster.thumbnailUrl ?? data.thumbnailUrl,
     });
   };
-
-  if (typeof document === "undefined") return null;
 
   return createPortal(
     <div
@@ -123,7 +150,7 @@ export function AdminVideoContentsEditModal({
         >
           <AdminContentTypeSelector
             value={contentType}
-            onChange={setContentType}
+            onChange={handleContentTypeChange}
           />
 
           <AdminTextInput
@@ -148,23 +175,18 @@ export function AdminVideoContentsEditModal({
             onChange={setCast}
           />
 
-          {/* 시리즈 + 공개 여부 */}
+          {/* 시리즈 드롭다운: 타입이 "시리즈"일 때만 활성화 */}
           <div className="grid grid-cols-2 gap-6">
-            {contentType === "시리즈" ? (
-              <AdminSeriesDropdown
-                seriesList={SERIES_LIST}
-                value={selectedSeries}
-                onChange={setSelectedSeries}
-              />
-            ) : (
-              <AdminSeriesDropdown
-                seriesList={SERIES_LIST}
-                value={selectedSeries}
-                onChange={setSelectedSeries}
-                disabled
-              />
-            )}
-            <AdminPublicStatus isPublic={isPublic} onChange={setIsPublic} />
+            <AdminSeriesDropdown
+              seriesList={SERIES_LIST}
+              value={selectedSeries}
+              onChange={setSelectedSeries}
+              disabled={contentType === "단편"}
+            />
+            <AdminPublicStatus
+              isPublic={isPublic === "PUBLIC"}
+              onChange={(bool) => setIsPublic(bool ? "PUBLIC" : "PRIVATE")}
+            />
           </div>
 
           {/* 카테고리 + 태그 */}
@@ -180,7 +202,7 @@ export function AdminVideoContentsEditModal({
             />
           </div>
 
-          <AdminPosterUpload value={poster} onChange={setPoster} />
+          {/* <AdminPosterUpload value={poster} onChange={setPoster} /> */}
 
           {/* 버튼 */}
           <div className="grid grid-cols-2 gap-4">

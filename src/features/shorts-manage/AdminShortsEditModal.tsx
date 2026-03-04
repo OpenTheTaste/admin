@@ -43,7 +43,7 @@ export function AdminShortsEditModal({
   );
   const [isPublic, setIsPublic] = useState<boolean>(shorts.isPublic);
   const [poster, setPoster] = useState<PosterState>({
-    vertical: shorts.thumbnailShorts,
+    thumbnailUrl: shorts.thumbnailUrl,
   });
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export function AdminShortsEditModal({
           selectedOriginal ?? shorts.originalContents.originalTitle,
       },
       isPublic,
-      thumbnailShorts: poster.vertical ?? shorts.thumbnailShorts,
+      thumbnailUrl: poster.thumbnailUrl ?? shorts.thumbnailUrl,
     });
   };
 

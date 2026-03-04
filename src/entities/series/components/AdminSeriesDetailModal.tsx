@@ -45,7 +45,7 @@ export function AdminSeriesDetailModal({
               <p className="text-sm text-ot-background">세로 (5:7)</p>
               <div className="relative w-60 aspect-5/7 rounded-lg overflow-hidden">
                 <Image
-                  src={series.thumbnailVertical}
+                  src={series.posterUrl}
                   alt={`${series.title} 세로 썸네일`}
                   fill
                   className="object-cover"
@@ -56,7 +56,7 @@ export function AdminSeriesDetailModal({
               <p className="text-sm text-ot-background">가로 (4:3)</p>
               <div className="relative w-113 aspect-4/3 rounded-lg overflow-hidden">
                 <Image
-                  src={series.thumbnailHorizontal}
+                  src={series.thumbnailUrl}
                   alt={`${series.title} 가로 썸네일`}
                   fill
                   className="object-cover"

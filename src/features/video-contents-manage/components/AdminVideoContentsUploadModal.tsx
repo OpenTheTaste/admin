@@ -50,8 +50,8 @@ export function AdminVideoContentsUploadModal({
   );
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [poster, setPoster] = useState<PosterState>({
-    vertical: null,
-    horizontal: null,
+    posterUrl: null,
+    thumbnailUrl: null,
   });
   const [contentType, setContentType] = useState<ContentType>("단편");
 

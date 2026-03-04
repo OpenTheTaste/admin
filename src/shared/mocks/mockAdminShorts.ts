@@ -15,7 +15,7 @@ export interface ShortsType extends VideoFileMeta {
   uploadDate: string;
   uploader: string;
   bookmarkCount: number;
-  thumbnailShorts: string;
+  thumbnailUrl: string;
 }
 export const mockAdminShorts: ShortsType[] = [
   {
@@ -37,7 +37,7 @@ export const mockAdminShorts: ShortsType[] = [
     name: "더글로리_shorts_01.mp4",
     size: 120_000_000, // 약 114MB
     duration: "00:03:13",
-    thumbnailShorts: "/images/recommendcontent_img.png",
+    thumbnailUrl: "/images/recommendcontent_img.png",
   },
   {
     id: 2,
@@ -58,7 +58,7 @@ export const mockAdminShorts: ShortsType[] = [
     name: "범죄도시_shorts_01.mp4",
     size: 95_000_000, // 약 90MB
     duration: "00:02:45",
-    thumbnailShorts: "/images/recommendcontent_img.png",
+    thumbnailUrl: "/images/recommendcontent_img.png",
   },
   {
     id: 3,
@@ -79,7 +79,7 @@ export const mockAdminShorts: ShortsType[] = [
     name: "우영우_shorts_01.mp4",
     size: 110_000_000, // 약 105MB
     duration: "00:02:58",
-    thumbnailShorts: "/images/recommendcontent_img.png",
+    thumbnailUrl: "/images/recommendcontent_img.png",
   },
   {
     id: 4,
@@ -100,6 +100,6 @@ export const mockAdminShorts: ShortsType[] = [
     name: "오징어게임_shorts_01.mp4",
     size: 140_000_000, // 약 134MB
     duration: "00:03:40",
-    thumbnailShorts: "/images/recommendcontent_img.png",
+    thumbnailUrl: "/images/recommendcontent_img.png",
   },
 ];
