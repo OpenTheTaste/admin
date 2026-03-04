@@ -13,7 +13,7 @@ export interface AdminLoginResponse {
 
 export const loginApi = async (body: AdminLoginRequest) => {
   const res = await api.post<ApiResponse<AdminLoginResponse>>(
-    "/back-office/login",
+    "/login",
     body,
   );
   return res.data.data;
