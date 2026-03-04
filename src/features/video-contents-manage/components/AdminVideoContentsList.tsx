@@ -136,18 +136,19 @@ export function AdminVideoContentsList({
         </div>
       </div>
 
-      {action === "edit" && hasSelectedMediaId && (
+      {action === "edit" && hasSelectedMediaId ? (
         <AdminVideoContentsEditModal
           mediaId={selectedMediaId}
           onClose={handleClose}
           onUpdate={() => handleClose()} // FIXME: 수정 api 붙인 뒤 수정
         />
-      )}
-      {hasSelectedMediaId && (
-        <AdminVideoContentsDetailModal
-          mediaId={selectedMediaId}
-          onClose={handleClose}
-        />
+      ) : (
+        hasSelectedMediaId && (
+          <AdminVideoContentsDetailModal
+            mediaId={selectedMediaId}
+            onClose={handleClose}
+          />
+        )
       )}
     </>
   );
