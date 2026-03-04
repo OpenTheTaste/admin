@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AdminShortsList } from "@features/shorts-manage";
 import { AdminSearch } from "@shared/components";
 import { PublicType } from "@shared/types";
@@ -8,10 +8,16 @@ import { PublicType } from "@shared/types";
 const PUBLIC_FILTER_OPTIONS = ["전체", "공개", "비공개"] as const;
 
 export function AdminShortsSection() {
-  const [filterPublic, setFilterPublic] = useState<PublicType | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const handleSelect = (option: string) => {
-    setFilterPublic(option === "전체" ? null : (option as PublicType));
+  const keyword = searchParams.get("keyword") ?? "";
+  const filter = (searchParams.get("filter") as PublicType) ?? null;
+
+  const push = (key: string, value: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    value ? params.set(key, value) : params.delete(key);
+    router.push(`?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -19,10 +25,12 @@ export function AdminShortsSection() {
       <AdminSearch
         placeholder="숏폼 제목을 입력하세요."
         options={[...PUBLIC_FILTER_OPTIONS]}
-        onSelect={handleSelect}
+        defaultValue={keyword}
+        onSubmitSearch={(value) => push("keyword", value || null)}
+        onSelect={(option) => push("filter", option === "전체" ? null : option)}
       />
 
-      <AdminShortsList filterPublic={filterPublic} />
+      <AdminShortsList filterPublic={filter} searchWord={keyword} />
     </>
   );
 }
