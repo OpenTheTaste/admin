@@ -20,13 +20,11 @@ export function AdminVideoContentsList({
   filterPublic,
   searchWord,
 }: AdminVideoContentsListProps) {
-  const { data, observerRef, isLoading, isError, isFetchingNextPage } =
+  const { contentList, observerRef, isLoading, isError, isFetchingNextPage } =
     useInfiniteContentList({
       searchWord,
       publicStatus: toPublicStatus(filterPublic),
     });
-
-  const contentList = data?.pages.flatMap((page) => page.dataList) ?? [];
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -34,9 +32,9 @@ export function AdminVideoContentsList({
   const selectedId = searchParams.get("id");
   const action = searchParams.get("action");
 
-  const selectedContents = selectedId
-    ? (contentList.find((c) => c.mediaId === Number(selectedId)) ?? null)
-    : null;
+  const selectedMediaId = selectedId ? Number(selectedId) : null;
+  const hasSelectedMediaId =
+    selectedMediaId !== null && Number.isFinite(selectedMediaId);
 
   const handleRowClick = (id: number) => {
     router.push(`?id=${id}`, { scroll: false });
@@ -138,18 +136,19 @@ export function AdminVideoContentsList({
         </div>
       </div>
 
-      {action === "edit" && selectedContents && (
+      {action === "edit" && hasSelectedMediaId ? (
         <AdminVideoContentsEditModal
-          mediaId={Number(selectedId)}
+          mediaId={selectedMediaId}
           onClose={handleClose}
-          onUpdate={() => handleClose()}
+          onUpdate={() => handleClose()} // FIXME: 수정 api 붙인 뒤 수정
         />
-      )}
-      {selectedId && (
-        <AdminVideoContentsDetailModal
-          mediaId={Number(selectedId)}
-          onClose={handleClose}
-        />
+      ) : (
+        hasSelectedMediaId && (
+          <AdminVideoContentsDetailModal
+            mediaId={selectedMediaId}
+            onClose={handleClose}
+          />
+        )
       )}
     </>
   );

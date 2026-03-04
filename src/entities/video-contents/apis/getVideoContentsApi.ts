@@ -30,7 +30,7 @@ export interface GetContentListParams extends BasePaginationParams {
 // 콘텐츠 리스트 조회 API
 export const getContentListApi = async (params: GetContentListParams) => {
   const res = await api.get<ApiResponse<ContentListResponse>>(
-    "/back-office/admin/contents",
+    "/admin/contents",
     { params },
   );
   return res.data.data;
@@ -57,7 +57,7 @@ export interface ContentDetailResponse {
 // 콘텐츠 상세 조회 API
 export const getContentDetailApi = async (mediaId: number) => {
   const res = await api.get<ApiResponse<ContentDetailResponse>>(
-    `/back-office/admin/contents/${mediaId}`,
+    `/admin/contents/${mediaId}`,
   );
 
   return res.data.data;

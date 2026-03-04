@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { ContentListItem } from "@entities/video-contents/apis";
 import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
 import {
   AdminFileUpload,
@@ -40,7 +41,8 @@ export function AdminShortsUploadModal({
   const [description, setDescription] = useState<string>("");
   const [isPublic, setIsPublic] = useState<boolean>(false);
   const [videoFile, setVideoFile] = useState<VideoFileMeta | null>(null);
-  const [selectedOriginal, setSelectedOriginal] = useState<string | null>(null);
+  const [selectedOriginal, setSelectedOriginal] =
+    useState<ContentListItem | null>(null);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
     thumbnailUrl: null,
@@ -67,9 +69,6 @@ export function AdminShortsUploadModal({
 
   if (!mounted || !open) return null;
 
-  const handleOriginalContentsChange = (original: string | null) => {
-    setSelectedOriginal(original);
-  };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("숏폼 업로드 처리 로직");
@@ -122,8 +121,7 @@ export function AdminShortsUploadModal({
             <div className="flex flex-col gap-6">
               <AdminOriginalContentsDropdown
                 value={selectedOriginal}
-                onChange={handleOriginalContentsChange}
-                originalList={ORIGINAL_LIST}
+                onChange={setSelectedOriginal}
               />
               <AdminPublicStatus isPublic={isPublic} onChange={setIsPublic} />
             </div>

@@ -3,26 +3,24 @@
 import Image from "next/image";
 import { Bookmark, X } from "lucide-react";
 import { CategoryBadge } from "@entities/category/components";
+import { useShortsDetail } from "@entities/shorts/hooks";
 import { TagBadge } from "@entities/tag/components";
-import { AdminBadge, AdminPublicBadge } from "@shared/components";
-import { ShortsType } from "@shared/mocks/mockAdminShorts";
+import { AdminPublicBadge } from "@shared/components";
+import { formatSize } from "@shared/lib";
 
 interface AdminShortsDetailModalProps {
-  shorts: ShortsType | null;
+  mediaId: number;
   onClose: () => void;
 }
 
 export function AdminShortsDetailModal({
-  shorts,
+  mediaId,
   onClose,
 }: AdminShortsDetailModalProps) {
-  if (!shorts) return null;
+  const { data, isLoading, isError } = useShortsDetail(mediaId);
 
-  const formatSize = (bytes: number) => {
-    if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)}GB`;
-    if (bytes >= 1024 ** 2) return `${(bytes / 1024 ** 2).toFixed(1)}MB`;
-    return `${(bytes / 1024).toFixed(1)}KB`;
-  };
+  if (isLoading) return <div>로딩중...</div>;
+  if (isError || !data) return <div>에러</div>;
 
   return (
     <div
@@ -50,13 +48,14 @@ export function AdminShortsDetailModal({
           <div className="flex flex-col gap-2">
             <p className="text-base font-semibold">썸네일 (5:7)</p>
             <div className="relative max-w-60 aspect-5/7 rounded-lg overflow-hidden">
-              {shorts.thumbnailUrl ? (
-                <Image
-                  src={shorts.thumbnailUrl}
-                  alt={`${shorts.title} 세로 썸네일`}
-                  fill
-                  className="object-cover"
-                />
+              {data.posterUrl ? (
+                // <Image
+                //   src={data.posterUrl}
+                //   alt={`${data.title} 세로 썸네일`}
+                //   fill
+                //   className="object-cover"
+                // />
+                <div>{data.posterUrl} 예시</div>
               ) : (
                 <div
                   className="w-full h-full bg-ot-gray-200"
@@ -70,33 +69,33 @@ export function AdminShortsDetailModal({
           <div className="flex flex-col gap-6">
             <div>
               <p className="text-base font-semibold">제목</p>
-              <p className="text-sm">{shorts.title}</p>
+              <p className="text-sm">{data.title}</p>
             </div>
 
             <div>
               <p className="text-base font-semibold">설명</p>
-              <p className="text-sm leading-relaxed">{shorts.description}</p>
+              <p className="text-sm leading-relaxed">{data.description}</p>
             </div>
 
             <div>
               <p className="text-base font-semibold">원본 콘텐츠</p>
-              <p className="text-sm">{shorts.originalContents.originalTitle}</p>
+              <p className="text-sm">{data.originContentsTitle}</p>
             </div>
 
             <div>
               <p className="text-base font-semibold">업로더</p>
-              <p className="text-sm">{shorts.uploader}</p>
+              <p className="text-sm">{data.uploaderNickname}</p>
             </div>
 
             {/* 재생 시간 | 파일 크기 */}
             <div className="grid grid-cols-2">
               <div>
                 <p className="text-base font-semibold">재생 시간</p>
-                <p className="text-sm">{shorts.duration}</p>
+                <p className="text-sm">{data.duration}</p>
               </div>
               <div>
                 <p className="text-base font-semibold">파일 크기</p>
-                <p className="text-sm">{formatSize(shorts.size)}</p>
+                <p className="text-sm">{formatSize(data.videoSize)}</p>
               </div>
             </div>
 
@@ -105,17 +104,17 @@ export function AdminShortsDetailModal({
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">카테고리</p>
                 <div className="flex items-center">
-                  <CategoryBadge category={shorts.originalContents.category} />
+                  <CategoryBadge category={data.categoryName} />
                 </div>
               </div>
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">태그</p>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {shorts.originalContents.tags.map((tag) => (
+                  {data.tagNameList.map((tag) => (
                     <TagBadge
                       key={tag}
                       label={tag}
-                      category={shorts.originalContents.category}
+                      category={data.categoryName}
                     />
                   ))}
                 </div>
@@ -127,7 +126,7 @@ export function AdminShortsDetailModal({
               <p className="text-base font-semibold mb-0.5">공개 여부</p>
               <AdminPublicBadge
                 context="modal"
-                isPublic={shorts.isPublic ? true : false}
+                isPublic={data.publicStatus === "PUBLIC"}
               />
             </div>
 
@@ -137,12 +136,12 @@ export function AdminShortsDetailModal({
                 <p className="text-base font-semibold">북마크</p>
                 <p className="text-sm flex items-center gap-1">
                   <Bookmark size={14} />
-                  {shorts.bookmarkCount.toLocaleString()}
+                  {data.bookmarkCount.toLocaleString()}
                 </p>
               </div>
               <div>
                 <p className="text-base font-semibold">업로드 일자</p>
-                <p className="text-sm">{shorts.uploadDate}</p>
+                <p className="text-sm">{data.uploadedDate}</p>
               </div>
             </div>
           </div>
