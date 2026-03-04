@@ -19,7 +19,7 @@ export const useInfiniteContentList = ({
   publicStatus,
 }: UseInfiniteContentListParams) => {
   const query = useInfiniteQuery({
-    queryKey: ["contents", "list", { searchWord, publicStatus }],
+    queryKey: ["contents", "list", { size, searchWord, publicStatus }],
     queryFn: ({ pageParam = 0 }) =>
       getContentListApi({
         page: pageParam as number,

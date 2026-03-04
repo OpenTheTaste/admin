@@ -19,7 +19,7 @@ export const useInfiniteShortsList = ({
   publicStatus,
 }: UseInfiniteShortsListParams) => {
   const query = useInfiniteQuery({
-    queryKey: ["shorts", "list", { searchWord, publicStatus }],
+    queryKey: ["shorts", "list", { size, searchWord, publicStatus }],
     queryFn: ({ pageParam = 0 }) =>
       getShortsListApi({
         page: pageParam as number,
