@@ -6,6 +6,7 @@ import { ShortsDetailResponse } from "@/entities/shorts/apis";
 import { useShortsDetail } from "@/entities/shorts/hooks";
 import { PublicStatus } from "@/shared/types";
 import { X } from "lucide-react";
+import { ContentListItem } from "@entities/video-contents/apis";
 import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
 import {
   AdminPosterUpload,
@@ -14,19 +15,6 @@ import {
   CommonButton,
   PosterState,
 } from "@shared/components";
-import { ShortsType } from "@shared/mocks/mockAdminShorts";
-
-const ORIGINAL_LIST = [
-  "더글로리",
-  "선재 업고 튀어",
-  "흑백 요리사 시즌1",
-  "흑백 요리사 시즌2",
-  "대탈출 1",
-  "대탈출 2",
-  "대탈출 3",
-  "대탈출 4",
-  "대탈출 5",
-];
 
 interface AdminShortsEditModalProps {
   mediaId: number;
@@ -44,7 +32,8 @@ export function AdminShortsEditModal({
   const [isInitialized, setIsInitialized] = useState<boolean>(false); // 초기 데이터 세팅 여부
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [selectedOriginal, setSelectedOriginal] = useState<string | null>("");
+  const [selectedOriginal, setSelectedOriginal] =
+    useState<ContentListItem | null>(null);
   const [isPublic, setIsPublic] = useState<PublicStatus>("PUBLIC");
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
@@ -55,7 +44,16 @@ export function AdminShortsEditModal({
     setTitle(data.title);
     setDescription(data.description);
     setIsPublic(data.publicStatus);
-    setSelectedOriginal(data.originContentsTitle);
+    setSelectedOriginal(
+      data.originContentsTitle
+        ? {
+            mediaId: 0,
+            title: data.originContentsTitle,
+            posterUrl: "",
+            uploadedDate: "",
+          }
+        : null,
+    );
     setPoster({
       posterUrl: data.posterUrl,
     });
@@ -82,7 +80,7 @@ export function AdminShortsEditModal({
 
   if (typeof document === "undefined") return null;
 
-  const handleOriginalContentsChange = (original: string | null) => {
+  const handleOriginalContentsChange = (original: ContentListItem | null) => {
     setSelectedOriginal(original);
   };
 
@@ -92,7 +90,7 @@ export function AdminShortsEditModal({
       ...data,
       title,
       description,
-      originContentsTitle: selectedOriginal ?? data.originContentsTitle,
+      originContentsTitle: selectedOriginal?.title ?? data.originContentsTitle,
       publicStatus: isPublic,
       posterUrl: poster.posterUrl ?? data.posterUrl,
     });
@@ -145,8 +143,7 @@ export function AdminShortsEditModal({
             <div className="flex flex-col gap-6">
               <AdminOriginalContentsDropdown
                 value={selectedOriginal}
-                onChange={handleOriginalContentsChange}
-                originalList={ORIGINAL_LIST}
+                onChange={setSelectedOriginal}
               />
               <AdminPublicStatus
                 isPublic={isPublic === "PUBLIC"}
