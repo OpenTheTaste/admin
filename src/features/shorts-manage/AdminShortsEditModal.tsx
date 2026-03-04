@@ -80,10 +80,6 @@ export function AdminShortsEditModal({
 
   if (typeof document === "undefined") return null;
 
-  const handleOriginalContentsChange = (original: ContentListItem | null) => {
-    setSelectedOriginal(original);
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onUpdate({
