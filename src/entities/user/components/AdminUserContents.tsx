@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { AdminBadge } from "@shared/components";
 import { type UserType } from "@shared/mocks/mockAdminUsers";
 import { useInfiniteMemberList } from "@entities/user/hooks";
+import { MemberListItem } from "@entities/user/apis";
+import { AdminChangeRoleModal } from "@features/user-manage/components";
 
 const ROLE_TO_USER_TYPE: Record<string, UserType> = {
   ADMIN: "관리자",
@@ -25,6 +28,10 @@ interface AdminUserContentsProps {
 
 export function AdminUserContents({ searchWord, role }: AdminUserContentsProps) {
   const { memberList, observerRef } = useInfiniteMemberList({ searchWord, role });
+  const [selectedMember, setSelectedMember] = useState<MemberListItem | null>(null);
+
+  const isRoleChangeable = (memberRole: string) =>
+    memberRole === "EDITOR" || "SUSPENDED";
 
   return (
     <div className="mt-4 rounded-lg overflow-hidden">
@@ -62,10 +69,22 @@ export function AdminUserContents({ searchWord, role }: AdminUserContentsProps) 
                 <td className="py-5 text-center">{member.email}</td>
 
                 <td className="py-5 text-center">
-                  <AdminBadge
-                    variant={userType}
-                    className={TYPE_STYLE_MAP[userType]}
-                  />
+                  {isRoleChangeable(member.role) ? (
+                    <button
+                      onClick={() => setSelectedMember(member)}
+                      className="cursor-pointer"
+                    >
+                      <AdminBadge
+                        variant={userType}
+                        className={`${TYPE_STYLE_MAP[userType]} hover:opacity-80 transition-opacity`}
+                      />
+                    </button>
+                  ) : (
+                    <AdminBadge
+                      variant={userType}
+                      className={TYPE_STYLE_MAP[userType]}
+                    />
+                  )}
                 </td>
 
                 <td className="py-5 text-center font-semibold text-sm">
@@ -78,6 +97,13 @@ export function AdminUserContents({ searchWord, role }: AdminUserContentsProps) 
       </table>
 
       <div ref={observerRef} />
+
+      {selectedMember && (
+        <AdminChangeRoleModal
+          member={selectedMember}
+          onClose={() => setSelectedMember(null)}
+        />
+      )}
     </div>
   );
 }
