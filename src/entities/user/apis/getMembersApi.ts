@@ -3,7 +3,6 @@ import {
   ApiResponse,
   BasePaginationParams,
   PageInfo,
-  PublicStatus,
 } from "@shared/types";
 
 export interface MemberListItem {
@@ -23,7 +22,7 @@ export interface GetMemberListParams extends BasePaginationParams {
   page: number;
   size: number;
   searchWord?: string;
-  publicStatus?: PublicStatus;
+  role?: string;
 }
 
 export const getMemberListApi = async (params: GetMemberListParams) => { 
