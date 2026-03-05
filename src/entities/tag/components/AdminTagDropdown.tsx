@@ -4,13 +4,13 @@ import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { TagBadge } from "@entities/tag/components";
 import { useOutsideClick } from "@shared/hooks";
-import { Category, TAGS } from "@shared/types";
+import { TAGS } from "@shared/types";
 import { cn } from "@shared/utils";
 
 export interface AdminTagDropdownProps {
-  category: Category | null;
-  value: string[];
-  onChange: (tags: string[]) => void;
+  category: number | null;
+  value: number[];
+  onChange: (tags: number[]) => void;
 }
 
 export function AdminTagDropdown({
@@ -23,15 +23,19 @@ export function AdminTagDropdown({
 
   useOutsideClick(dropdownRef, () => setIsOpen(false), isOpen);
 
-  const handleToggle = (tag: string) => {
+  const tags = category ? TAGS[category] : [];
+
+  const handleToggle = (tagId: number) => {
     onChange(
-      value.includes(tag) ? value.filter((t) => t !== tag) : [...value, tag],
+      value.includes(tagId)
+        ? value.filter((id) => id !== tagId)
+        : [...value, tagId],
     );
   };
 
   const summaryText =
     value.length > 0
-      ? `${value[0]}${value.length > 1 ? ` 외 ${value.length - 1}개` : ""}`
+      ? `${tags.find((t) => t.tagId === value[0])?.name ?? value[0]}${value.length > 1 ? ` 외 ${value.length - 1}개` : ""}`
       : "태그 선택";
 
   return (
@@ -69,28 +73,32 @@ export function AdminTagDropdown({
 
         {value.length > 0 && category && (
           <div className="flex flex-wrap gap-1.5 mt-2">
-            {value.map((tag) => (
-              <TagBadge
-                key={tag}
-                label={tag}
-                category={category}
-                onRemove={() => handleToggle(tag)}
-              />
-            ))}
+            {value.map((tagId) => {
+              const tag = tags.find((t) => t.tagId === tagId);
+              return (
+                <TagBadge
+                  key={tagId}
+                  label={tag?.name ?? String(tagId)}
+                  category={category}
+                  onRemove={() => handleToggle(tagId)}
+                />
+              );
+            })}
           </div>
         )}
 
+        {/* FIXME: tag  */}
         {isOpen && category && (
           <div className="absolute top-full left-0 right-0 z-20 mt-2 bg-ot-text rounded-lg shadow-lg overflow-hidden border border-ot-gray-600">
             <div className="max-h-48 overflow-y-auto">
-              {TAGS[category].map((tag) => {
-                const isSelected = value.includes(tag);
+              {tags.map((tag) => {
+                const isSelected = value.includes(tag.tagId);
 
                 return (
                   <button
                     type="button"
-                    key={tag}
-                    onClick={() => handleToggle(tag)}
+                    key={tag.tagId}
+                    onClick={() => handleToggle(tag.tagId)}
                     className={cn(
                       "w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer",
                       isSelected
@@ -98,7 +106,7 @@ export function AdminTagDropdown({
                         : "text-ot-background hover:bg-ot-gray-200",
                     )}
                   >
-                    {tag}
+                    {tag.name}
                   </button>
                 );
               })}
