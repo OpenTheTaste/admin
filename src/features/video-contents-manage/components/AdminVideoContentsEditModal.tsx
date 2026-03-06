@@ -5,10 +5,15 @@ import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 import { AdminCategoryDropdown } from "@entities/category/components";
+import { useCategories } from "@entities/category/hooks";
 import { AdminSeriesDropdown } from "@entities/series/components";
 import { AdminTagDropdown } from "@entities/tag/components";
-import { ContentDetailResponse } from "@entities/video-contents/apis";
+import {
+  ContentDetailResponse,
+  UploadVideoRequest,
+} from "@entities/video-contents/apis";
 import { useContentDetail } from "@entities/video-contents/hooks";
+import { useUpdateVideoContents } from "@entities/video-contents/hooks";
 import {
   AdminPosterUpload,
   AdminPublicStatus,
@@ -16,7 +21,8 @@ import {
   CommonButton,
   PosterState,
 } from "@shared/components";
-import { Category, ContentType, PublicStatus } from "@shared/types";
+import { uploadFileToS3 } from "@shared/lib";
+import { ContentType, PublicStatus, TAGS } from "@shared/types";
 
 // FIXME: series 조회 api 필요 (현재는 고정값)
 const SERIES_LIST = [
@@ -40,6 +46,8 @@ export function AdminVideoContentsEditModal({
   onUpdate,
 }: AdminVideoContentsEditModalProps) {
   const { data, isLoading, isError } = useContentDetail(mediaId);
+  const { data: categories } = useCategories();
+  const { mutateAsync: updateVideo, isPending } = useUpdateVideoContents();
 
   const [isInitialized, setIsInitialized] = useState<boolean>(false); // 초기 데이터 세팅 여부
   const [title, setTitle] = useState<string>("");
@@ -47,30 +55,42 @@ export function AdminVideoContentsEditModal({
   const [cast, setCast] = useState<string>("");
   const [isPublic, setIsPublic] = useState<PublicStatus>("PUBLIC");
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null,
-  );
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
     thumbnailUrl: null,
   });
 
   useEffect(() => {
-    if (!data || isInitialized) return;
+    if (!data || isInitialized || !categories) return;
     setTitle(data.title);
     setDescription(data.description);
     setCast(data.actors);
     setIsPublic(data.publicStatus);
     setSelectedSeries(data.seriesTitle);
-    setSelectedCategory(data.categoryName);
-    setSelectedTags(data.tagNameList);
+
+    const categoryId =
+      categories.find((c) => c.categoryName === data.categoryName)
+        ?.categoryId ?? null;
+    setSelectedCategory(categoryId);
+
+    setSelectedTags(
+      categoryId
+        ? data.tagNameList
+            .map(
+              (name) => TAGS[categoryId]?.find((t) => t.name === name)?.tagId,
+            )
+            .filter((id): id is number => id !== undefined)
+        : [],
+    );
+
     setPoster({
       posterUrl: data.posterUrl,
       thumbnailUrl: data.thumbnailUrl,
     });
     setIsInitialized(true);
-  }, [data, isInitialized]);
+  }, [data, isInitialized, categories]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -103,27 +123,82 @@ export function AdminVideoContentsEditModal({
     setSelectedSeries(data.seriesTitle ?? "시리즈 없음");
   };
 
-  const handleCategoryChange = (category: Category | null) => {
+  const handleCategoryChange = (category: number | null) => {
     setSelectedCategory(category);
     setSelectedTags([]);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onUpdate({
-      ...data,
-      seriesTitle: selectedSeries ?? null,
+
+    if (!selectedCategory) return;
+
+    const body: UploadVideoRequest = {
       title,
       description,
-      categoryName: selectedCategory ?? data.categoryName,
-      tagNameList: selectedTags,
-      publicStatus: isPublic,
       actors: cast,
-      posterUrl: poster.posterUrl ?? data.posterUrl,
-      thumbnailUrl: poster.thumbnailUrl ?? data.thumbnailUrl,
-    });
-  };
+      publicStatus: isPublic,
+      categoryId: selectedCategory,
+      tagIdList: selectedTags,
+      seriesId:
+        contentType === "시리즈" && selectedSeries
+          ? Number(selectedSeries)
+          : undefined,
+      posterFileName: poster.posterFile?.name,
+      thumbnailFileName: poster.thumbnailFile?.name,
+    };
 
+    // FIXME: 서버 수정 api 새로 업데이트되면 콘솔 확인 후 콘솔 제거한 코드로 교체할 예정
+    try {
+      // 1️⃣ 메타데이터 전송 → Presigned URL 수신
+      const { posterUploadUrl, thumbnailUploadUrl } = await updateVideo({
+        contentsId: mediaId,
+        body,
+      });
+
+      // 2️⃣ S3 직접 업로드 (개별 확인)
+      const s3Results = await Promise.allSettled([
+        poster.posterFile
+          ? uploadFileToS3(posterUploadUrl, poster.posterFile).then(
+              () => "poster ✅",
+            )
+          : Promise.resolve("poster skipped"),
+        poster.thumbnailFile
+          ? uploadFileToS3(thumbnailUploadUrl, poster.thumbnailFile).then(
+              () => "thumbnail ✅",
+            )
+          : Promise.resolve("thumbnail skipped"),
+      ]);
+
+      const failed = s3Results.filter((r) => r.status === "rejected");
+      if (failed.length > 0) {
+        console.error("실패한 업로드:", failed);
+        return;
+      }
+
+      // 3️⃣ 로컬 상태 업데이트 후 모달 닫기
+      const tagNameList = selectedTags
+        .map((id) => TAGS[selectedCategory]?.find((t) => t.tagId === id)?.name)
+        .filter((name): name is string => name !== undefined);
+
+      onUpdate({
+        ...data,
+        seriesTitle: selectedSeries ?? null,
+        title,
+        description,
+        categoryName: data.categoryName,
+        tagNameList,
+        publicStatus: isPublic,
+        actors: cast,
+        posterUrl: poster.posterUrl ?? data.posterUrl,
+        thumbnailUrl: poster.thumbnailUrl ?? data.thumbnailUrl,
+      });
+
+      onClose();
+    } catch (error) {
+      console.error("수정 실패:", error);
+    }
+  };
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -214,8 +289,12 @@ export function AdminVideoContentsEditModal({
             >
               취소
             </CommonButton>
-            <CommonButton type="submit" className="py-3 font-semibold">
-              수정 완료
+            <CommonButton
+              type="submit"
+              className="py-3 font-semibold"
+              disabled={isPending}
+            >
+              {isPending ? "수정 중..." : "수정 완료"}
             </CommonButton>
           </div>
         </form>
