@@ -66,7 +66,6 @@ export function AdminChangeRoleModal({ member, onClose }: AdminChangeRoleModalPr
         className="relative w-96 bg-ot-text rounded-lg py-6 px-8 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 헤더 */}
         <div className="relative mb-6 text-ot-background">
           <p className="text-xl font-bold">사용자 역할 변경</p>
           <button
@@ -77,13 +76,11 @@ export function AdminChangeRoleModal({ member, onClose }: AdminChangeRoleModalPr
           </button>
         </div>
 
-        {/* 사용자 정보 */}
         <div className="mb-6 p-3 bg-ot-gray-100 rounded-lg text-ot-background text-sm">
           <p className="font-semibold text-base">{member.nickname}</p>
           <p className="text-ot-gray-600 mt-0.5">{member.email}</p>
         </div>
 
-        {/* 역할 선택 */}
         <div className="mb-6 text-ot-background">
           <p className="text-sm font-semibold mb-3">변경할 역할을 선택하세요</p>
           <div className="grid grid-cols-2 gap-3">
@@ -103,7 +100,6 @@ export function AdminChangeRoleModal({ member, onClose }: AdminChangeRoleModalPr
           </div>
         </div>
 
-        {/* 버튼 */}
         <div className="grid grid-cols-2 gap-3">
           <CommonButton
             type="button"
