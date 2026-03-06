@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import {
   Clapperboard,
@@ -8,8 +9,10 @@ import {
   LineChart,
   SquarePlay,
   Users,
+  LogOut
 } from "lucide-react";
 import { cn } from "@shared/utils";
+import { logoutApi } from "@/entities/auth/apis";
 
 const menus = [
   {
@@ -47,12 +50,22 @@ const user = {
 
 export const AdminSideBar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+      try {
+        await logoutApi();
+        router.push("/auth/login");
+      } catch (error) {
+        alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+      }
+    };
 
   return (
     <aside className="flex flex-col bg-ot-gray-800 w-1/7">
       <Link href="/series" className="block ml-3 my-4 px-3">
-        <span className="font-bold text-4xl text-ot-text hover:text-ot-gray-600">
-          O+T
+        <span className="font-bold text-3xl text-ot-text hover:text-ot-gray-600">
+          O+T 관리자
         </span>
       </Link>
 
@@ -78,9 +91,14 @@ export const AdminSideBar = () => {
           );
         })}
       </nav>
-      <div className="mt-auto py-3 border-t border-ot-gray-600 px-4 flex flex-col justify-center">
-        <p className="font-semibold text-ot-text text-md">{user.name}</p>
-        <p className="text-ot-placeholder text-sm">{user.email}</p>
+      <div className="mt-auto py-3 border-t border-ot-gray-600 px-4 flex items-center justify-between">
+        <div>
+          <p className="font-semibold text-ot-text text-md">{user.name}</p>
+          <p className="text-ot-placeholder text-sm">{user.email}</p>
+        </div>
+        <button className="cursor-pointer" onClick={handleLogout}>
+          <LogOut className="stroke-ot-text hover:stroke-ot-gray-600" size={22} />
+        </button>
       </div>
     </aside>
   );
