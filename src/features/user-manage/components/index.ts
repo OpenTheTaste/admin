@@ -1,0 +1,1 @@
+export { AdminChangeRoleModal } from "./AdminChangeRoleModal";
