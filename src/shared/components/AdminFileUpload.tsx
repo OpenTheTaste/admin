@@ -2,27 +2,13 @@
 
 import { useRef } from "react";
 import { Film, Upload, X } from "lucide-react";
+import { formatDuration, formatSize } from "@shared/lib";
 import { VideoFileMeta } from "@shared/types";
 
 export interface AdminFileUploadProps {
   value: VideoFileMeta | null;
   onChange: (meta: VideoFileMeta | null) => void;
 }
-
-const formatSize = (bytes: number) => {
-  if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)}GB`;
-  if (bytes >= 1024 ** 2) return `${(bytes / 1024 ** 2).toFixed(1)}MB`;
-  return `${(bytes / 1024).toFixed(1)}KB`;
-};
-
-const formatDuration = (seconds: number) => {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = Math.floor(seconds % 60);
-  return h > 0
-    ? `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
-    : `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-};
 
 export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +23,8 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
       onChange({
         name: file.name,
         size: file.size,
-        duration: formatDuration(video.duration),
+        duration: Math.floor(video.duration),
+        file: file,
       });
       URL.revokeObjectURL(video.src);
     };
@@ -63,7 +50,7 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
             <div>
               <p className="text-sm text-ot-background">{value.name}</p>
               <p className="text-xs text-ot-gray-600 mt-0.5">
-                {formatSize(value.size)} | {value.duration}
+                {formatSize(value.size)} | {formatDuration(value.duration)}
               </p>
             </div>
           </div>
@@ -97,5 +84,3 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
     </div>
   );
 }
-
-export type { VideoFileMeta };

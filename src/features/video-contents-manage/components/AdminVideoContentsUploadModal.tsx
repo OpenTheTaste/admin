@@ -7,6 +7,8 @@ import { AdminContentTypeSelector } from "@features/video-contents-manage/compon
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { AdminSeriesDropdown } from "@entities/series/components";
 import { AdminTagDropdown } from "@entities/tag/components";
+import { UploadVideoRequest } from "@entities/video-contents/apis";
+import { useUploadVideoContents } from "@entities/video-contents/hooks";
 import {
   AdminFileUpload,
   AdminPosterUpload,
@@ -15,13 +17,15 @@ import {
   CommonButton,
   PosterState,
 } from "@shared/components";
-import { Category, ContentType, VideoFileMeta } from "@shared/types";
+import { uploadFileToS3 } from "@shared/lib";
+import { ContentType, VideoFileMeta } from "@shared/types";
 
 interface AdminUploadModalProps {
   open: boolean;
   onClose: () => void;
 }
 
+// FIXME: 시리즈 목록 API 연동 필요
 const SERIES_LIST = [
   "시리즈 없음",
   "더글로리",
@@ -35,20 +39,19 @@ export function AdminVideoContentsUploadModal({
   open,
   onClose,
 }: AdminUploadModalProps) {
+  const { mutateAsync: uploadVideo, isPending } = useUploadVideoContents();
+
   const [mounted, setMounted] = useState<boolean>(false);
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [cast, setCast] = useState<string>("");
-
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
   const [videoFile, setVideoFile] = useState<VideoFileMeta | null>(null);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null,
-  );
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
     thumbnailUrl: null,
@@ -75,15 +78,63 @@ export function AdminVideoContentsUploadModal({
     };
   }, [open]);
 
-  const handleCategoryChange = (category: Category | null) => {
+  const handleCategoryChange = (category: number | null) => {
     setSelectedCategory(category);
     setSelectedTags([]);
   };
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-    // 폼 제출 처리 로직 추가
+  const handleClose = () => {
+    if (isPending) return;
+    onClose();
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("폼 제출 처리 로직");
+
+    if (!videoFile || !selectedCategory) return;
+
+    const body: UploadVideoRequest = {
+      title,
+      description,
+      actors: cast,
+      publicStatus: isPublic ? "PUBLIC" : "PRIVATE",
+      categoryId: selectedCategory,
+      tagIdList: selectedTags,
+      duration: videoFile.duration,
+      videoSize: videoFile.size,
+      seriesId:
+        contentType === "시리즈" && selectedSeries
+          ? Number(selectedSeries)
+          : undefined,
+      posterFileName: poster.posterFile?.name,
+      thumbnailFileName: poster.thumbnailFile?.name,
+      originFileName: videoFile.name,
+    };
+
+    try {
+      // 1️⃣ 메타데이터 전송 → Presigned URL 수신
+      const { posterUploadUrl, thumbnailUploadUrl, originUploadUrl } =
+        await uploadVideo(body);
+
+      // 2️⃣ S3 직접 업로드 (병렬)
+      await Promise.all([
+        poster.posterFile
+          ? uploadFileToS3(posterUploadUrl, poster.posterFile)
+          : Promise.resolve(),
+        poster.thumbnailFile
+          ? uploadFileToS3(thumbnailUploadUrl, poster.thumbnailFile)
+          : Promise.resolve(),
+        videoFile.file
+          ? uploadFileToS3(originUploadUrl, videoFile.file)
+          : Promise.resolve(),
+      ]);
+
+      console.log("✅ S3 업로드 완료");
+      // 3️⃣ 완료 후 모달 닫기
+      onClose();
+    } catch (error) {
+      console.error("업로드 실패:", error);
+    }
   };
 
   if (!mounted || !open) return null;
@@ -91,7 +142,7 @@ export function AdminVideoContentsUploadModal({
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         className="relative w-218 bg-ot-text rounded-lg py-6 px-8 shadow-xl overflow-y-auto max-h-[90vh]"
@@ -101,7 +152,7 @@ export function AdminVideoContentsUploadModal({
         <div className="relative mb-8 text-ot-background">
           <p className="text-2xl font-bold">콘텐츠 업로드</p>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute top-0 right-0 text-ot-background hover:text-ot-gray-600 transition-colors cursor-pointer"
           >
             <X size={22} />
@@ -142,20 +193,12 @@ export function AdminVideoContentsUploadModal({
 
           {/* 시리즈 + 공개 여부 */}
           <div className="grid grid-cols-2 gap-6">
-            {contentType === "시리즈" ? (
-              <AdminSeriesDropdown
-                seriesList={SERIES_LIST}
-                value={selectedSeries}
-                onChange={setSelectedSeries}
-              />
-            ) : (
-              <AdminSeriesDropdown
-                seriesList={SERIES_LIST}
-                value={selectedSeries}
-                onChange={setSelectedSeries}
-                disabled
-              />
-            )}
+            <AdminSeriesDropdown
+              seriesList={SERIES_LIST}
+              value={selectedSeries}
+              onChange={setSelectedSeries}
+              disabled={contentType !== "시리즈"}
+            />
             <AdminPublicStatus isPublic={isPublic} onChange={setIsPublic} />
           </div>
 
@@ -178,14 +221,19 @@ export function AdminVideoContentsUploadModal({
           <div className="grid grid-cols-2 gap-4">
             <CommonButton
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="py-3 font-semibold"
               variant="outline"
+              disabled={isPending}
             >
               취소
             </CommonButton>
-            <CommonButton type="submit" className="py-3 font-semibold">
-              업로드 시작
+            <CommonButton
+              type="submit"
+              className="py-3 font-semibold"
+              disabled={isPending}
+            >
+              {isPending ? "업로드 중..." : "업로드 시작"}
             </CommonButton>
           </div>
         </form>

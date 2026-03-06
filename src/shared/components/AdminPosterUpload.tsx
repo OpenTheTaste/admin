@@ -7,6 +7,8 @@ import { ImageIcon, X } from "lucide-react";
 export interface PosterState {
   posterUrl?: string | null;
   thumbnailUrl?: string | null;
+  posterFile?: File | null;
+  thumbnailFile?: File | null;
 }
 
 export interface AdminPosterUploadProps {
@@ -26,24 +28,32 @@ export function AdminPosterUpload({
   const handleVertical = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    onChange({ ...value, posterUrl: URL.createObjectURL(file) });
+    onChange({
+      ...value,
+      posterUrl: URL.createObjectURL(file),
+      posterFile: file,
+    });
   };
 
   const handleHorizontal = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    onChange({ ...value, thumbnailUrl: URL.createObjectURL(file) });
+    onChange({
+      ...value,
+      thumbnailUrl: URL.createObjectURL(file),
+      thumbnailFile: file,
+    });
   };
 
   const removeVertical = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onChange({ ...value, posterUrl: null });
+    onChange({ ...value, posterUrl: null, posterFile: null });
     if (verticalInputRef.current) verticalInputRef.current.value = "";
   };
 
   const removeHorizontal = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onChange({ ...value, thumbnailUrl: null });
+    onChange({ ...value, thumbnailUrl: null, thumbnailFile: null });
     if (horizontalInputRef.current) horizontalInputRef.current.value = "";
   };
 
