@@ -1,4 +1,3 @@
-export { AdminHeader } from "./AdminHeader";
 export { AdminSideBar } from "./AdminSideBar";
 export { AdminTitle } from "./AdminTitle";
 
