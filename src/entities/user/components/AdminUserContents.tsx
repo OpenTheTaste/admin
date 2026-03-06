@@ -15,8 +15,8 @@ const ROLE_TO_USER_TYPE: Record<string, UserType> = {
 };
 
 const TYPE_STYLE_MAP: Record<UserType, string> = {
-  관리자: "bg-ot-primary-400 text-ot-text",
-  사용자: "bg-ot-primary-500 text-ot-text",
+  관리자: "bg-ot-primary-500 text-ot-text",
+  사용자: "bg-ot-primary-400 text-ot-text",
   에디터: "bg-ot-primary-200 text-ot-background",
   중지됨: "bg-ot-gray-900 text-ot-text",
 };
@@ -31,7 +31,7 @@ export function AdminUserContents({ searchWord, role }: AdminUserContentsProps) 
   const [selectedMember, setSelectedMember] = useState<MemberListItem | null>(null);
 
   const isRoleChangeable = (memberRole: string) =>
-    memberRole === "EDITOR" || "SUSPENDED";
+    memberRole === "EDITOR" || memberRole === "SUSPENDED";
 
   return (
     <div className="mt-4 rounded-lg overflow-hidden">
