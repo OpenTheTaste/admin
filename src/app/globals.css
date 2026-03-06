@@ -150,6 +150,12 @@ body {
   background-color: var(--color-ot-primary-700);
 }
 
+.bg-ot-primary-gradient-btn:disabled {
+  background-image: none;
+  background-color: var(--color-ot-primary-700);
+  cursor: not-allowed;
+}
+
 .text-ot-primary-gradient {
   background: var(--gradient-ot-primary-diagonal);
   -webkit-background-clip: text;
