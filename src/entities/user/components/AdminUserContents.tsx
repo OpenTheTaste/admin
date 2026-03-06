@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AdminBadge } from "@shared/components";
-import { type UserType } from "@shared/mocks/mockAdminUsers";
+import { type UserType } from "@/entities/user/types/user";
 import { useInfiniteMemberList } from "@entities/user/hooks";
 import { MemberListItem } from "@entities/user/apis";
 import { AdminChangeRoleModal } from "@features/user-manage/components";
