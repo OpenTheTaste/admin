@@ -2,15 +2,19 @@
 
 import { X } from "lucide-react";
 import { CATEGORY_CONFIG_COLOR } from "@entities/category/constants";
-import type { Category } from "@shared/types";
 import { cn } from "@shared/utils";
 
 interface CategoryBadgeProps {
-  category: Category;
+  category: number;
+  label: string;
   onRemove?: () => void;
 }
 
-export function CategoryBadge({ category, onRemove }: CategoryBadgeProps) {
+export function CategoryBadge({
+  category,
+  label,
+  onRemove,
+}: CategoryBadgeProps) {
   const config = CATEGORY_CONFIG_COLOR[category];
   if (!config) return null;
 
@@ -21,7 +25,7 @@ export function CategoryBadge({ category, onRemove }: CategoryBadgeProps) {
         config.className,
       )}
     >
-      {category}
+      {label}
 
       {onRemove && (
         <button

@@ -1,6 +1,6 @@
 export interface VideoFileMeta {
   name: string;
   size: number;
-  duration: string;
+  duration: number;
+  file: File;
 }
-// file 붙이기

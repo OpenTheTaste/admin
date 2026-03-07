@@ -2,12 +2,11 @@
 
 import { X } from "lucide-react";
 import { CATEGORY_DOT_COLOR } from "@entities/tag/constants";
-import type { Category } from "@shared/types";
 import { cn } from "@shared/utils";
 
 interface TagBadgeProps {
   label: string;
-  category: Category;
+  category: number;
   onRemove?: () => void;
 }
 

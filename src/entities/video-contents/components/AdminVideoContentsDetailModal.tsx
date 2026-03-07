@@ -4,6 +4,7 @@ import Image from "next/image";
 import { formatDuration, formatSize } from "@/shared/lib";
 import { Bookmark, X } from "lucide-react";
 import { CategoryBadge } from "@entities/category/components";
+import { useCategories } from "@entities/category/hooks";
 import { TagBadge } from "@entities/tag/components";
 import { useContentDetail } from "@entities/video-contents/hooks";
 import { AdminPublicBadge } from "@shared/components";
@@ -18,9 +19,14 @@ export function AdminVideoContentsDetailModal({
   onClose,
 }: AdminVideoContentsDetailModalProps) {
   const { data, isLoading, isError } = useContentDetail(mediaId);
+  const { data: categories } = useCategories();
 
   if (isLoading) return <div>로딩중...</div>;
   if (isError || !data) return <div>에러</div>;
+
+  const categoryId =
+    categories?.find((c) => c.categoryName === data.categoryName)?.categoryId ??
+    null;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -120,20 +126,26 @@ export function AdminVideoContentsDetailModal({
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">카테고리</p>
                 <div className="flex items-center">
-                  <CategoryBadge category={data.categoryName} />
+                  {categoryId && (
+                    <CategoryBadge
+                      category={categoryId}
+                      label={data.categoryName}
+                    />
+                  )}
                 </div>
               </div>
 
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">태그</p>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {data.tagNameList.map((tag) => (
-                    <TagBadge
-                      key={tag}
-                      label={tag}
-                      category={data.categoryName}
-                    />
-                  ))}
+                  {categoryId &&
+                    data.tagNameList.map((tagName) => (
+                      <TagBadge
+                        key={tagName}
+                        label={tagName}
+                        category={categoryId}
+                      />
+                    ))}
                 </div>
               </div>
             </div>

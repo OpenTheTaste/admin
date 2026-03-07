@@ -16,7 +16,8 @@ export const CommonButton = ({
     NonNullable<CommonButtonProps["variant"]>,
     string
   > = {
-    primary: "bg-ot-primary-gradient-btn text-ot-text",
+    primary:
+      "bg-ot-primary-gradient-btn text-ot-text  disabled:cursor-not-allowed",
     secondary: "bg-ot-secondary-700 text-ot-text hover:bg-ot-secondary-800",
     outline:
       "border border-ot-primary-400 bg-none text-ot-primary-400 hover:bg-ot-primary-100",
