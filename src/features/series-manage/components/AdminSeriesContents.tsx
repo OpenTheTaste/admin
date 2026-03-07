@@ -174,8 +174,8 @@ export function AdminSeriesContents({ searchWord }: AdminSeriesContentsProps) {
           onUpdate={handleClose}
         />
       ) : (
-        selectedSeries && (
-          <AdminSeriesDetailModal series={selectedSeries} onClose={handleClose} />
+        hasSelectedMediaId && (
+          <AdminSeriesDetailModal mediaId={selectedMediaId!} onClose={handleClose} />
         )
       )}
     </>
