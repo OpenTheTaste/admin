@@ -1,44 +1,57 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { Edit } from "lucide-react";
+import { Edit, Loader2 } from "lucide-react";
 import { AdminSeriesEditModal } from "@features/series-manage/components";
 import { CategoryBadge } from "@entities/category/components/CategoryBadge";
+import { useCategories } from "@entities/category/hooks";
 import { AdminSeriesDetailModal } from "@entities/series/components";
 import { TagBadge } from "@entities/tag/components/TagBagde";
 import { AdminPublicBadge } from "@shared/components";
-import { AdminSeries, mockAdminSeries } from "@shared/mocks/mockAdminSeries";
+import { useInfiniteSeriesList } from "@entities/series/hooks";
 
-export function AdminSeriesContents() {
-  const [data, setData] = useState<AdminSeries[]>(mockAdminSeries);
+interface AdminSeriesContentsProps {
+  searchWord?: string;
+}
+
+export function AdminSeriesContents({ searchWord }: AdminSeriesContentsProps) {
+  const { seriesList, observerRef, isLoading, isError, isFetchingNextPage } =
+    useInfiniteSeriesList({ searchWord });
+
+  const { data: categories } = useCategories();
+
+  const getCategoryId = (categoryName: string): number | null => {
+    return categories?.find((c) => c.categoryName === categoryName)?.categoryId ?? null;
+  };
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const selectedId = searchParams.get("id");
   const action = searchParams.get("action");
 
-  const selectedSeries = selectedId
-    ? (data.find((s) => s.id === Number(selectedId)) ?? null)
+  const selectedMediaId = selectedId ? Number(selectedId) : null;
+  const hasSelectedMediaId =
+    selectedMediaId !== null && Number.isFinite(selectedMediaId);
+
+  const selectedSeries = hasSelectedMediaId
+    ? (seriesList.find((s) => s.mediaId === selectedMediaId) ?? null)
     : null;
 
-  const handleRowClick = (id: number) => {
-    router.push(`?id=${id}`, { scroll: false });
+  const handleRowClick = (mediaId: number) => {
+    router.push(`?id=${mediaId}`, { scroll: false });
   };
 
   const handleClose = () => {
     router.push("?", { scroll: false });
   };
 
-  const handleEditClick = (id: number) => {
-    router.push(`?id=${id}&action=edit`, { scroll: false });
+  const handleEditClick = (mediaId: number) => {
+    router.push(`?id=${mediaId}&action=edit`, { scroll: false });
   };
 
-  const handleUpdate = (updated: AdminSeries) => {
-    setData((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
-    handleClose();
-  };
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (
     <>
@@ -65,82 +78,104 @@ export function AdminSeriesContents() {
           </thead>
 
           <tbody className="bg-ot-gray-700 divide-y divide-ot-gray-800">
-            {data.map((content) => (
-              <tr
-                key={content.id}
-                onClick={() => handleRowClick(content.id)}
-                className="hover:bg-ot-gray-800/30 transition-colors cursor-pointer"
-              >
-                <td className="py-3">
-                  <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
-                    <Image
-                      src={content.posterUrl}
-                      alt={content.title}
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                </td>
-
-                <td className="py-3 text-center">
-                  <div className="flex flex-col font-semibold">
-                    <span>{content.title}</span>
-                  </div>
-                </td>
-
-                <td className="py-3 text-center">
-                  <div className="flex justify-center">
-                    <CategoryBadge category={content.category} />
-                  </div>
-                </td>
-
-                <td className="py-3 text-center">
-                  <div className="flex flex-wrap gap-1 justify-center">
-                    {content.tags.map((tag) => (
-                      <TagBadge
-                        key={tag}
-                        label={tag}
-                        category={content.category}
-                      />
-                    ))}
-                  </div>
-                </td>
-
-                <td className="py-3 text-center">
-                  <AdminPublicBadge
-                    isPublic={content.isPublic ? true : false}
-                  />
-                </td>
-
-                <td
-                  className="py-3 text-center"
-                  onClick={(e) => e.stopPropagation()}
+            {seriesList.map((content) => {
+              const categoryId = getCategoryId(content.categoryName);
+              return (
+                <tr
+                  key={content.mediaId}
+                  onClick={() => handleRowClick(content.mediaId)}
+                  className="hover:bg-ot-gray-800/30 transition-colors cursor-pointer"
                 >
-                  <button onClick={() => handleEditClick(content.id)}>
-                    <Edit
-                      size={20}
-                      className="hover:stroke-ot-gray-600 cursor-pointer"
+                  <td className="py-3">
+                    <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
+                      {content.posterUrl ? (
+                      <div>{content.posterUrl} 예시</div>
+                    ) : (
+                      // TODO: 썸네일 넣어야 함
+                      // <Image
+                      //   src={content.posterUrl}
+                      //   alt={content.title}
+                      //   fill
+                      //   className="object-cover rounded-md"
+                      // />
+                      <div
+                        className="w-full h-full rounded-md bg-ot-gray-800"
+                        aria-label="썸네일 없음"
+                      />
+                    )}
+                    </div>
+                  </td>
+
+                  <td className="py-3 text-center">
+                    <div className="flex flex-col font-semibold">
+                      <span>{content.title}</span>
+                    </div>
+                  </td>
+
+                  <td className="py-3 text-center">
+                    <div className="flex justify-center">
+                      {categoryId !== null && (
+                        <CategoryBadge
+                          category={categoryId}
+                          label={content.categoryName}
+                        />
+                      )}
+                    </div>
+                  </td>
+
+                  <td className="py-3 text-center">
+                    <div className="flex flex-wrap gap-1 justify-center">
+                      {categoryId !== null &&
+                        content.tagNameList.map((tag) => (
+                          <TagBadge
+                            key={tag}
+                            label={tag}
+                            category={categoryId}
+                          />
+                        ))}
+                    </div>
+                  </td>
+
+                  <td className="py-3 text-center">
+                    <AdminPublicBadge
+                      isPublic={content.publicStatus === "PUBLIC"}
                     />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  </td>
+
+                  <td
+                    className="py-3 text-center"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button onClick={() => handleEditClick(content.mediaId)}>
+                      <Edit
+                        size={20}
+                        className="hover:stroke-ot-gray-600 cursor-pointer"
+                      />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+
+        {/* 무한스크롤 감지 타겟 */}
+        <div ref={observerRef} className="py-4 flex justify-center">
+          {isFetchingNextPage && (
+            <Loader2 className="animate-spin text-ot-placeholder" size={20} />
+          )}
+        </div>
       </div>
 
-      {action === "edit" && selectedSeries ? (
+      {action === "edit" && hasSelectedMediaId ? (
         <AdminSeriesEditModal
           series={selectedSeries}
           onClose={handleClose}
-          onUpdate={handleUpdate}
+          onUpdate={handleClose}
         />
       ) : (
         selectedSeries && (
-          <AdminSeriesDetailModal
-            series={selectedSeries}
-            onClose={handleClose}
-          />
+          <AdminSeriesDetailModal series={selectedSeries} onClose={handleClose} />
         )
       )}
     </>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { AdminCategoryDropdown } from "@entities/category/components";
+import { useCategories } from "@entities/category/hooks";
 import { AdminTagDropdown } from "@entities/tag/components";
 import {
   AdminPosterUpload,
@@ -12,13 +13,13 @@ import {
   CommonButton,
   PosterState,
 } from "@shared/components";
-import { AdminSeries } from "@shared/mocks/mockAdminSeries";
-import { Category } from "@shared/types";
+import { SeriesListItem } from "@entities/series/apis";
+import { TAGS } from "@shared/types";
 
 interface AdminSeriesFixModalProps {
-  series: AdminSeries;
+  series: SeriesListItem | null;
   onClose: () => void;
-  onUpdate: (updated: AdminSeries) => void;
+  onUpdate: () => void;
 }
 
 export function AdminSeriesEditModal({
@@ -26,18 +27,37 @@ export function AdminSeriesEditModal({
   onClose,
   onUpdate,
 }: AdminSeriesFixModalProps) {
-  const [title, setTitle] = useState<string>(series.title);
-  const [description, setDescription] = useState<string>(series.description);
-  const [cast, setCast] = useState<string>(series.cast.join(", "));
-  const [isPublic, setIsPublic] = useState<boolean>(series.isPublic);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    series.category,
+  const { data: categories } = useCategories();
+
+  const [title, setTitle] = useState<string>(series?.title ?? "");
+  const [description, setDescription] = useState<string>("");
+  const [cast, setCast] = useState<string>("");
+  const [isPublic, setIsPublic] = useState<boolean>(
+    series?.publicStatus === "PUBLIC",
   );
-  const [selectedTags, setSelectedTags] = useState<string[]>(series.tags);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
     thumbnailUrl: null,
   });
+
+  useEffect(() => {
+    if (categories && series) {
+      const categoryId =
+        categories.find((c) => c.categoryName === series.categoryName)
+          ?.categoryId ?? null;
+      setSelectedCategory(categoryId);
+
+      if (categoryId !== null) {
+        const allTags = Object.values(TAGS).flat();
+        const tagIds = series.tagNameList
+          .map((name) => allTags.find((t) => t.name === name)?.tagId)
+          .filter((id): id is number => id !== undefined);
+        setSelectedTags(tagIds);
+      }
+    }
+  }, [categories, series]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -54,27 +74,15 @@ export function AdminSeriesEditModal({
     };
   }, []);
 
-  const handleCategoryChange = (category: Category | null) => {
+  const handleCategoryChange = (category: number | null) => {
     setSelectedCategory(category);
     setSelectedTags([]);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onUpdate({
-      ...series,
-      title,
-      description,
-      category: selectedCategory ?? series.category,
-      tags: selectedTags,
-      isPublic,
-      cast: cast
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
-      posterUrl: poster.posterUrl ?? series.posterUrl,
-      thumbnailUrl: poster.thumbnailUrl ?? series.thumbnailUrl,
-    });
+    // TODO: 시리즈 수정 API 연동
+    onUpdate();
   };
 
   const [mounted, setMounted] = useState(false);
