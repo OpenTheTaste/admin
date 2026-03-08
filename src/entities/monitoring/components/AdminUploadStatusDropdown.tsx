@@ -10,7 +10,7 @@ const STATUS_OPTIONS: { label: string; value: UploadStatus | null }[] = [
   { label: "전체", value: null },
   { label: "S3 업로드 완료", value: "ORIGIN_UPLOADED" },
   { label: "트랜스코딩", value: "TRANSCODING" },
-  { label: "업로드 중", value: "UPLOADING" },
+  { label: "재업로드 중", value: "UPLOADING" },
   { label: "완료", value: "COMPLETED" },
 ];
 
