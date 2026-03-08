@@ -14,6 +14,7 @@ import {
   ConfirmModal,
   PosterState,
 } from "@shared/components";
+import { useIsMounted } from "@shared/hooks";
 import { uploadFileToS3 } from "@shared/lib";
 
 interface AdminSeriesUploadModalProps {
@@ -25,22 +26,35 @@ export function AdminSeriesUploadModal({
   open,
   onClose,
 }: AdminSeriesUploadModalProps) {
+  const mounted = useIsMounted();
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  if (!mounted || !open) return null;
+
+  return <ModalInner onClose={onClose} />;
+}
+
+function ModalInner({ onClose }: { onClose: () => void }) {
   const { mutateAsync: uploadSeries, isPending } = useUploadSeries();
 
-  const [mounted, setMounted] = useState<boolean>(false);
-
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [cast, setCast] = useState<string>("");
-  const [isPublic, setIsPublic] = useState<boolean>(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [cast, setCast] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
     thumbnailUrl: null,
   });
+  const [uploadError, setUploadError] = useState(false);
 
-  const [uploadError, setUploadError] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   const isFormValid =
@@ -53,34 +67,12 @@ export function AdminSeriesUploadModal({
     !!poster.thumbnailFile;
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-
-    setTitle("");
-    setDescription("");
-    setCast("");
-    setIsPublic(false);
-    setSelectedCategory(null);
-    setSelectedTags([]);
-    setPoster({ posterUrl: null, thumbnailUrl: null });
-    setUploadError(false);
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
-
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  }, [onClose]);
 
   const handleCategoryChange = (category: number | null) => {
     setSelectedCategory(category);
@@ -127,12 +119,6 @@ export function AdminSeriesUploadModal({
       formRef.current?.requestSubmit();
     });
   };
-
-  const handleErrorClose = () => {
-    setUploadError(false);
-  };
-
-  if (!mounted || !open) return null;
 
   return (
     <>
@@ -228,7 +214,7 @@ export function AdminSeriesUploadModal({
         confirmText="재시도"
         cancelText="취소"
         onConfirm={handleRetry}
-        onClose={handleErrorClose}
+        onClose={() => setUploadError(false)}
         disabled={isPending}
       />
     </>

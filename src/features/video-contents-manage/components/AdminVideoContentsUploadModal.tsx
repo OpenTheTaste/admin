@@ -19,6 +19,7 @@ import {
   PosterState,
 } from "@shared/components";
 import { uploadFileToS3 } from "@shared/lib";
+import { useIsMounted } from "@shared/hooks";
 import { ContentType, VideoFileMeta } from "@shared/types";
 
 interface AdminUploadModalProps {
@@ -40,15 +41,27 @@ export function AdminVideoContentsUploadModal({
   open,
   onClose,
 }: AdminUploadModalProps) {
+  const mounted = useIsMounted();
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  if (!mounted || !open) return null;
+
+  return <ModalInner onClose={onClose} />;
+}
+
+function ModalInner({ onClose }: { onClose: () => void }) {
   const { mutateAsync: uploadVideo, isPending } = useUploadVideoContents();
 
-  const [mounted, setMounted] = useState<boolean>(false);
-
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [cast, setCast] = useState<string>("");
-  const [isPublic, setIsPublic] = useState<boolean>(false);
-
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [cast, setCast] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
   const [videoFile, setVideoFile] = useState<VideoFileMeta | null>(null);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -58,8 +71,7 @@ export function AdminVideoContentsUploadModal({
     thumbnailUrl: null,
   });
   const [contentType, setContentType] = useState<ContentType>("단편");
-
-  const [uploadError, setUploadError] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -75,24 +87,12 @@ export function AdminVideoContentsUploadModal({
     (contentType !== "시리즈" || !!selectedSeries);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
-
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  }, [onClose]);
 
   const handleCategoryChange = (category: number | null) => {
     setSelectedCategory(category);
@@ -160,12 +160,6 @@ export function AdminVideoContentsUploadModal({
       formRef.current?.requestSubmit();
     });
   };
-
-  const handleErrorClose = () => {
-    setUploadError(false);
-  };
-
-  if (!mounted || !open) return null;
 
   return (
     <>
@@ -280,7 +274,7 @@ export function AdminVideoContentsUploadModal({
         confirmText="재시도"
         cancelText="취소"
         onConfirm={handleRetry}
-        onClose={handleErrorClose}
+        onClose={() => setUploadError(false)}
         disabled={isPending}
       />
     </>
