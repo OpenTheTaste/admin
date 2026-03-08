@@ -6,30 +6,28 @@ import {
   UploadProgressBar,
   UploadStatusBadge,
 } from "@entities/monitoring/components";
+import { useIngestJobs } from "@entities/monitoring/hooks";
 import { AdminSearch } from "@shared/components";
-import {
-  UploadStatus,
-  mockAdminUploadStatus,
-} from "@shared/mocks/mockAdminUploadStatus";
+import { IngestStatus } from "@shared/types";
 
-const formatSize = (bytes: number) => {
-  if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)}GB`;
-  if (bytes >= 1024 ** 2) return `${(bytes / 1024 ** 2).toFixed(1)}MB`;
-  return `${(bytes / 1024).toFixed(1)}KB`;
+const formatSize = (mb: number) => {
+  if (mb >= 1024) return `${(mb / 1024).toFixed(1)}GB`;
+  return `${mb}MB`;
 };
 
 export function MonitoringContents() {
-  const uploadstatusdata = mockAdminUploadStatus;
   const [searchUploadList, setSearchUploadList] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<UploadStatus | null>(null);
+  const [statusFilter, setStatusFilter] = useState<IngestStatus | null>(null);
 
-  const filtered = uploadstatusdata.filter((item) => {
-    const matchStatus = statusFilter ? item.status === statusFilter : true;
-    const matchSearch = searchUploadList
-      ? item.fileName.toLowerCase().includes(searchUploadList.toLowerCase())
-      : true;
-    return matchStatus && matchSearch;
+  const { data, isPending, isError } = useIngestJobs({
+    page: 0,
+    size: 10,
+    searchWord: searchUploadList || undefined,
   });
+
+  const filtered = (data?.dataList ?? []).filter((item) =>
+    statusFilter ? item.ingestStatus === statusFilter : true,
+  );
 
   return (
     <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700">
@@ -70,29 +68,46 @@ export function MonitoringContents() {
 
             {/* 리스트 목록 */}
             <tbody className="divide-y divide-ot-gray-800">
+              {isPending && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-center py-10 text-ot-placeholder"
+                  >
+                    불러오는 중...
+                  </td>
+                </tr>
+              )}
+              {isError && (
+                <tr>
+                  <td colSpan={5} className="text-center py-10 text-red-500">
+                    데이터를 불러오지 못했습니다.
+                  </td>
+                </tr>
+              )}
               {filtered.map((item) => (
                 <tr
-                  key={item.id}
+                  key={item.ingestJobId}
                   className="hover:bg-ot-gray-700/50 transition-colors"
                 >
                   <td className="pl-8 py-4 text-ot-text truncate text-center max-w-0 overflow-hidden">
-                    {item.fileName}
+                    {item.title}
                   </td>
                   <td className="px-3 py-4 text-ot-text text-center">
-                    {formatSize(item.fileSize)}
+                    {formatSize(item.videoSize)}
                   </td>
                   <td className="px-3 py-4 text-ot-text text-center">
-                    {item.uploader}
+                    {item.uploaderName}
                   </td>
                   <td className="px-3 py-4 text-center">
                     <UploadStatusBadge
-                      status={item.status}
+                      status={item.ingestStatus}
                       text={
-                        item.status === "ORIGIN_UPLOADED"
+                        item.ingestStatus === "ORIGIN_UPLOADED"
                           ? "S3 업로드 완료"
-                          : item.status === "TRANSCODING"
+                          : item.ingestStatus === "TRANSCODING"
                             ? "트랜스코딩"
-                            : item.status === "UPLOADING"
+                            : item.ingestStatus === "UPLOADING"
                               ? "재업로드 중"
                               : "완료"
                       }
