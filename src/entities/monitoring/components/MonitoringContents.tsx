@@ -20,11 +20,16 @@ const formatSize = (bytes: number) => {
 
 export function MonitoringContents() {
   const uploadstatusdata = mockAdminUploadStatus;
-
+  const [searchUploadList, setSearchUploadList] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<UploadStatus | null>(null);
-  const filtered = uploadstatusdata.filter((item) =>
-    statusFilter ? item.status === statusFilter : true,
-  );
+
+  const filtered = uploadstatusdata.filter((item) => {
+    const matchStatus = statusFilter ? item.status === statusFilter : true;
+    const matchSearch = searchUploadList
+      ? item.fileName.toLowerCase().includes(searchUploadList.toLowerCase())
+      : true;
+    return matchStatus && matchSearch;
+  });
 
   return (
     <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700">
@@ -33,7 +38,10 @@ export function MonitoringContents() {
         <div className="flex items-center gap-4 pl-4 pr-2 py-2">
           {/* Input 입력칸 */}
           <div className="flex-1">
-            <AdminSearch placeholder="콘텐츠 제목을 입력해주세요." />
+            <AdminSearch
+              placeholder="콘텐츠 제목을 입력해주세요."
+              onSubmitSearch={(value) => setSearchUploadList(value || "")}
+            />
           </div>
           {/* 드롭다운 */}
           <AdminUploadStatusDropdown
