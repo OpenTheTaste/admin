@@ -1,17 +1,23 @@
 "use client";
 import { useState } from "react";
+import { useCategories } from "@entities/category/hooks";
 import {
   CategoryCharts,
   MonitoringCategoryTabs,
 } from "@entities/statistics/components";
-import {
-  CategoryType,
-  mockAdminCategoryStatistics,
-} from "@shared/mocks/mockAdminCategoryStatistics";
+import { useTagStatsByCategory } from "@entities/statistics/hooks";
+import { CategoryStatistic } from "@shared/mocks/mockAdminCategoryStatistics";
 
 export function StatisticsContents() {
-  const [activeCategory, setActiveCategory] = useState<CategoryType>("영화");
-  const currentStatData = mockAdminCategoryStatistics[activeCategory];
+  const { data: categories } = useCategories();
+  const [activeCategory, setActiveCategory] = useState<number>(1);
+
+  const { data: tagStats } = useTagStatsByCategory(activeCategory);
+
+  const currentStatData: CategoryStatistic = {
+    labels: tagStats?.map((t) => t.tagName) ?? [],
+    data: tagStats?.map((t) => t.viewCount) ?? [],
+  };
 
   const currentMonth = new Date().getMonth() + 1;
 
@@ -40,6 +46,7 @@ export function StatisticsContents() {
 
           {/* 탭 메뉴 */}
           <MonitoringCategoryTabs
+            categories={categories ?? []}
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
           />

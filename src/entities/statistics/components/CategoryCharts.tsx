@@ -67,6 +67,7 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
           width: 1,
         },
         ticks: {
+          stepSize: 20, // y축 단위 0%, 20%, 40%, ... 20씩
           color: "#ffecef",
           callback: (value: number | string) => `${value}%`,
         },
