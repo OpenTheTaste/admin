@@ -1,9 +1,16 @@
+"use client";
+
+import { useState } from "react";
 import {
+  AdminUploadStatusDropdown,
   UploadProgressBar,
   UploadStatusBadge,
 } from "@entities/monitoring/components";
 import { AdminSearch } from "@shared/components";
-import { mockAdminUploadStatus } from "@shared/mocks/mockAdminUploadStatus";
+import {
+  UploadStatus,
+  mockAdminUploadStatus,
+} from "@shared/mocks/mockAdminUploadStatus";
 
 const formatSize = (bytes: number) => {
   if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)}GB`;
@@ -14,19 +21,25 @@ const formatSize = (bytes: number) => {
 export function MonitoringContents() {
   const uploadstatusdata = mockAdminUploadStatus;
 
+  const [statusFilter, setStatusFilter] = useState<UploadStatus | null>(null);
+  const filtered = uploadstatusdata.filter((item) =>
+    statusFilter ? item.status === statusFilter : true,
+  );
+
   return (
     <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700">
       <div className="bg-ot-gray-700">
         {/* 표 제목 영역 : "업로드 작업" 텍스트 + Input 입력칸 묶음 */}
         <div className="flex items-center gap-4 pl-4 pr-2 py-2">
-          {/* "업로드 작업" 텍스트 */}
-          <span className="text-ot-text font-semibold text-[16px] whitespace-nowrap">
-            업로드 작업
-          </span>
           {/* Input 입력칸 */}
           <div className="flex-1">
             <AdminSearch placeholder="콘텐츠 제목을 입력해주세요." />
           </div>
+          {/* 드롭다운 */}
+          <AdminUploadStatusDropdown
+            value={statusFilter}
+            onChange={setStatusFilter}
+          />
         </div>
 
         {/* 구분선 */}
@@ -35,7 +48,7 @@ export function MonitoringContents() {
 
       {/* 테이블 전체 */}
       <div className="w-full">
-        <div className="max-h-100 overflow-y-auto scrollbar-hide">
+        <div className="max-h-100 min-h-100 overflow-y-auto scrollbar-hide">
           <table className="w-full text-left border-collapse table-fixed">
             <thead className="sticky top-0 bg-ot-gray-700 z-10">
               <tr className=" text-ot-text text-center font-semibold bg-ot-gray-800">
@@ -49,7 +62,7 @@ export function MonitoringContents() {
 
             {/* 리스트 목록 */}
             <tbody className="divide-y divide-ot-gray-800">
-              {uploadstatusdata.map((item) => (
+              {filtered.map((item) => (
                 <tr
                   key={item.id}
                   className="hover:bg-ot-gray-700/50 transition-colors"
