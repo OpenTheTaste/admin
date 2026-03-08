@@ -58,6 +58,16 @@ export function AdminSeriesUploadModal({
 
   useEffect(() => {
     if (!open) return;
+
+    setTitle("");
+    setDescription("");
+    setCast("");
+    setIsPublic(false);
+    setSelectedCategory(null);
+    setSelectedTags([]);
+    setPoster({ posterUrl: null, thumbnailUrl: null });
+    setUploadError(false);
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };

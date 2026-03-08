@@ -173,7 +173,6 @@ export function AdminSeriesEditModal({
             className="relative w-218 bg-ot-text rounded-lg py-6 px-8 shadow-xl overflow-y-auto max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* 헤더 */}
             <div className="relative mb-8 text-ot-background">
               <p className="text-2xl font-bold">시리즈 수정</p>
               <button
@@ -204,7 +203,6 @@ export function AdminSeriesEditModal({
                 onChange={setDescription}
               />
 
-              {/* 카테고리 + 태그 */}
               <div className="grid grid-cols-2 gap-6">
                 <AdminCategoryDropdown
                   value={selectedCategory}
@@ -217,7 +215,6 @@ export function AdminSeriesEditModal({
                 />
               </div>
 
-              {/* 공개여부 */}
               <AdminPublicStatus isPublic={isPublic} onChange={setIsPublic} />
 
               <AdminTextInput
@@ -229,7 +226,6 @@ export function AdminSeriesEditModal({
 
               <AdminPosterUpload value={poster} onChange={setPoster} />
 
-              {/* 버튼 */}
               <div className="grid grid-cols-2 gap-4">
                 <CommonButton
                   type="button"
