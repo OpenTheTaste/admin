@@ -24,11 +24,16 @@ interface CategoryChartsProps {
 }
 
 export function CategoryCharts({ data }: CategoryChartsProps) {
+  const total = data.data.reduce((sum, val) => sum + val, 0);
+
   const chartData = {
     labels: data.labels,
     datasets: [
       {
-        data: data.data,
+        // data: data.data,  // 기본 숫자대로 막대바 올림
+        data: data.data.map((val) =>
+          parseFloat(((val / total) * 100).toFixed(1)),
+        ), // % 단위로 막대바 올림
         backgroundColor: "#ffd1d7",
         borderRadius: 4,
         barThickness: 50,
@@ -41,6 +46,15 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => {
+            const percent = context.parsed.y; // % 로 변환된 값
+            const value = data.data[context.dataIndex]; // 실제 횟수
+            return `[${total}/${value}] (${percent}%)`; // [카테고리 전체/해당 태그](%정도) 커서 출력
+          },
+        },
+      },
     },
     scales: {
       y: {
@@ -52,7 +66,10 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
           color: "#ffecef",
           width: 1,
         },
-        ticks: { color: "#ffecef" },
+        ticks: {
+          color: "#ffecef",
+          callback: (value: number | string) => `${value}%`,
+        },
       },
       x: {
         grid: { display: false },
