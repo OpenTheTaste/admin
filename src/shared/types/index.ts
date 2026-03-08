@@ -7,3 +7,8 @@ export * from "./videoFileMeta";
 export type { ApiError } from "./apiError";
 export type { ApiResponse } from "./apiResponse";
 export type { PageInfo, BasePaginationParams } from "./pagination";
+export type {
+  IngestStatus,
+  IngestJob,
+  IngestJobListResponse,
+} from "./ingestJob";
