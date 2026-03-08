@@ -13,6 +13,8 @@ export function StatisticsContents() {
   const [activeCategory, setActiveCategory] = useState<CategoryType>("영화");
   const currentStatData = mockAdminCategoryStatistics[activeCategory];
 
+  const currentMonth = new Date().getMonth() + 1;
+
   return (
     <div className="w-full flex flex-col">
       {/* 제목 & 설명글 영역 */}
@@ -33,7 +35,7 @@ export function StatisticsContents() {
         {/* [왼쪽] 카테고리별 #태그 시청 통계 그래프 모음 */}
         <div className="col-span-8 bg-ot-gray-700 rounded-xl p-8 h-90 flex flex-col">
           <h3 className="text-ot-text font-bold text-[18px] mb-3">
-            카테고리별 #태그 시청 통계 (월별)
+            카테고리별 #태그 시청 통계 (월별) : {currentMonth}월
           </h3>
 
           {/* 탭 메뉴 */}
