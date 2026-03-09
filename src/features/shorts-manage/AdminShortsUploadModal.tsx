@@ -74,18 +74,16 @@ export function AdminShortsUploadModal({
     if (!videoFile || !selectedOriginal) return;
 
     const body: UploadShortsRequest = {
-      title: title,
-      description: description,
+      title,
+      description,
       mediaType: selectedOriginal.mediaType,
       publicStatus: isPublic ? "PUBLIC" : "PRIVATE",
       originId: selectedOriginal.originId,
       duration: videoFile.duration,
       videoSize: videoFile.size,
-      ...(poster.posterFile && { posterFileName: poster.posterFile.name }),
-      ...(poster.thumbnailFile && {
-        thumbnailFileName: poster.thumbnailFile.name,
-      }),
-      ...(videoFile.name && { originFileName: videoFile.name }),
+      posterFileName: poster.posterFile?.name,
+      thumbnailFileName: poster.thumbnailFile?.name,
+      originFileName: videoFile!.name,
     };
     try {
       // throw new Error("강제 에러 테스트"); // error 테스트 시 주석 해제

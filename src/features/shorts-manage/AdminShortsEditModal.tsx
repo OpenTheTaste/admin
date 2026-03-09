@@ -102,10 +102,10 @@ export function AdminShortsEditModal({
           await uploadFileToS3(posterUploadUrl, poster.posterFile);
           s3Result = "poster ✅";
         }
+        onClose();
       } catch (error) {
         setUploadError(true);
       }
-      onClose();
     } catch (error) {
       console.error("수정 실패:", error);
       setUploadError(true);
@@ -194,11 +194,16 @@ export function AdminShortsEditModal({
                   onClick={onClose}
                   className="py-3 font-semibold"
                   variant="outline"
+                  disabled={isPending}
                 >
                   취소
                 </CommonButton>
-                <CommonButton type="submit" className="py-3 font-semibold">
-                  수정 완료
+                <CommonButton
+                  type="submit"
+                  className="py-3 font-semibold"
+                  disabled={isPending}
+                >
+                  {isPending ? "수정 중..." : "수정 완료"}
                 </CommonButton>
               </div>
             </form>

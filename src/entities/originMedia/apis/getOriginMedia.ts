@@ -1,7 +1,7 @@
 import { api } from "@/shared/api";
 import { ApiResponse, BasePaginationParams, PageInfo } from "@/shared/types";
 
-export type OriginMediaType = "CONTENTS" | "SERIRES";
+export type OriginMediaType = "CONTENTS" | "SERIES";
 
 export interface OriginMediaItem {
   originId: number;
