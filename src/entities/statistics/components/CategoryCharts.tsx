@@ -53,7 +53,7 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
             // any -> TooptipItem 변경
             const percent = context.parsed.y; // % 로 변환된 값
             const value = data.data[context.dataIndex]; // 실제 횟수
-            return `[${total}/${value}] (${percent}%)`; // [카테고리 전체/해당 태그](%정도) 커서 출력
+            return `[${value}/${total}] (${percent}%)`; // [카테고리 전체/해당 태그](%정도) 커서 출력
           },
         },
       },
