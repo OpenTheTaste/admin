@@ -2,9 +2,9 @@
 
 import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTagsByCategory } from "@entities/statistics/hooks";
 import { TagBadge } from "@entities/tag/components";
 import { useOutsideClick } from "@shared/hooks";
-import { TAGS } from "@shared/types";
 import { cn } from "@shared/utils";
 
 export interface AdminTagDropdownProps {
@@ -18,12 +18,13 @@ export function AdminTagDropdown({
   value,
   onChange,
 }: AdminTagDropdownProps) {
+  const { data: tagList, isPending, isError } = useTagsByCategory(category);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick(dropdownRef, () => setIsOpen(false), isOpen);
 
-  const tags = category ? TAGS[category] : [];
+  const tags = tagList ?? [];
 
   const handleToggle = (tagId: number) => {
     onChange(
@@ -87,29 +88,37 @@ export function AdminTagDropdown({
           </div>
         )}
 
-        {/* FIXME: tag  */}
         {isOpen && category && (
           <div className="absolute top-full left-0 right-0 z-20 mt-2 bg-ot-text rounded-lg shadow-lg overflow-hidden border border-ot-gray-600">
             <div className="max-h-48 overflow-y-auto">
-              {tags.map((tag) => {
-                const isSelected = value.includes(tag.tagId);
-
-                return (
-                  <button
-                    type="button"
-                    key={tag.tagId}
-                    onClick={() => handleToggle(tag.tagId)}
-                    className={cn(
-                      "w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer",
-                      isSelected
-                        ? "bg-ot-primary-gradient text-ot-text"
-                        : "text-ot-background hover:bg-ot-gray-200",
-                    )}
-                  >
-                    {tag.name}
-                  </button>
-                );
-              })}
+              {isPending ? (
+                <p className="px-4 py-3 text-sm text-ot-gray-600">
+                  불러오는 중...
+                </p>
+              ) : isError ? (
+                <p className="px-4 py-3 text-sm text-ot-gray-600">
+                  태그를 불러오지 못했습니다.
+                </p>
+              ) : (
+                tags.map((tag) => {
+                  const isSelected = value.includes(tag.tagId);
+                  return (
+                    <button
+                      type="button"
+                      key={tag.tagId}
+                      onClick={() => handleToggle(tag.tagId)}
+                      className={cn(
+                        "w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer",
+                        isSelected
+                          ? "bg-ot-primary-gradient text-ot-text"
+                          : "text-ot-background hover:bg-ot-gray-200",
+                      )}
+                    >
+                      {tag.name}
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
