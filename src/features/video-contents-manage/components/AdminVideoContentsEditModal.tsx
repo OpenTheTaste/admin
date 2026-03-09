@@ -6,11 +6,10 @@ import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { useCategories } from "@entities/category/hooks";
-import { SeriesListItem } from "@entities/series/apis";
 import { AdminSeriesDropdown } from "@entities/series/components";
 import { AdminTagDropdown } from "@entities/tag/components";
 import {
-  ContentDetailResponse,
+  SeriesTitleItem,
   UploadVideoRequest,
 } from "@entities/video-contents/apis";
 import { useContentDetail } from "@entities/video-contents/hooks";
@@ -29,13 +28,11 @@ import { ContentType, PublicStatus } from "@shared/types";
 interface AdminVideoContentsEditModalProps {
   mediaId: number;
   onClose: () => void;
-  onUpdate: (updated: ContentDetailResponse) => void;
 }
 
 export function AdminVideoContentsEditModal({
   mediaId,
   onClose,
-  onUpdate,
 }: AdminVideoContentsEditModalProps) {
   const { data, isLoading, isError } = useContentDetail(mediaId);
   const { data: categories } = useCategories();
@@ -48,8 +45,12 @@ export function AdminVideoContentsEditModal({
   const [cast, setCast] = useState<string>("");
   const [isPublic, setIsPublic] = useState<PublicStatus>("PUBLIC");
   const [selectedSeries, setSelectedSeries] = useState<number | null>(null);
+  const [selectedSeriesTitle, setSelectedSeriesTitle] = useState<string | null>(
+    null,
+  );
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [pendingTagNames, setPendingTagNames] = useState<string[] | null>(null);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
     thumbnailUrl: null,
@@ -58,7 +59,6 @@ export function AdminVideoContentsEditModal({
   const [uploadError, setUploadError] = useState<boolean>(false);
 
   const { data: tagList } = useTagsByCategory(selectedCategory);
-  const tags = tagList ?? [];
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -68,7 +68,8 @@ export function AdminVideoContentsEditModal({
     setCast(data.actors);
     setIsPublic(data.publicStatus);
     setContentType(data.seriesTitle ? "시리즈" : "단편");
-    setSelectedSeries(null); // TODO: API 응답에 seriesId 추가되면 setSelectedSeries(data.seriesId ?? null) 로 교체
+    setSelectedSeries(data.seriesId ?? null);
+    setSelectedSeriesTitle(data.seriesTitle ?? null);
 
     const categoryId =
       categories.find((c) => c.categoryName === data.categoryName)
@@ -82,7 +83,6 @@ export function AdminVideoContentsEditModal({
     setIsInitialized(true);
   }, [data, isInitialized, categories]);
 
-  // tagList가 로드된 후 태그 초기화 (최초 1회만)
   useEffect(() => {
     if (!data || !tagList || isTagInitialized) return;
     setSelectedTags(
@@ -92,6 +92,17 @@ export function AdminVideoContentsEditModal({
     );
     setIsTagInitialized(true);
   }, [data, tagList, isTagInitialized]);
+
+  // pendingTagNames 있으면 tagList 로드 후 세팅
+  useEffect(() => {
+    if (!pendingTagNames || !tagList) return;
+    setSelectedTags(
+      pendingTagNames
+        .map((name) => tagList.find((t) => t.name === name)?.tagId)
+        .filter((id): id is number => id !== undefined),
+    );
+    setPendingTagNames(null);
+  }, [pendingTagNames, tagList]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -114,24 +125,41 @@ export function AdminVideoContentsEditModal({
 
   const handleContentTypeChange = (type: ContentType) => {
     setContentType(type);
-    if (type === "단편") setSelectedSeries(null);
+    if (type === "단편") {
+      setSelectedSeries(null);
+      setSelectedSeriesTitle(null);
+      setSelectedCategory(null);
+      setSelectedTags([]);
+      setPendingTagNames(null);
+    }
   };
 
   const handleCategoryChange = (category: number | null) => {
     setSelectedCategory(category);
     setSelectedTags([]);
+    setPendingTagNames(null);
   };
 
   const handleSeriesChange = (
     seriesId: number | null,
-    item: SeriesListItem | null,
+    item: SeriesTitleItem | null,
   ) => {
     setSelectedSeries(seriesId);
-    // TODO: API에 seriesId 기반 categoryId, tagIdList 추가되면 자동 세팅
-    // if (item) {
-    //   setSelectedCategory(item.categoryId);
-    //   setSelectedTags(item.tagIdList);
-    // }
+    setSelectedSeriesTitle(item?.title ?? null);
+
+    if (!item) {
+      setSelectedCategory(null);
+      setSelectedTags([]);
+      setPendingTagNames(null);
+      return;
+    }
+
+    const categoryId =
+      categories?.find((c) => c.categoryName === item.categoryName)
+        ?.categoryId ?? null;
+    setSelectedCategory(categoryId);
+    setSelectedTags([]);
+    setPendingTagNames(item.tagNameList);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -176,24 +204,6 @@ export function AdminVideoContentsEditModal({
         setUploadError(true);
         return;
       }
-
-      const tagNameList = tags
-        .filter((t) => selectedTags.includes(t.tagId))
-        .map((t) => t.name);
-
-      onUpdate({
-        ...data,
-        seriesTitle: selectedSeries ? String(selectedSeries) : null,
-        title,
-        description,
-        categoryName: data.categoryName,
-        tagNameList,
-        publicStatus: isPublic,
-        actors: cast,
-        posterUrl: poster.posterUrl ?? data.posterUrl,
-        thumbnailUrl: poster.thumbnailUrl ?? data.thumbnailUrl,
-      });
-
       onClose();
     } catch (error) {
       console.error("수정 실패:", error);
@@ -264,6 +274,7 @@ export function AdminVideoContentsEditModal({
               <div className="grid grid-cols-2 gap-6">
                 <AdminSeriesDropdown
                   value={selectedSeries}
+                  selectedTitle={selectedSeriesTitle}
                   onChange={handleSeriesChange}
                   disabled={contentType === "단편"}
                 />

@@ -143,7 +143,6 @@ export function AdminVideoContentsList({
         <AdminVideoContentsEditModal
           mediaId={selectedMediaId}
           onClose={handleClose}
-          onUpdate={() => handleClose()} // FIXME: 수정 api 붙인 뒤 수정
         />
       ) : (
         hasSelectedMediaId && (
