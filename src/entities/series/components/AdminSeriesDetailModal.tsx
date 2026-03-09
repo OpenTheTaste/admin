@@ -59,23 +59,35 @@ export function AdminSeriesDetailModal({
                 <div className="flex flex-col gap-1">
                   <p className="text-sm text-ot-background">세로 (5:7)</p>
                   <div className="relative w-60 aspect-5/7 rounded-lg overflow-hidden">
-                    {/* <Image
-                      src={series.posterUrl}
-                      alt={`${series.title} 세로 썸네일`}
-                      fill
-                      className="object-cover"
-                    /> */}
+                    {series.posterUrl ? (
+                      <Image
+                        src={series.posterUrl}
+                        alt={series.title}
+                        fill
+                        className="object-cover rounded-md"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
+                        <span className="text-xl font-bold">✕</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-sm text-ot-background">가로 (4:3)</p>
                   <div className="relative w-113 aspect-4/3 rounded-lg overflow-hidden">
-                    {/* <Image
-                      src={series.thumbnailUrl}
-                      alt={`${series.title} 가로 썸네일`}
-                      fill
-                      className="object-cover"
-                    /> */}
+                    {series.thumbnailUrl ? (
+                      <Image
+                        src={series.thumbnailUrl}
+                        alt={series.title}
+                        fill
+                        className="object-cover rounded-md"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
+                        <span className="text-xl font-bold">✕</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -93,9 +105,7 @@ export function AdminSeriesDetailModal({
 
             {/* 설명 */}
             <section className="flex flex-col gap-1">
-              <p className="text-base text-ot-background font-semibold">
-                설명
-              </p>
+              <p className="text-base text-ot-background font-semibold">설명</p>
               <p className="text-sm text-ot-background leading-relaxed">
                 {series.description}
               </p>

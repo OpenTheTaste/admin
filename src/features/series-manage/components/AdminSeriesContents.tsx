@@ -1,14 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Edit, Loader2 } from "lucide-react";
 import { AdminSeriesEditModal } from "@features/series-manage/components";
-import { CategoryBadge } from "@entities/category/components/CategoryBadge";
+import { CategoryBadge } from "@entities/category/components";
 import { useCategories } from "@entities/category/hooks";
 import { AdminSeriesDetailModal } from "@entities/series/components";
-import { TagBadge } from "@entities/tag/components/TagBagde";
-import { AdminPublicBadge } from "@shared/components";
 import { useInfiniteSeriesList } from "@entities/series/hooks";
+import { TagBadge } from "@entities/tag/components";
+import { AdminPublicBadge } from "@shared/components";
 
 interface AdminSeriesContentsProps {
   searchWord?: string;
@@ -21,7 +22,10 @@ export function AdminSeriesContents({ searchWord }: AdminSeriesContentsProps) {
   const { data: categories } = useCategories();
 
   const getCategoryId = (categoryName: string): number | null => {
-    return categories?.find((c) => c.categoryName === categoryName)?.categoryId ?? null;
+    return (
+      categories?.find((c) => c.categoryName === categoryName)?.categoryId ??
+      null
+    );
   };
 
   const router = useRouter();
@@ -88,21 +92,18 @@ export function AdminSeriesContents({ searchWord }: AdminSeriesContentsProps) {
                 >
                   <td className="py-3">
                     <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
-                      {content.posterUrl ? (
-                      <div>{content.posterUrl} 예시</div>
-                    ) : (
-                      // TODO: 썸네일 넣어야 함
-                      // <Image
-                      //   src={content.posterUrl}
-                      //   alt={content.title}
-                      //   fill
-                      //   className="object-cover rounded-md"
-                      // />
-                      <div
-                        className="w-full h-full rounded-md bg-ot-gray-800"
-                        aria-label="썸네일 없음"
-                      />
-                    )}
+                      {content.thumbnailUrl ? (
+                        <Image
+                          src={content.thumbnailUrl}
+                          alt={content.title}
+                          fill
+                          className="object-cover rounded-md"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
+                          <span className="text-xl font-bold">✕</span>
+                        </div>
+                      )}
                     </div>
                   </td>
 
@@ -175,7 +176,10 @@ export function AdminSeriesContents({ searchWord }: AdminSeriesContentsProps) {
         />
       ) : (
         hasSelectedMediaId && (
-          <AdminSeriesDetailModal mediaId={selectedMediaId!} onClose={handleClose} />
+          <AdminSeriesDetailModal
+            mediaId={selectedMediaId!}
+            onClose={handleClose}
+          />
         )
       )}
     </>
