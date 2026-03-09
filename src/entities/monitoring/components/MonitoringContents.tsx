@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IngestStatus } from "@entities/monitoring/apis";
 import {
   AdminUploadStatusDropdown,
   UploadProgressBar,
@@ -8,7 +9,6 @@ import {
 } from "@entities/monitoring/components";
 import { useIngestJobs } from "@entities/monitoring/hooks";
 import { AdminSearch } from "@shared/components";
-import { IngestStatus } from "@shared/types";
 
 const formatSize = (mb: number) => {
   if (mb >= 1024) return `${(mb / 1024).toFixed(1)}GB`;

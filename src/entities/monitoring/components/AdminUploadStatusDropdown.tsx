@@ -2,11 +2,11 @@
 
 import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { IngestStatus } from "@entities/monitoring/apis";
 import { useOutsideClick } from "@shared/hooks";
-import { UploadStatus } from "@shared/mocks/mockAdminUploadStatus";
 import { cn } from "@shared/utils";
 
-const STATUS_OPTIONS: { label: string; value: UploadStatus | null }[] = [
+const STATUS_OPTIONS: { label: string; value: IngestStatus | null }[] = [
   { label: "전체", value: null },
   { label: "S3 업로드 완료", value: "ORIGIN_UPLOADED" },
   { label: "트랜스코딩", value: "TRANSCODING" },
@@ -15,8 +15,8 @@ const STATUS_OPTIONS: { label: string; value: UploadStatus | null }[] = [
 ];
 
 export interface AdminUploadStatusDropdownProps {
-  value: UploadStatus | null;
-  onChange: (status: UploadStatus | null) => void;
+  value: IngestStatus | null;
+  onChange: (status: IngestStatus | null) => void;
 }
 
 export function AdminUploadStatusDropdown({

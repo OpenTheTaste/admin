@@ -1,2 +1,2 @@
-export { useTagsByCategory } from "./useTagsByCategory";
-export { useTagStatsByCategory } from "./useTagStatsByCategory";
+export * from "./useTagsByCategory";
+export * from "./useTagStatsByCategory";

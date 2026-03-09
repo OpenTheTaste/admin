@@ -8,6 +8,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
+import { TooltipItem } from "chart.js";
 import { CategoryStatistic } from "@shared/mocks/mockAdminCategoryStatistics";
 
 ChartJS.register(
@@ -32,7 +33,7 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
       {
         // data: data.data,  // 기본 숫자대로 막대바 올림
         data: data.data.map((val) =>
-          parseFloat(((val / total) * 100).toFixed(1)),
+          total > 0 ? parseFloat(((val / total) * 100).toFixed(1)) : 0,
         ), // % 단위로 막대바 올림
         backgroundColor: "#ffd1d7",
         borderRadius: 4,
@@ -48,7 +49,8 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (context: any) => {
+          label: (context: TooltipItem<"bar">) => {
+            // any -> TooptipItem 변경
             const percent = context.parsed.y; // % 로 변환된 값
             const value = data.data[context.dataIndex]; // 실제 횟수
             return `[${total}/${value}] (${percent}%)`; // [카테고리 전체/해당 태그](%정도) 커서 출력
