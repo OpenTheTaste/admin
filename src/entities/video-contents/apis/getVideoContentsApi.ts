@@ -37,7 +37,7 @@ export const getContentListApi = async (params: GetContentListParams) => {
 };
 
 export interface ContentDetailResponse {
-  contentId: number;
+  contentsId: number;
   posterUrl: string;
   thumbnailUrl: string;
   title: string;

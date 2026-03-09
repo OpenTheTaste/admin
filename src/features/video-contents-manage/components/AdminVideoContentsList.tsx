@@ -36,16 +36,16 @@ export function AdminVideoContentsList({
   const hasSelectedMediaId =
     selectedMediaId !== null && Number.isFinite(selectedMediaId);
 
-  const handleRowClick = (id: number) => {
-    router.push(`?id=${id}`, { scroll: false });
+  const handleRowClick = (mediaId: number) => {
+    router.push(`?id=${mediaId}`, { scroll: false });
   };
 
   const handleClose = () => {
     router.push("?", { scroll: false });
   };
 
-  const handleEditClick = (id: number) => {
-    router.push(`?id=${id}&action=edit`, { scroll: false });
+  const handleEditClick = (mediaId: number) => {
+    router.push(`?id=${mediaId}&action=edit`, { scroll: false });
   };
 
   if (isLoading) return <div>로딩 중...</div>;
@@ -83,19 +83,22 @@ export function AdminVideoContentsList({
                 <td className="py-3">
                   <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
                     {content.posterUrl ? (
-                      <div>{content.posterUrl} 예시</div>
+                      <>
+                        <Image
+                          src={content.posterUrl}
+                          alt={content.title}
+                          fill
+                          className="object-cover rounded-md"
+                        />
+                        <div
+                          className="w-full h-full rounded-md bg-ot-gray-800"
+                          aria-label="썸네일 없음"
+                        />
+                      </>
                     ) : (
-                      // TODO: 썸네일 넣어야 함
-                      // <Image
-                      //   src={content.posterUrl}
-                      //   alt={content.title}
-                      //   fill
-                      //   className="object-cover rounded-md"
-                      // />
-                      <div
-                        className="w-full h-full rounded-md bg-ot-gray-800"
-                        aria-label="썸네일 없음"
-                      />
+                      <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
+                        <span className="text-xl font-bold">✕</span>
+                      </div>
                     )}
                   </div>
                 </td>

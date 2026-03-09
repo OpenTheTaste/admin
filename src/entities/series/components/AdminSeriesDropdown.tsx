@@ -1,38 +1,43 @@
 "use client";
-
+// 콘텐츠 모달 내 시리즈 드롭다운
 import { useRef, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
+import { SeriesListItem } from "@entities/series/apis";
+import { useInfiniteSeriesList } from "@entities/series/hooks";
 import { useOutsideClick } from "@shared/hooks";
 import { cn } from "@shared/utils";
 
 export interface AdminSeriesDropdownProps {
-  seriesList: string[];
-  value: string | null;
-  onChange: (series: string | null) => void;
+  value: number | null;
+  onChange: (seriesId: number | null, item: SeriesListItem | null) => void;
   disabled?: boolean;
 }
 
 export function AdminSeriesDropdown({
-  seriesList,
   value,
   onChange,
   disabled = false,
 }: AdminSeriesDropdownProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [search, setSearch] = useState<string>("");
+  const [searchWord, setSearchWord] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const filtered = seriesList.filter((s) => s.includes(search));
+  // FIXME: 추후 시리즈 제목 조회 api로 연동 필요 (백엔드 수정 완료 시)
+  const { seriesList, observerRef, isFetchingNextPage } = useInfiniteSeriesList(
+    { searchWord },
+  );
 
   useOutsideClick(dropdownRef, () => setIsOpen(false), isOpen);
 
-  const handleSelect = (series: string) => {
-    onChange(series === "시리즈 없음" ? null : series);
+  const handleSelect = (item: SeriesListItem | null) => {
+    onChange(item ? item.mediaId : null, item);
     setIsOpen(false);
-    setSearch("");
+    setSearchWord("");
     if (searchInputRef.current) searchInputRef.current.value = "";
   };
+
+  const selectedTitle = seriesList.find((s) => s.mediaId === value)?.title;
 
   return (
     <div>
@@ -44,7 +49,7 @@ export function AdminSeriesDropdown({
           disabled={disabled}
           onClick={() => {
             setIsOpen((prev) => !prev);
-            setSearch("");
+            setSearchWord("");
           }}
           className={cn(
             "w-full flex items-center justify-between border rounded-lg py-3 px-4 text-sm text-left transition-colors",
@@ -56,7 +61,7 @@ export function AdminSeriesDropdown({
           <span
             className={cn(value ? "text-ot-background" : "text-ot-gray-600")}
           >
-            {value ?? "시리즈 선택"}
+            {selectedTitle ?? "시리즈 선택"}
           </span>
 
           <ChevronDown
@@ -78,7 +83,7 @@ export function AdminSeriesDropdown({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    setSearch(searchInputRef.current?.value ?? "");
+                    setSearchWord(searchInputRef.current?.value ?? "");
                   }
                 }}
                 placeholder="시리즈 검색"
@@ -88,33 +93,48 @@ export function AdminSeriesDropdown({
             </div>
 
             <div className="max-h-48 overflow-y-auto">
-              {filtered.length > 0 ? (
-                filtered.map((series) => {
-                  const isSelected =
-                    value === series ||
-                    (series === "시리즈 없음" && value === null);
+              <button
+                type="button"
+                onClick={() => handleSelect(null)}
+                className={cn(
+                  "w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer",
+                  value === null
+                    ? "bg-ot-primary-gradient text-ot-text"
+                    : "text-ot-background hover:bg-ot-gray-200",
+                )}
+              >
+                시리즈 없음
+              </button>
 
-                  return (
-                    <button
-                      type="button"
-                      key={series}
-                      onClick={() => handleSelect(series)}
-                      className={cn(
-                        "w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer",
-                        isSelected
-                          ? "bg-ot-primary-gradient text-ot-text"
-                          : "text-ot-background hover:bg-ot-gray-200",
-                      )}
-                    >
-                      {series}
-                    </button>
-                  );
-                })
+              {seriesList.length > 0 ? (
+                seriesList.map((series) => (
+                  <button
+                    type="button"
+                    key={series.mediaId}
+                    onClick={() => handleSelect(series)}
+                    className={cn(
+                      "w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer",
+                      value === series.mediaId
+                        ? "bg-ot-primary-gradient text-ot-text"
+                        : "text-ot-background hover:bg-ot-gray-200",
+                    )}
+                  >
+                    {series.title}
+                  </button>
+                ))
               ) : (
                 <p className="px-4 py-3 text-sm text-ot-gray-600">
                   검색 결과가 없습니다
                 </p>
               )}
+
+              <div ref={observerRef} className="py-1">
+                {isFetchingNextPage && (
+                  <p className="text-center text-xs text-ot-gray-600 py-1">
+                    불러오는 중...
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         )}
