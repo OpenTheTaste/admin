@@ -81,18 +81,22 @@ export function AdminShortsList({
                 <td className="py-3">
                   <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
                     {short.posterUrl ? (
-                      <div>{short.posterUrl} 예시</div>
+                      <>
+                        <Image
+                          src={short.posterUrl}
+                          alt={short.title}
+                          fill
+                          className="object-cover rounded-md"
+                        />
+                        <div
+                          className="w-full h-full rounded-md bg-ot-gray-800"
+                          aria-label="썸네일 없음"
+                        />
+                      </>
                     ) : (
-                      // <Image
-                      //   src={short.thumbnailUrl}
-                      //   alt={short.title}
-                      //   fill
-                      //   className="object-cover rounded-md"
-                      // />
-                      <div
-                        className="w-full h-full rounded-md bg-ot-gray-800"
-                        aria-label="썸네일 없음"
-                      />
+                      <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
+                        <span className="text-xl font-bold">✕</span>
+                      </div>
                     )}
                   </div>
                 </td>
@@ -136,11 +140,7 @@ export function AdminShortsList({
       </div>
 
       {action === "edit" && hasSelectedMediaId ? (
-        <AdminShortsEditModal
-          mediaId={selectedMediaId}
-          onClose={handleClose}
-          onUpdate={() => handleClose()} // FIXME: 수정 api 붙인 뒤 수정
-        />
+        <AdminShortsEditModal mediaId={selectedMediaId} onClose={handleClose} />
       ) : (
         hasSelectedMediaId && (
           <AdminShortsDetailModal

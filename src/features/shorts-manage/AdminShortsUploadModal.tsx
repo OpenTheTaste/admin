@@ -1,16 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useIsMounted } from "@/shared/hooks";
+import { uploadFileToS3 } from "@/shared/lib";
 import { X } from "lucide-react";
-import { ContentListItem } from "@entities/video-contents/apis";
-import { AdminOriginalContentsDropdown } from "@entities/video-contents/components";
+import { OriginMediaItem } from "@entities/originMedia/apis";
+import { AdminOriginalContentsDropdown } from "@entities/originMedia/components";
+import { UploadShortsRequest } from "@entities/shorts/apis";
+import { useUploadShorts } from "@entities/shorts/hooks";
 import {
   AdminFileUpload,
   AdminPosterUpload,
   AdminPublicStatus,
   AdminTextInput,
   CommonButton,
+  ConfirmModal,
   PosterState,
 } from "@shared/components";
 import { VideoFileMeta } from "@shared/types";
@@ -20,36 +25,31 @@ interface AdminShortsUploadModalProps {
   onClose: () => void;
 }
 
-const ORIGINAL_LIST = [
-  "더글로리",
-  "선재 업고 튀어",
-  "흑백 요리사 시즌1",
-  "흑백 요리사 시즌2",
-  "대탈출 1",
-  "대탈출 2",
-  "대탈출 3",
-  "대탈출 4",
-  "대탈출 5",
-];
 export function AdminShortsUploadModal({
   open,
   onClose,
 }: AdminShortsUploadModalProps) {
-  const [mounted, setMounted] = useState<boolean>(false);
+  const mounted = useIsMounted();
+  const { mutateAsync: uploadShorts, isPending } = useUploadShorts();
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [isPublic, setIsPublic] = useState<boolean>(false);
   const [videoFile, setVideoFile] = useState<VideoFileMeta | null>(null);
   const [selectedOriginal, setSelectedOriginal] =
-    useState<ContentListItem | null>(null);
+    useState<OriginMediaItem | null>(null);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
-    thumbnailUrl: null,
   });
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [uploadError, setUploadError] = useState<boolean>(false);
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const isFormValid =
+    !!videoFile &&
+    !!title.trim() &&
+    !!description.trim() &&
+    !!poster.posterFile &&
+    !!selectedOriginal;
 
   useEffect(() => {
     if (!open) return;
@@ -69,84 +69,154 @@ export function AdminShortsUploadModal({
 
   if (!mounted || !open) return null;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("숏폼 업로드 처리 로직");
+    if (!videoFile || !selectedOriginal) return;
+
+    const body: UploadShortsRequest = {
+      title: title,
+      description: description,
+      mediaType: selectedOriginal.mediaType,
+      publicStatus: isPublic ? "PUBLIC" : "PRIVATE",
+      originId: selectedOriginal.originId,
+      duration: videoFile.duration,
+      videoSize: videoFile.size,
+      ...(poster.posterFile && { posterFileName: poster.posterFile.name }),
+      ...(poster.thumbnailFile && {
+        thumbnailFileName: poster.thumbnailFile.name,
+      }),
+      ...(videoFile.name && { originFileName: videoFile.name }),
+    };
+    try {
+      // throw new Error("강제 에러 테스트"); // error 테스트 시 주석 해제
+      const { posterUploadUrl, originUploadUrl } = await uploadShorts(body);
+
+      // S3 직접 업로드 (병렬)
+      await Promise.all([
+        poster.posterFile
+          ? uploadFileToS3(posterUploadUrl, poster.posterFile)
+          : Promise.resolve(),
+        videoFile.file
+          ? uploadFileToS3(originUploadUrl, videoFile.file)
+          : Promise.resolve(),
+      ]);
+      onClose();
+    } catch (error) {
+      console.error("업로드 실패:", error);
+      setUploadError(true);
+    }
   };
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-218 bg-ot-text rounded-lg py-6 px-8 shadow-xl overflow-y-auto max-h-[90vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 헤더 */}
-        <div className="relative mb-8 text-ot-background">
-          <p className="text-2xl font-bold">숏폼 업로드</p>
-          <button
-            onClick={onClose}
-            className="absolute top-0 right-0 text-ot-background hover:text-ot-gray-600 transition-colors cursor-pointer"
-          >
-            <X size={22} />
-          </button>
-        </div>
+  const handleClose = () => {
+    if (isPending) return;
+    onClose();
+  };
 
-        <form
-          className="flex flex-col gap-6 text-ot-background"
-          onSubmit={handleSubmit}
+  const handleRetry = () => {
+    setUploadError(false);
+    requestAnimationFrame(() => {
+      formRef.current?.requestSubmit();
+    });
+  };
+
+  return (
+    <>
+      {createPortal(
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={handleClose}
         >
-          <AdminFileUpload value={videoFile} onChange={setVideoFile} />
-
-          <AdminTextInput
-            label="제목"
-            placeholder="숏폼 제목을 입력하세요"
-            value={title}
-            onChange={setTitle}
-          />
-
-          <AdminTextInput
-            label="설명"
-            placeholder="숏폼 설명을 입력하세요"
-            multiline
-            value={description}
-            onChange={setDescription}
-          />
-
-          {/* 원본콘텐츠·공개여부 + 포스터 */}
-          <div className="grid grid-cols-2 gap-12">
-            {/* 좌측 */}
-            <div className="flex flex-col gap-6">
-              <AdminOriginalContentsDropdown
-                value={selectedOriginal}
-                onChange={setSelectedOriginal}
-              />
-              <AdminPublicStatus isPublic={isPublic} onChange={setIsPublic} />
+          <div
+            className="relative w-218 bg-ot-text rounded-lg py-6 px-8 shadow-xl overflow-y-auto max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 헤더 */}
+            <div className="relative mb-8 text-ot-background">
+              <p className="text-2xl font-bold">숏폼 업로드</p>
+              <button
+                onClick={handleClose}
+                className="absolute top-0 right-0 text-ot-background hover:text-ot-gray-600 transition-colors cursor-pointer"
+              >
+                <X size={22} />
+              </button>
             </div>
 
-            {/* 우측 */}
-            <AdminPosterUpload value={poster} onChange={setPoster} isShorts />
-          </div>
-
-          {/* 버튼 */}
-          <div className="grid grid-cols-2 gap-4">
-            <CommonButton
-              type="button"
-              onClick={onClose}
-              className="py-3 font-semibold"
-              variant="outline"
+            <form
+              ref={formRef}
+              className="flex flex-col gap-6 text-ot-background"
+              onSubmit={handleSubmit}
             >
-              취소
-            </CommonButton>
-            <CommonButton type="submit" className="py-3 font-semibold">
-              업로드 시작
-            </CommonButton>
+              <AdminFileUpload value={videoFile} onChange={setVideoFile} />
+
+              <AdminTextInput
+                label="제목"
+                placeholder="숏폼 제목을 입력하세요"
+                value={title}
+                onChange={setTitle}
+              />
+
+              <AdminTextInput
+                label="설명"
+                placeholder="숏폼 설명을 입력하세요"
+                multiline
+                value={description}
+                onChange={setDescription}
+              />
+
+              {/* 원본콘텐츠·공개여부 + 포스터 */}
+              <div className="grid grid-cols-2 gap-12">
+                {/* 좌측 */}
+                <div className="flex flex-col gap-6">
+                  <AdminOriginalContentsDropdown
+                    value={selectedOriginal}
+                    onChange={setSelectedOriginal}
+                  />
+                  <AdminPublicStatus
+                    isPublic={isPublic}
+                    onChange={setIsPublic}
+                  />
+                </div>
+                {/* 우측 */}
+                <AdminPosterUpload
+                  value={poster}
+                  onChange={setPoster}
+                  isShorts
+                />
+              </div>
+
+              {/* 버튼 */}
+              <div className="grid grid-cols-2 gap-4">
+                <CommonButton
+                  type="button"
+                  onClick={handleClose}
+                  className="py-3 font-semibold"
+                  variant="outline"
+                  disabled={isPending}
+                >
+                  취소
+                </CommonButton>
+                <CommonButton
+                  type="submit"
+                  className="py-3 font-semibold"
+                  disabled={isPending || !isFormValid}
+                >
+                  {isPending ? "업로드 중..." : "업로드 시작"}
+                </CommonButton>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </div>,
-    document.body,
+        </div>,
+        document.body,
+      )}
+      <ConfirmModal
+        isOpen={uploadError}
+        message={"업로드에 실패했습니다.\n다시 시도하시겠습니까?"}
+        confirmText="재시도"
+        cancelText="취소"
+        onConfirm={handleRetry}
+        onClose={() => setUploadError(false)}
+        disabled={isPending}
+      />
+    </>
   );
 }
