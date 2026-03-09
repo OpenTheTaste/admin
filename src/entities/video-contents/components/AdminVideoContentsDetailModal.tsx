@@ -53,23 +53,23 @@ export function AdminVideoContentsDetailModal({
             <div className="flex flex-col gap-1 ">
               <p className="text-sm text-ot-background">세로 (5:7)</p>
               <div className="relative w-60 aspect-5/7 rounded-lg overflow-hidden">
-                {/* <Image
+                <Image
                   src={data.posterUrl || ""}
                   alt={`${data.posterUrl} 세로 썸네일`}
                   fill
                   className="object-cover"
-                /> */}
+                />
               </div>
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-sm text-ot-background">가로 (4:3)</p>
               <div className="relative w-113 aspect-4/3 rounded-lg overflow-hidden">
-                {/* <Image
+                <Image
                   src={data.thumbnailUrl || ""}
                   alt={`${data.thumbnailUrl} 가로 썸네일`}
                   fill
                   className="object-cover"
-                /> */}
+                />
               </div>
             </div>
           </div>
