@@ -77,9 +77,12 @@ export function MonitoringContents() {
                     </td>
                   </tr>
                 )}
-                {isError && (
+                {!isPending && !isError && filtered.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="text-center py-10 text-red-500">
+                    <td
+                      colSpan={5}
+                      className="text-center py-10 text-ot-placeholder"
+                    >
                       데이터를 불러오지 못했습니다.
                     </td>
                   </tr>
