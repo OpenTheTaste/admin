@@ -2,13 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { SeriesListItem } from "@/entities/series/apis";
 import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 import { AdminCategoryDropdown } from "@entities/category/components";
+import { useCategories } from "@entities/category/hooks";
 import { AdminSeriesDropdown } from "@entities/series/components";
+import { useTagsByCategory } from "@entities/statistics/hooks";
 import { AdminTagDropdown } from "@entities/tag/components";
-import { UploadVideoRequest } from "@entities/video-contents/apis";
+import {
+  SeriesTitleItem,
+  UploadVideoRequest,
+} from "@entities/video-contents/apis";
 import { useUploadVideoContents } from "@entities/video-contents/hooks";
 import {
   AdminFileUpload,
@@ -48,15 +52,17 @@ export function AdminVideoContentsUploadModal({
 
 function ModalInner({ onClose }: { onClose: () => void }) {
   const { mutateAsync: uploadVideo, isPending } = useUploadVideoContents();
+  const { data: categories } = useCategories();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [cast, setCast] = useState("");
-  const [isPublic, setIsPublic] = useState(false);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [cast, setCast] = useState<string>("");
+  const [isPublic, setIsPublic] = useState<boolean>(false);
   const [videoFile, setVideoFile] = useState<VideoFileMeta | null>(null);
   const [selectedSeries, setSelectedSeries] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [pendingTagNames, setPendingTagNames] = useState<string[] | null>(null);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
     thumbnailUrl: null,
@@ -64,7 +70,19 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   const [contentType, setContentType] = useState<ContentType>("단편");
   const [uploadError, setUploadError] = useState<boolean>(false);
 
+  const { data: tagList } = useTagsByCategory(selectedCategory);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // pendingTagNames 있으면 tagList 로드 후 세팅
+  useEffect(() => {
+    if (!pendingTagNames || !tagList) return;
+    setSelectedTags(
+      pendingTagNames
+        .map((name) => tagList.find((t) => t.name === name)?.tagId)
+        .filter((id): id is number => id !== undefined),
+    );
+    setPendingTagNames(null);
+  }, [pendingTagNames, tagList]);
 
   const isFormValid =
     !!videoFile &&
@@ -85,20 +103,39 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
+  const handleContentTypeChange = (type: ContentType) => {
+    setContentType(type);
+    if (type === "단편") {
+      setSelectedSeries(null);
+      setSelectedCategory(null);
+      setSelectedTags([]);
+      setPendingTagNames(null);
+    }
+  };
+
   const handleSeriesChange = (
     seriesId: number | null,
-    item: SeriesListItem | null,
+    item: SeriesTitleItem | null,
   ) => {
     setSelectedSeries(seriesId);
     if (!item) {
       setSelectedCategory(null);
       setSelectedTags([]);
+      setPendingTagNames(null);
+      return;
     }
+    const categoryId =
+      categories?.find((c) => c.categoryName === item.categoryName)
+        ?.categoryId ?? null;
+    setSelectedCategory(categoryId);
+    setSelectedTags([]);
+    setPendingTagNames(item.tagNameList);
   };
 
   const handleCategoryChange = (category: number | null) => {
     setSelectedCategory(category);
     setSelectedTags([]);
+    setPendingTagNames(null);
   };
 
   const handleClose = () => {
@@ -145,8 +182,6 @@ function ModalInner({ onClose }: { onClose: () => void }) {
           : Promise.resolve(),
       ]);
 
-      console.log("S3 업로드 완료");
-      // 3. 완료 후 모달 닫기 (isPending 타이밍 이슈로 onClose 직접 호출)
       onClose();
     } catch (error) {
       console.error("업로드 실패:", error);
@@ -190,7 +225,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
             >
               <AdminContentTypeSelector
                 value={contentType}
-                onChange={setContentType}
+                onChange={handleContentTypeChange}
               />
               <AdminFileUpload value={videoFile} onChange={setVideoFile} />
 
