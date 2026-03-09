@@ -3,7 +3,7 @@ import { ApiResponse, PublicStatus } from "@shared/types";
 
 export interface UploadShortsRequest {
   originId: number;
-  mediaType: string;
+  mediaType: "CONTENTS" | "SERIES";
   title?: string;
   description?: string;
   publicStatus: PublicStatus;
@@ -36,7 +36,7 @@ export const uploadShortsApi = async (body: UploadShortsRequest) => {
 
 export interface UpdateShortsRequest {
   originId: number;
-  mediaType: string;
+  mediaType: "CONTENTS" | "SERIES";
   title?: string;
   description?: string;
   publicStatus: PublicStatus;
