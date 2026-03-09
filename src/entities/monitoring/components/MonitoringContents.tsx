@@ -77,13 +77,20 @@ export function MonitoringContents() {
                     </td>
                   </tr>
                 )}
+                {isError && (
+                  <tr>
+                    <td colSpan={5} className="text-center py-10 text-red-500">
+                      데이터를 불러오지 못했습니다.
+                    </td>
+                  </tr>
+                )}
                 {!isPending && !isError && filtered.length === 0 && (
                   <tr>
                     <td
                       colSpan={5}
                       className="text-center py-10 text-ot-placeholder"
                     >
-                      데이터를 불러오지 못했습니다.
+                      검색 결과가 없습니다.
                     </td>
                   </tr>
                 )}
