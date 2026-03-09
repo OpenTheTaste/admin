@@ -3,6 +3,12 @@ export interface Tag {
   name: string;
 }
 
+// 태그별 시청 통계 관련 타입 (모니터링 페이지 그래프)
+export interface TagStat {
+  tagName: string;
+  viewCount: number;
+}
+
 export const TAGS: Record<number, Tag[]> = {
   // 드라마, 영화, 예능, 다큐
   1: [

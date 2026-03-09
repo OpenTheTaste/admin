@@ -1,32 +1,35 @@
-import {
-  CATEGORIES,
-  CategoryType,
-} from "@shared/mocks/mockAdminCategoryStatistics";
 import { cn } from "@shared/utils";
 
+interface Category {
+  categoryId: number;
+  categoryName: string;
+}
+
 interface MonitoringCategoryTabsProps {
-  activeCategory: CategoryType;
-  onCategoryChange: (category: CategoryType) => void;
+  categories: Category[];
+  activeCategory: number;
+  onCategoryChange: (categoryId: number) => void;
 }
 
 export function MonitoringCategoryTabs({
+  categories,
   activeCategory,
   onCategoryChange,
 }: MonitoringCategoryTabsProps) {
   return (
     <div className="flex gap-3 mb-6">
-      {CATEGORIES.map((category) => (
+      {categories.map((category) => (
         <button
-          key={category}
-          onClick={() => onCategoryChange(category)}
+          key={category.categoryId}
+          onClick={() => onCategoryChange(category.categoryId)}
           className={cn(
             "px-4 py-1 rounded-md text-[14px] transition-all duration-200",
-            activeCategory === category
+            activeCategory === category.categoryId
               ? "bg-ot-primary-400 text-ot-text"
               : "bg-ot-primary-200 text-ot-text hover:bg-ot-primary-400",
           )}
         >
-          {category}
+          {category.categoryName}
         </button>
       ))}
     </div>

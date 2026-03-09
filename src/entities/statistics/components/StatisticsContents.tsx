@@ -1,17 +1,25 @@
 "use client";
 import { useState } from "react";
+import { useCategories } from "@entities/category/hooks";
 import {
   CategoryCharts,
   MonitoringCategoryTabs,
 } from "@entities/statistics/components";
-import {
-  CategoryType,
-  mockAdminCategoryStatistics,
-} from "@shared/mocks/mockAdminCategoryStatistics";
+import { useTagStatsByCategory } from "@entities/statistics/hooks";
+import { CategoryStatistic } from "@shared/mocks/mockAdminCategoryStatistics";
 
 export function StatisticsContents() {
-  const [activeCategory, setActiveCategory] = useState<CategoryType>("영화");
-  const currentStatData = mockAdminCategoryStatistics[activeCategory];
+  const { data: categories } = useCategories();
+  const [activeCategory, setActiveCategory] = useState<number>(1);
+
+  const { data: tagStats } = useTagStatsByCategory(activeCategory);
+
+  const currentStatData: CategoryStatistic = {
+    labels: tagStats?.map((t) => t.tagName) ?? [],
+    data: tagStats?.map((t) => t.viewCount) ?? [],
+  };
+
+  const currentMonth = new Date().getMonth() + 1;
 
   return (
     <div className="w-full flex flex-col">
@@ -33,11 +41,12 @@ export function StatisticsContents() {
         {/* [왼쪽] 카테고리별 #태그 시청 통계 그래프 모음 */}
         <div className="col-span-8 bg-ot-gray-700 rounded-xl p-8 h-90 flex flex-col">
           <h3 className="text-ot-text font-bold text-[18px] mb-3">
-            카테고리별 #태그 시청 통계 (월별)
+            카테고리별 #태그 시청 통계 (월별) : {currentMonth}월
           </h3>
 
           {/* 탭 메뉴 */}
           <MonitoringCategoryTabs
+            categories={categories ?? []}
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
           />
