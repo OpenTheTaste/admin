@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { SeriesListItem } from "@/entities/series/apis";
 import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 import { AdminCategoryDropdown } from "@entities/category/components";
@@ -18,24 +19,14 @@ import {
   ConfirmModal,
   PosterState,
 } from "@shared/components";
-import { uploadFileToS3 } from "@shared/lib";
 import { useIsMounted } from "@shared/hooks";
+import { uploadFileToS3 } from "@shared/lib";
 import { ContentType, VideoFileMeta } from "@shared/types";
 
 interface AdminUploadModalProps {
   open: boolean;
   onClose: () => void;
 }
-
-// FIXME: 시리즈 목록 API 연동 필요
-const SERIES_LIST = [
-  "시리즈 없음",
-  "더글로리",
-  "선재 업고 튀어",
-  "흑백 요리사 시즌1",
-  "흑백 요리사 시즌2",
-  "대탈출 1",
-];
 
 export function AdminVideoContentsUploadModal({
   open,
@@ -63,7 +54,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   const [cast, setCast] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [videoFile, setVideoFile] = useState<VideoFileMeta | null>(null);
-  const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
+  const [selectedSeries, setSelectedSeries] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [poster, setPoster] = useState<PosterState>({
@@ -71,7 +62,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     thumbnailUrl: null,
   });
   const [contentType, setContentType] = useState<ContentType>("단편");
-  const [uploadError, setUploadError] = useState(false);
+  const [uploadError, setUploadError] = useState<boolean>(false);
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -93,6 +84,17 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
+
+  const handleSeriesChange = (
+    seriesId: number | null,
+    item: SeriesListItem | null,
+  ) => {
+    setSelectedSeries(seriesId);
+    if (!item) {
+      setSelectedCategory(null);
+      setSelectedTags([]);
+    }
+  };
 
   const handleCategoryChange = (category: number | null) => {
     setSelectedCategory(category);
@@ -117,9 +119,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
       duration: videoFile!.duration,
       videoSize: videoFile!.size,
       seriesId:
-        contentType === "시리즈" && selectedSeries
-          ? Number(selectedSeries)
-          : undefined,
+        contentType === "시리즈" ? (selectedSeries ?? undefined) : undefined,
       posterFileName: poster.posterFile?.name,
       thumbnailFileName: poster.thumbnailFile?.name,
       originFileName: videoFile!.name,
@@ -219,9 +219,8 @@ function ModalInner({ onClose }: { onClose: () => void }) {
               {/* 시리즈 + 공개 여부 */}
               <div className="grid grid-cols-2 gap-6">
                 <AdminSeriesDropdown
-                  seriesList={SERIES_LIST}
                   value={selectedSeries}
-                  onChange={setSelectedSeries}
+                  onChange={handleSeriesChange}
                   disabled={contentType !== "시리즈"}
                 />
                 <AdminPublicStatus isPublic={isPublic} onChange={setIsPublic} />
