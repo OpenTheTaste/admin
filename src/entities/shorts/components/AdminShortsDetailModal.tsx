@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Bookmark, X } from "lucide-react";
 import { CategoryBadge } from "@entities/category/components";
+import { useCategories } from "@entities/category/hooks";
 import { useShortsDetail } from "@entities/shorts/hooks";
 import { TagBadge } from "@entities/tag/components";
 import { AdminPublicBadge } from "@shared/components";
@@ -18,9 +19,14 @@ export function AdminShortsDetailModal({
   onClose,
 }: AdminShortsDetailModalProps) {
   const { data, isLoading, isError } = useShortsDetail(mediaId);
+  const { data: categories } = useCategories();
 
   if (isLoading) return <div>로딩중...</div>;
   if (isError || !data) return <div>에러</div>;
+
+  const categoryId =
+    categories?.find((c) => c.categoryName === data.categoryName)?.categoryId ??
+    null;
 
   return (
     <div
@@ -49,18 +55,22 @@ export function AdminShortsDetailModal({
             <p className="text-base font-semibold">썸네일 (5:7)</p>
             <div className="relative max-w-60 aspect-5/7 rounded-lg overflow-hidden">
               {data.posterUrl ? (
-                // <Image
-                //   src={data.posterUrl}
-                //   alt={`${data.title} 세로 썸네일`}
-                //   fill
-                //   className="object-cover"
-                // />
-                <div>{data.posterUrl} 예시</div>
+                <>
+                  <Image
+                    src={data.posterUrl}
+                    alt={data.title}
+                    fill
+                    className="object-cover rounded-md"
+                  />
+                  <div
+                    className="w-full h-full rounded-md bg-ot-gray-800"
+                    aria-label="썸네일 없음"
+                  />
+                </>
               ) : (
-                <div
-                  className="w-full h-full bg-ot-gray-200"
-                  aria-label="썸네일 없음"
-                />
+                <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
+                  <span className="text-xl font-bold">✕</span>
+                </div>
               )}
             </div>
           </div>
@@ -104,19 +114,25 @@ export function AdminShortsDetailModal({
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">카테고리</p>
                 <div className="flex items-center">
-                  <CategoryBadge category={data.categoryName} />
+                  {categoryId && (
+                    <CategoryBadge
+                      category={categoryId}
+                      label={data.categoryName}
+                    />
+                  )}
                 </div>
               </div>
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold">태그</p>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {data.tagNameList.map((tag) => (
-                    <TagBadge
-                      key={tag}
-                      label={tag}
-                      category={data.categoryName}
-                    />
-                  ))}
+                  {categoryId &&
+                    data.tagNameList.map((tagName) => (
+                      <TagBadge
+                        key={tagName}
+                        label={tagName}
+                        category={categoryId}
+                      />
+                    ))}
                 </div>
               </div>
             </div>
