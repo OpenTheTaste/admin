@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { IngestStatus } from "@entities/monitoring/apis";
 import {
   UploadProgressBar,
@@ -36,13 +37,13 @@ export function MonitoringContents() {
   const [searchUploadList, setSearchUploadList] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<IngestStatus | null>(null);
 
-  const { data, isPending, isError } = useIngestJobs({
-    page: 0,
-    size: 10,
-    searchWord: searchUploadList || undefined,
-  });
+  const { ingestJobList, observerRef, isPending, isError, isFetchingNextPage } =
+    useIngestJobs({
+      size: 10,
+      searchWord: searchUploadList || undefined,
+    });
 
-  const filtered = (data?.dataList ?? []).filter((item) =>
+  const filtered = ingestJobList.filter((item) =>
     statusFilter ? item.ingestStatus === statusFilter : true,
   );
 
@@ -137,8 +138,21 @@ export function MonitoringContents() {
                     </td>
                   </tr>
                 ))}
+                <tr>
+                  <td colSpan={5}>
+                    <div className="py-1 flex justify-center">
+                      {isFetchingNextPage && (
+                        <Loader2
+                          className="animate-spin text-ot-placeholder"
+                          size={20}
+                        />
+                      )}
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
+            <div ref={observerRef} className="h-1" />
           </div>
         </div>
       </div>
