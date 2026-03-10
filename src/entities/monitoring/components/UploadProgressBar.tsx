@@ -24,7 +24,7 @@ export function UploadProgressBar({
 
   return (
     <div
-      className={cn("flex items-center w-full", className)}
+      className={cn("flex items-center gap-3 w-full", className)}
       role="progressbar"
       aria-label="업로드 진행률"
       aria-valuemin={0}
@@ -37,6 +37,7 @@ export function UploadProgressBar({
           style={{ width: `${displayProgress}%` }}
         />
       </div>
+      <span className="text-ot-text text-sm shrink-0">{displayProgress}%</span>
     </div>
   );
 }

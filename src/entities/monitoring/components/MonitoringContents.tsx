@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, RotateCcw } from "lucide-react";
+import { cn } from "@/shared/utils";
+import { Loader2 } from "lucide-react";
 import { IngestStatus } from "@entities/monitoring/apis";
 import {
   UploadProgressBar,
@@ -44,7 +45,6 @@ export function MonitoringContents() {
     isError,
     isFetchingNextPage,
     dataUpdatedAt,
-    refetch,
   } = useIngestJobs({
     size: 10,
     searchWord: searchUploadList || undefined,
@@ -76,32 +76,32 @@ export function MonitoringContents() {
           onSelect={(option) => setStatusFilter(STATUS_LABEL_TO_VALUE[option])}
         />
       </div>
-      {/* <button
-        onClick={() => refetch()}
-        className="p-2 rounded-lg bg-ot-gray-800 border border-ot-gray-700 text-ot-placeholder hover:text-ot-text transition-colors cursor-pointer"
-      >
-        <RotateCcw size={18} />
-      </button> */}
 
       <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700 mt-4">
-        {/* 테이블 전체 */}
         <div className="w-full">
+          {/* thead 고정 - 스크롤 밖 */}
+          <table className="w-full text-left border-collapse table-fixed">
+            <thead className="sticky top-0 bg-ot-gray-700 z-5">
+              <tr className="text-ot-text text-center font-semibold bg-ot-gray-800">
+                <th className="pl-8 py-3 w-[35%]">파일명</th>
+                <th className="px-3 w-[15%]">크기</th>
+                <th className="px-3 w-[15%]">업로더</th>
+                <th className="px-3 w-[15%]">상태</th>
+                <th className="pr-8 w-[20%]">진행률</th>
+              </tr>
+            </thead>
+          </table>
+
+          {/* tbody - 스크롤 안 */}
           <div
             ref={scrollRef}
-            className="max-h-100 min-h-100 overflow-y-auto scrollbar-hide"
+            className={cn(
+              "max-h-100 min-h-100 overflow-y-auto",
+              "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent",
+              "[&::-webkit-scrollbar-thumb]:bg-ot-gray-500 [&::-webkit-scrollbar-thumb]:rounded-full",
+            )}
           >
             <table className="w-full text-left border-collapse table-fixed">
-              <thead className="sticky top-0 bg-ot-gray-700 z-5">
-                <tr className=" text-ot-text text-center font-semibold bg-ot-gray-800">
-                  <th className="pl-8 py-3 w-[35%]">파일명</th>
-                  <th className="px-3 w-[15%]">크기</th>
-                  <th className="px-3 w-[15%]">업로더</th>
-                  <th className="px-3 w-[15%]">상태</th>
-                  <th className="pr-8 w-[20%]">진행률</th>
-                </tr>
-              </thead>
-
-              {/* 리스트 목록 */}
               <tbody className="divide-y divide-ot-gray-800">
                 {isPending && (
                   <tr>
@@ -135,16 +135,16 @@ export function MonitoringContents() {
                     key={item.ingestJobId}
                     className="hover:bg-ot-gray-700/50 transition-colors"
                   >
-                    <td className="pl-8 py-4 text-ot-text truncate text-center max-w-0 overflow-hidden">
+                    <td className="pl-8 py-4 text-ot-text truncate text-center max-w-0 overflow-hidden w-[35%]">
                       {item.title}
                     </td>
-                    <td className="px-3 py-4 text-ot-text text-center">
+                    <td className="px-3 py-4 text-ot-text text-center w-[15%]">
                       {formatSize(item.videoSize)}
                     </td>
-                    <td className="px-3 py-4 text-ot-text text-center">
+                    <td className="px-3 py-4 text-ot-text text-center w-[15%]">
                       {item.uploaderName}
                     </td>
-                    <td className="px-3 py-4 text-center">
+                    <td className="px-3 py-4 text-center w-[15%]">
                       <UploadStatusBadge
                         status={item.ingestStatus}
                         text={
@@ -158,7 +158,7 @@ export function MonitoringContents() {
                         }
                       />
                     </td>
-                    <td className="pr-8 py-4 text-center">
+                    <td className="pr-8 py-4 text-center w-[20%]">
                       <UploadProgressBar
                         progress={STATUS_PROGRESS[item.ingestStatus]}
                       />
