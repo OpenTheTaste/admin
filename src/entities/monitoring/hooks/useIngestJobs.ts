@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   useInfiniteQuery,
   useQuery,
@@ -5,6 +6,8 @@ import {
 } from "@tanstack/react-query";
 import { IngestJob, getIngestJobs } from "@entities/monitoring/apis";
 import { useInfiniteScroll } from "@shared/hooks";
+
+const POLL_INTERVAL = 20000; // polling 간격 초
 
 interface UseInfiniteIngestJobsParams {
   size?: number;
@@ -16,6 +19,7 @@ export const useIngestJobs = ({
   searchWord,
 }: UseInfiniteIngestJobsParams) => {
   const queryClient = useQueryClient();
+  const [countdown, setCountdown] = useState(POLL_INTERVAL / 1000); // 카운트다운 타이머
 
   // page 0만 20초마다 polling 해주는 useQuery
   // dataUpdatedAt = 쿼리 데이터가 마지막으로 갱신된 시각 (이거로 구분)
@@ -53,8 +57,25 @@ export const useIngestJobs = ({
       );
       return latest;
     },
-    refetchInterval: 10000,
+    refetchInterval: POLL_INTERVAL,
   });
+
+  // ==================================================
+  // 카운트다운 타이머 기능 부분
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => (prev <= 0 ? 0 : prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // polling 시 타이머 숫자 리셋
+  useEffect(() => {
+    setTimeout(() => {
+      setCountdown(POLL_INTERVAL / 1000);
+    }, 0);
+  }, [dataUpdatedAt]);
+  // ==================================================
 
   // 무한스크롤 useInfiniteQuery
   const query = useInfiniteQuery({
@@ -81,5 +102,5 @@ export const useIngestJobs = ({
   const ingestJobList: IngestJob[] =
     query.data?.pages.flatMap((page) => page.dataList) ?? [];
 
-  return { ...query, ingestJobList, observerRef, dataUpdatedAt };
+  return { ...query, ingestJobList, observerRef, dataUpdatedAt, countdown };
 };

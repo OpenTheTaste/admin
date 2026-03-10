@@ -45,6 +45,7 @@ export function MonitoringContents() {
     isError,
     isFetchingNextPage,
     dataUpdatedAt,
+    countdown,
   } = useIngestJobs({
     size: 10,
     searchWord: searchUploadList || undefined,
@@ -76,6 +77,10 @@ export function MonitoringContents() {
           onSelect={(option) => setStatusFilter(STATUS_LABEL_TO_VALUE[option])}
         />
       </div>
+
+      <p className="text-ot-gray-700 text-xs text-right mt-2">
+        {countdown}초 뒤 새로고침
+      </p>
 
       <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700 mt-4">
         <div className="w-full">
