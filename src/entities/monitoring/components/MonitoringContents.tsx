@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2, RotateCcw } from "lucide-react";
 import { IngestStatus } from "@entities/monitoring/apis";
 import {
   UploadProgressBar,
@@ -37,11 +37,29 @@ export function MonitoringContents() {
   const [searchUploadList, setSearchUploadList] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<IngestStatus | null>(null);
 
-  const { ingestJobList, observerRef, isPending, isError, isFetchingNextPage } =
-    useIngestJobs({
-      size: 10,
-      searchWord: searchUploadList || undefined,
-    });
+  const {
+    ingestJobList,
+    observerRef,
+    isPending,
+    isError,
+    isFetchingNextPage,
+    dataUpdatedAt,
+    refetch,
+  } = useIngestJobs({
+    size: 10,
+    searchWord: searchUploadList || undefined,
+  });
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const prevUpdatedAtRef = useRef(dataUpdatedAt);
+
+  useEffect(() => {
+    if (prevUpdatedAtRef.current !== dataUpdatedAt) {
+      scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      prevUpdatedAtRef.current = dataUpdatedAt;
+    }
+  }, [dataUpdatedAt]);
 
   const filtered = ingestJobList.filter((item) =>
     statusFilter ? item.ingestStatus === statusFilter : true,
@@ -58,11 +76,20 @@ export function MonitoringContents() {
           onSelect={(option) => setStatusFilter(STATUS_LABEL_TO_VALUE[option])}
         />
       </div>
+      {/* <button
+        onClick={() => refetch()}
+        className="p-2 rounded-lg bg-ot-gray-800 border border-ot-gray-700 text-ot-placeholder hover:text-ot-text transition-colors cursor-pointer"
+      >
+        <RotateCcw size={18} />
+      </button> */}
 
       <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700 mt-4">
         {/* 테이블 전체 */}
         <div className="w-full">
-          <div className="max-h-100 min-h-100 overflow-y-auto scrollbar-hide">
+          <div
+            ref={scrollRef}
+            className="max-h-100 min-h-100 overflow-y-auto scrollbar-hide"
+          >
             <table className="w-full text-left border-collapse table-fixed">
               <thead className="sticky top-0 bg-ot-gray-700 z-5">
                 <tr className=" text-ot-text text-center font-semibold bg-ot-gray-800">
