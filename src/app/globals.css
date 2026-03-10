@@ -168,3 +168,17 @@ body {
 body[style*="overflow: hidden"] .w-full.h-100 {
   overflow: hidden;
 }
+
+/* 새로고침 아이콘 회전 애니메이션 기능 (백오피스 모니터링 업로드 목록) */
+@keyframes spin-once {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-once {
+  animation: spin-once 0.5s ease-in-out;
+}

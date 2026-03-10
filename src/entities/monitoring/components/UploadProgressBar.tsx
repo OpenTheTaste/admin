@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { cn } from "@shared/utils";
 
 interface UploadProgressBarProps {
@@ -10,10 +13,18 @@ export function UploadProgressBar({
   className,
 }: UploadProgressBarProps) {
   const safeProgress = Math.min(100, Math.max(0, progress));
+  const [displayProgress, setDisplayProgress] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDisplayProgress(safeProgress);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [safeProgress]);
 
   return (
     <div
-      className={cn("flex items-center w-full", className)}
+      className={cn("flex items-center gap-4 w-full", className)}
       role="progressbar"
       aria-label="업로드 진행률"
       aria-valuemin={0}
@@ -22,10 +33,13 @@ export function UploadProgressBar({
     >
       <div className="relative w-full h-2 bg-ot-gray-600 rounded-full overflow-hidden">
         <div
-          className="h-full bg-ot-primary-gradient rounded-full"
-          style={{ width: `${safeProgress}%` }}
+          className="h-full bg-ot-primary-gradient rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${displayProgress}%` }}
         />
       </div>
+      <span className="text-ot-gray-500 text-xs shrink-0">
+        {displayProgress}%
+      </span>
     </div>
   );
 }

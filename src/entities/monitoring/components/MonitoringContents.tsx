@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "@/shared/utils";
+import { Loader2, RotateCw } from "lucide-react";
 import { IngestStatus } from "@entities/monitoring/apis";
 import {
   UploadProgressBar,
@@ -22,24 +24,59 @@ const STATUS_LABEL_TO_VALUE: Record<string, IngestStatus | null> = {
   완료: "COMPLETED",
 };
 
+// 상태 더 추가될 수 있다고 해주셨음
+const STATUS_PROGRESS: Record<IngestStatus, number> = {
+  ORIGIN_UPLOADED: 25,
+  TRANSCODING: 50,
+  UPLOADING: 75,
+  COMPLETED: 100,
+};
+
 const STATUS_OPTIONS = Object.keys(STATUS_LABEL_TO_VALUE);
 
 export function MonitoringContents() {
   const [searchUploadList, setSearchUploadList] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<IngestStatus | null>(null);
 
-  const { data, isPending, isError } = useIngestJobs({
-    page: 0,
+  const {
+    ingestJobList,
+    observerRef,
+    isPending,
+    isError,
+    isFetchingNextPage,
+    dataUpdatedAt,
+  } = useIngestJobs({
     size: 10,
     searchWord: searchUploadList || undefined,
   });
 
-  const filtered = (data?.dataList ?? []).filter((item) =>
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  useEffect(() => {
+    if (dataUpdatedAt) {
+      setTimeout(() => setIsSpinning(true), 0);
+      const timer = setTimeout(() => setIsSpinning(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [dataUpdatedAt]);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const prevUpdatedAtRef = useRef(dataUpdatedAt);
+
+  useEffect(() => {
+    if (prevUpdatedAtRef.current !== dataUpdatedAt) {
+      scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      prevUpdatedAtRef.current = dataUpdatedAt;
+    }
+  }, [dataUpdatedAt]);
+
+  const filtered = ingestJobList.filter((item) =>
     statusFilter ? item.ingestStatus === statusFilter : true,
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-3">
       {/* Input 입력칸 + 상태 필터 드롭다운 버튼 묶음 */}
       <div className="flex-1">
         <AdminSearch
@@ -50,22 +87,42 @@ export function MonitoringContents() {
         />
       </div>
 
-      <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700 mt-4">
-        {/* 테이블 전체 */}
-        <div className="w-full">
-          <div className="max-h-100 min-h-100 overflow-y-auto scrollbar-hide">
-            <table className="w-full text-left border-collapse table-fixed">
-              <thead className="sticky top-0 bg-ot-gray-700 z-5">
-                <tr className=" text-ot-text text-center font-semibold bg-ot-gray-800">
-                  <th className="pl-8 py-3 w-[35%]">파일명</th>
-                  <th className="px-3 w-[15%]">크기</th>
-                  <th className="px-3 w-[15%]">업로더</th>
-                  <th className="px-3 w-[15%]">상태</th>
-                  <th className="pr-8 w-[20%]">진행률</th>
-                </tr>
-              </thead>
+      <div className="flex items-center gap-1 justify-end">
+        <p className="text-ot-placeholder text-xs">20초마다 갱신</p>
+        <RotateCw
+          size={14}
+          className={cn(
+            "text-ot-placeholder",
+            isSpinning && "animate-spin-once",
+          )}
+        />
+      </div>
 
-              {/* 리스트 목록 */}
+      <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700">
+        <div className="w-full">
+          {/* thead 고정 - 스크롤 밖 */}
+          <table className="w-full text-left border-collapse table-fixed">
+            <thead className="sticky top-0 bg-ot-gray-700 z-5">
+              <tr className="text-ot-text text-center font-semibold bg-ot-gray-800">
+                <th className="pl-8 py-3 w-[35%]">파일명</th>
+                <th className="px-3 w-[15%]">크기</th>
+                <th className="px-3 w-[15%]">업로더</th>
+                <th className="px-3 w-[15%]">상태</th>
+                <th className="pr-8 w-[20%]">진행률</th>
+              </tr>
+            </thead>
+          </table>
+
+          {/* tbody - 스크롤 안 */}
+          <div
+            ref={scrollRef}
+            className={cn(
+              "max-h-100 min-h-100 overflow-y-auto",
+              "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent",
+              "[&::-webkit-scrollbar-thumb]:bg-ot-gray-500 [&::-webkit-scrollbar-thumb]:rounded-full",
+            )}
+          >
+            <table className="w-full text-left border-collapse table-fixed">
               <tbody className="divide-y divide-ot-gray-800">
                 {isPending && (
                   <tr>
@@ -99,16 +156,16 @@ export function MonitoringContents() {
                     key={item.ingestJobId}
                     className="hover:bg-ot-gray-700/50 transition-colors"
                   >
-                    <td className="pl-8 py-4 text-ot-text truncate text-center max-w-0 overflow-hidden">
+                    <td className="pl-8 py-4 text-ot-text truncate text-center max-w-0 overflow-hidden w-[35%]">
                       {item.title}
                     </td>
-                    <td className="px-3 py-4 text-ot-text text-center">
+                    <td className="px-3 py-4 text-ot-text text-center w-[15%]">
                       {formatSize(item.videoSize)}
                     </td>
-                    <td className="px-3 py-4 text-ot-text text-center">
+                    <td className="px-3 py-4 text-ot-text text-center w-[15%]">
                       {item.uploaderName}
                     </td>
-                    <td className="px-3 py-4 text-center">
+                    <td className="px-3 py-4 text-center w-[15%]">
                       <UploadStatusBadge
                         status={item.ingestStatus}
                         text={
@@ -122,13 +179,28 @@ export function MonitoringContents() {
                         }
                       />
                     </td>
-                    <td className="pr-8 py-4 text-center">
-                      <UploadProgressBar progress={item.progress} />
+                    <td className="pr-8 py-4 text-center w-[20%]">
+                      <UploadProgressBar
+                        progress={STATUS_PROGRESS[item.ingestStatus]}
+                      />
                     </td>
                   </tr>
                 ))}
+                <tr>
+                  <td colSpan={5}>
+                    <div className="py-1 flex justify-center">
+                      {isFetchingNextPage && (
+                        <Loader2
+                          className="animate-spin text-ot-placeholder"
+                          size={20}
+                        />
+                      )}
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
+            <div ref={observerRef} className="h-1" />
           </div>
         </div>
       </div>
