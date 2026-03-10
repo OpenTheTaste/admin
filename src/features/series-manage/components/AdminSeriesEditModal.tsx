@@ -17,7 +17,7 @@ import {
 import { SeriesListItem } from "@entities/series/apis";
 import { useFixSeries } from "@entities/series/hooks";
 import { useSeriesDetail } from "@entities/series/hooks";
-import { TAGS } from "@shared/types";
+import { useTagsByCategory } from "@entities/statistics/hooks";
 import { uploadFileToS3 } from "@shared/lib";
 
 interface AdminSeriesFixModalProps {
@@ -33,7 +33,6 @@ export function AdminSeriesEditModal({
 }: AdminSeriesFixModalProps) {
   const { data: categories } = useCategories();
   const { data: seriesDetail } = useSeriesDetail(series?.mediaId ?? null);
-
   const { mutateAsync: fixSeries, isPending } = useFixSeries();
 
   const [title, setTitle] = useState<string>(series?.title ?? "");
@@ -44,39 +43,49 @@ export function AdminSeriesEditModal({
   );
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [isTagInitialized, setIsTagInitialized] = useState<boolean>(false);
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
     thumbnailUrl: null,
   });
-
+  const [mounted, setMounted] = useState(false);
   const [fixError, setFixError] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const { data: tagList } = useTagsByCategory(selectedCategory);
 
   // 시리즈 상세 정보로 폼 초기화
   useEffect(() => {
     if (seriesDetail) {
       setDescription(seriesDetail.description);
       setCast(seriesDetail.actors);
+      setPoster({
+        posterUrl: seriesDetail.posterUrl,
+        thumbnailUrl: seriesDetail.thumbnailUrl,
+      });
     }
   }, [seriesDetail]);
 
-  // 카테고리·태그 초기화
+  // 카테고리 초기화
   useEffect(() => {
     if (categories && series) {
       const categoryId =
         categories.find((c) => c.categoryName === series.categoryName)
           ?.categoryId ?? null;
       setSelectedCategory(categoryId);
-
-      if (categoryId !== null) {
-        const allTags = Object.values(TAGS).flat();
-        const tagIds = series.tagNameList
-          .map((name) => allTags.find((t) => t.name === name)?.tagId)
-          .filter((id): id is number => id !== undefined);
-        setSelectedTags(tagIds);
-      }
     }
   }, [categories, series]);
+
+  // 태그 초기화 (tagList가 로드된 후 API 데이터 기준으로 매핑)
+  useEffect(() => {
+    if (!series || !tagList || isTagInitialized) return;
+    setSelectedTags(
+      series.tagNameList
+        .map((name) => tagList.find((t) => t.name === name)?.tagId)
+        .filter((id): id is number => id !== undefined),
+    );
+    setIsTagInitialized(true);
+  }, [series, tagList, isTagInitialized]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -91,6 +100,10 @@ export function AdminSeriesEditModal({
     return () => {
       document.body.style.overflow = "";
     };
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   const handleCategoryChange = (category: number | null) => {
@@ -153,12 +166,6 @@ export function AdminSeriesEditModal({
   const handleErrorClose = () => {
     setFixError(false);
   };
-
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   if (!mounted) return null;
 
