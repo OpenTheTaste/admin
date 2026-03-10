@@ -22,6 +22,14 @@ const STATUS_LABEL_TO_VALUE: Record<string, IngestStatus | null> = {
   완료: "COMPLETED",
 };
 
+// 상태 더 추가될 수 있다고 해주셨음
+const STATUS_PROGRESS: Record<IngestStatus, number> = {
+  ORIGIN_UPLOADED: 25,
+  TRANSCODING: 50,
+  UPLOADING: 75,
+  COMPLETED: 100,
+};
+
 const STATUS_OPTIONS = Object.keys(STATUS_LABEL_TO_VALUE);
 
 export function MonitoringContents() {
@@ -123,7 +131,9 @@ export function MonitoringContents() {
                       />
                     </td>
                     <td className="pr-8 py-4 text-center">
-                      <UploadProgressBar progress={item.progress} />
+                      <UploadProgressBar
+                        progress={STATUS_PROGRESS[item.ingestStatus]}
+                      />
                     </td>
                   </tr>
                 ))}
