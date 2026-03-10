@@ -3,3 +3,5 @@ export {
   useUploadVideoContents,
   useUpdateVideoContents,
 } from "./useUploadVideoContents";
+
+export { useInfiniteSeriesTitle } from "./useSeriesTitle";
