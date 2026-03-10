@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   useInfiniteQuery,
   useQuery,
@@ -19,11 +18,10 @@ export const useIngestJobs = ({
   searchWord,
 }: UseInfiniteIngestJobsParams) => {
   const queryClient = useQueryClient();
-  const [countdown, setCountdown] = useState(POLL_INTERVAL / 1000); // 카운트다운 타이머
 
   // page 0만 20초마다 polling 해주는 useQuery
   // dataUpdatedAt = 쿼리 데이터가 마지막으로 갱신된 시각 (이거로 구분)
-  const { dataUpdatedAt } = useQuery({
+  const { dataUpdatedAt, isRefetching: isPollingRefetching } = useQuery({
     queryKey: [
       "ingestJobs",
       "latest",
@@ -60,23 +58,6 @@ export const useIngestJobs = ({
     refetchInterval: POLL_INTERVAL,
   });
 
-  // ==================================================
-  // 카운트다운 타이머 기능 부분
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => (prev <= 0 ? 0 : prev - 1));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // polling 시 타이머 숫자 리셋
-  useEffect(() => {
-    setTimeout(() => {
-      setCountdown(POLL_INTERVAL / 1000);
-    }, 0);
-  }, [dataUpdatedAt]);
-  // ==================================================
-
   // 무한스크롤 useInfiniteQuery
   const query = useInfiniteQuery({
     queryKey: ["ingestJobs", { size, searchWord: searchWord || undefined }],
@@ -102,5 +83,11 @@ export const useIngestJobs = ({
   const ingestJobList: IngestJob[] =
     query.data?.pages.flatMap((page) => page.dataList) ?? [];
 
-  return { ...query, ingestJobList, observerRef, dataUpdatedAt, countdown };
+  return {
+    ...query,
+    ingestJobList,
+    observerRef,
+    dataUpdatedAt,
+    isRefetching: isPollingRefetching,
+  };
 };

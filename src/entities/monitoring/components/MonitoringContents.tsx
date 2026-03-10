@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/utils";
-import { Loader2 } from "lucide-react";
+import { Loader2, RotateCw } from "lucide-react";
 import { IngestStatus } from "@entities/monitoring/apis";
 import {
   UploadProgressBar,
@@ -45,11 +45,20 @@ export function MonitoringContents() {
     isError,
     isFetchingNextPage,
     dataUpdatedAt,
-    countdown,
   } = useIngestJobs({
     size: 10,
     searchWord: searchUploadList || undefined,
   });
+
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  useEffect(() => {
+    if (dataUpdatedAt) {
+      setTimeout(() => setIsSpinning(true), 0);
+      const timer = setTimeout(() => setIsSpinning(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [dataUpdatedAt]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +76,7 @@ export function MonitoringContents() {
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-3">
       {/* Input 입력칸 + 상태 필터 드롭다운 버튼 묶음 */}
       <div className="flex-1">
         <AdminSearch
@@ -78,11 +87,18 @@ export function MonitoringContents() {
         />
       </div>
 
-      <p className="text-ot-gray-700 text-xs text-right mt-2">
-        {countdown}초 뒤 새로고침
-      </p>
+      <div className="flex items-center gap-1 justify-end">
+        <p className="text-ot-placeholder text-xs">20초마다 갱신</p>
+        <RotateCw
+          size={14}
+          className={cn(
+            "text-ot-placeholder",
+            isSpinning && "animate-spin-once",
+          )}
+        />
+      </div>
 
-      <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700 mt-4">
+      <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700">
         <div className="w-full">
           {/* thead 고정 - 스크롤 밖 */}
           <table className="w-full text-left border-collapse table-fixed">
