@@ -57,6 +57,10 @@ export function AdminSeriesEditModal({
     if (seriesDetail) {
       setDescription(seriesDetail.description);
       setCast(seriesDetail.actors);
+      setPoster({
+        posterUrl: seriesDetail.posterUrl,
+        thumbnailUrl: seriesDetail.thumbnailUrl,
+      });
     }
   }, [seriesDetail]);
 
