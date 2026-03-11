@@ -10,9 +10,15 @@ function isPublicPath(pathname: string) {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isDev = process.env.NODE_ENV === "development";
-  if (pathname === "/" || pathname === "/auth") {
+
+  if (pathname === "/") {
     return NextResponse.redirect(new URL("/series", request.url));
   }
+
+  if (pathname === "/auth") {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
+  }
+
   if (isPublicPath(pathname)) {
     return NextResponse.next();
   }
