@@ -10,7 +10,7 @@ export default function SeriesLayout({
     <>
       <AdminTitle
         title="시리즈 관리"
-        description="콘텐츠 시리즈를 관리합니다"
+        description="콘텐츠 시리즈를 관리합니다."
         action={<AdminSeriesUploadButton />}
       />
 

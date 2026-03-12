@@ -10,7 +10,7 @@ export default function VideoContentsLayout({
     <>
       <AdminTitle
         title="콘텐츠 관리"
-        description="콘텐츠를 관리합니다"
+        description="콘텐츠(단편, 시리즈 에피소드 포함)를 관리합니다."
         action={<AdminVideoContentsUploadButton />}
       />
 
