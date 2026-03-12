@@ -67,7 +67,7 @@ export function AdminPosterUpload({
           <input
             ref={verticalInputRef}
             type="file"
-            accept="image/*"
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
             className="hidden"
             onChange={handleVertical}
           />
@@ -107,7 +107,7 @@ export function AdminPosterUpload({
             <input
               ref={horizontalInputRef}
               type="file"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
               className="hidden"
               onChange={handleHorizontal}
             />

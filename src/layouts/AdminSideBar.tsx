@@ -3,16 +3,16 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { logoutApi } from "@/entities/auth/apis";
 import {
   Clapperboard,
   Drama,
   LineChart,
+  LogOut,
   SquarePlay,
   Users,
-  LogOut
 } from "lucide-react";
 import { cn } from "@shared/utils";
-import { logoutApi } from "@/entities/auth/apis";
 
 const menus = [
   {
@@ -31,7 +31,7 @@ const menus = [
     icon: SquarePlay,
   },
   {
-    name: "사용자 관리",
+    name: "전체 유저 관리",
     href: "/user",
     icon: Users,
   },
@@ -53,13 +53,13 @@ export const AdminSideBar = () => {
   const router = useRouter();
 
   const handleLogout = async () => {
-      try {
-        await logoutApi();
-        router.push("/auth/login");
-      } catch (error) {
-        alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
-      }
-    };
+    try {
+      await logoutApi();
+      router.push("/auth/login");
+    } catch (error) {
+      alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
   return (
     <aside className="flex flex-col bg-ot-gray-800 w-1/7">
@@ -97,7 +97,10 @@ export const AdminSideBar = () => {
           <p className="text-ot-placeholder text-sm">{user.email}</p>
         </div>
         <button className="cursor-pointer" onClick={handleLogout}>
-          <LogOut className="stroke-ot-text hover:stroke-ot-gray-600" size={22} />
+          <LogOut
+            className="stroke-ot-text hover:stroke-ot-gray-600"
+            size={22}
+          />
         </button>
       </div>
     </aside>

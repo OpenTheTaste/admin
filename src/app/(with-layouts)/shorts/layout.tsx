@@ -10,7 +10,7 @@ export default function ShortsLayout({
     <>
       <AdminTitle
         title="숏폼 관리"
-        description="숏폼을 관리합니다"
+        description="숏폼을 관리합니다."
         action={<AdminShortsUploadButton />}
       />
 

@@ -1,4 +1,5 @@
 import { api } from "@/shared/api";
+import { OriginMediaType } from "@entities/originMedia/apis";
 import {
   ApiResponse,
   BasePaginationParams,
@@ -41,6 +42,8 @@ export interface ShortsDetailResponse {
   title: string;
   description: string;
   originContentsTitle: string;
+  originId: number;
+  originType: OriginMediaType;
   uploaderNickname: string;
   duration: number;
   videoSize: number;

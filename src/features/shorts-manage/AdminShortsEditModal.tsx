@@ -35,6 +35,9 @@ export function AdminShortsEditModal({
   const [description, setDescription] = useState<string>("");
   const [selectedOriginal, setSelectedOriginal] =
     useState<OriginMediaItem | null>(null);
+  const [selectedOriginalTitle, setSelectedOriginalTitle] = useState<
+    string | null
+  >(null);
   const [isPublic, setIsPublic] = useState<PublicStatus>("PUBLIC");
   const [poster, setPoster] = useState<PosterState>({
     posterUrl: null,
@@ -47,8 +50,12 @@ export function AdminShortsEditModal({
     setTitle(data.title);
     setDescription(data.description);
     setIsPublic(data.publicStatus);
-    // FIXME: 데이터 타입 추가 서버에서 추가되면 수정할 예정 (originId, title, mediaType)
-    // setSelectedOriginal(data.originContentsTitle);
+    setSelectedOriginal({
+      originId: data.originId,
+      title: data.originContentsTitle,
+      mediaType: data.originType,
+    });
+    setSelectedOriginalTitle(data.originContentsTitle);
 
     setPoster({
       posterUrl: data.posterUrl,
@@ -95,12 +102,9 @@ export function AdminShortsEditModal({
         body,
       });
 
-      let s3Result = "poster skipped";
-
       try {
         if (poster.posterFile) {
           await uploadFileToS3(posterUploadUrl, poster.posterFile);
-          s3Result = "poster ✅";
         }
         onClose();
       } catch (error) {
@@ -169,6 +173,7 @@ export function AdminShortsEditModal({
                 <div className="flex flex-col gap-6">
                   <AdminOriginalContentsDropdown
                     value={selectedOriginal}
+                    selectedTitle={selectedOriginalTitle}
                     onChange={setSelectedOriginal}
                   />
                   <AdminPublicStatus
