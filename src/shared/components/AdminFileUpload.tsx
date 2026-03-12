@@ -39,7 +39,7 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
         onChange={handleChange}
         className="hidden"
         id="file-upload"
-        accept=".mp4"
+        accept=".mp4,.mov,.webm,.m4v,video/mp4,video/quicktime,video/webm,video/x-m4v"
       />
       {value ? (
         <div className="flex items-center justify-between border border-ot-gray-600 rounded-lg px-4 py-3">
