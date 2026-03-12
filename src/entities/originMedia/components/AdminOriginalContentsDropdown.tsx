@@ -9,11 +9,13 @@ import { cn } from "@shared/utils";
 
 export interface AdminOriginalContentsDropdownProps {
   value: OriginMediaItem | null;
+  selectedTitle?: string | null;
   onChange: (original: OriginMediaItem) => void;
 }
 
 export function AdminOriginalContentsDropdown({
   value,
+  selectedTitle: initialTitle,
   onChange,
 }: AdminOriginalContentsDropdownProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -52,6 +54,11 @@ export function AdminOriginalContentsDropdown({
       }
     }
   };
+
+  const displayTitle =
+    initialTitle ??
+    originMediaList.find((o) => o.originId === value?.originId)?.title;
+
   return (
     <div>
       <p className="font-semibold text-lg mb-2">원본 콘텐츠 선택</p>
@@ -69,7 +76,7 @@ export function AdminOriginalContentsDropdown({
           <span
             className={cn(value ? "text-ot-background" : "text-ot-gray-600")}
           >
-            {value?.title ?? "원본 콘텐츠 선택"}
+            {displayTitle ?? value?.title ?? "원본 콘텐츠 선택"}
           </span>
           <ChevronDown
             size={16}
