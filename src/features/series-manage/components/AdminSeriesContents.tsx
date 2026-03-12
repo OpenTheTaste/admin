@@ -159,6 +159,11 @@ export function AdminSeriesContents({ searchWord }: AdminSeriesContentsProps) {
             })}
           </tbody>
         </table>
+        {!isLoading && seriesList.length === 0 && (
+          <div className="py-16 text-center text-ot-placeholder text-sm">
+            검색 결과가 없습니다.
+          </div>
+        )}
 
         {/* 무한스크롤 감지 타겟 */}
         <div ref={observerRef} className="py-4 flex justify-center">
