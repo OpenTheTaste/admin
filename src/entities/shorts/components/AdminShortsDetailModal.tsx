@@ -55,18 +55,12 @@ export function AdminShortsDetailModal({
             <p className="text-base font-semibold">썸네일 (5:7)</p>
             <div className="relative max-w-60 aspect-5/7 rounded-lg overflow-hidden">
               {data.posterUrl ? (
-                <>
-                  <Image
-                    src={data.posterUrl}
-                    alt={data.title}
-                    fill
-                    className="object-cover rounded-md"
-                  />
-                  <div
-                    className="w-full h-full rounded-md bg-ot-gray-800"
-                    aria-label="썸네일 없음"
-                  />
-                </>
+                <Image
+                  src={data.posterUrl}
+                  alt={data.title}
+                  fill
+                  className="object-cover rounded-md"
+                />
               ) : (
                 <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
                   <span className="text-xl font-bold">✕</span>

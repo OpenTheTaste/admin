@@ -84,18 +84,12 @@ export function AdminVideoContentsList({
                   <td className="py-3">
                     <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
                       {content.posterUrl ? (
-                        <>
-                          <Image
-                            src={content.posterUrl}
-                            alt={content.title}
-                            fill
-                            className="object-cover rounded-md"
-                          />
-                          <div
-                            className="w-full h-full rounded-md bg-ot-gray-800"
-                            aria-label="썸네일 없음"
-                          />
-                        </>
+                        <Image
+                          src={content.posterUrl}
+                          alt={content.title}
+                          fill
+                          className="object-cover rounded-md"
+                        />
                       ) : (
                         <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
                           <span className="text-xl font-bold">✕</span>
