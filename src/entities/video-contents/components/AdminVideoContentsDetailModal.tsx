@@ -53,12 +53,24 @@ export function AdminVideoContentsDetailModal({
             <div className="flex flex-col gap-1 ">
               <p className="text-sm text-ot-background">세로 (5:7)</p>
               <div className="relative w-60 aspect-5/7 rounded-lg overflow-hidden">
-                <Image
-                  src={data.posterUrl || ""}
-                  alt={`${data.posterUrl} 세로 썸네일`}
-                  fill
-                  className="object-cover"
-                />
+                {data.posterUrl ? (
+                  <>
+                    <Image
+                      src={data.posterUrl || ""}
+                      alt={`${data.posterUrl} 세로 썸네일`}
+                      fill
+                      className="object-cover"
+                    />
+                    <div
+                      className="w-full h-full rounded-md bg-ot-gray-800"
+                      aria-label="썸네일 없음"
+                    />
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full rounded-md bg-ot-gray-800 text-ot-gray-700">
+                    <span className="text-xl font-bold">✕</span>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex flex-col gap-1">
