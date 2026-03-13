@@ -5,8 +5,10 @@ import {
   CategoryCharts,
   MonitoringCategoryTabs,
 } from "@entities/statistics/components";
-import { useTagStatsByCategory } from "@entities/statistics/hooks";
-import { useShortFormConversion } from "@entities/statistics/hooks";
+import {
+  useShortFormConversion,
+  useTagStatsByCategory,
+} from "@entities/statistics/hooks";
 import { CategoryStatistic } from "@shared/mocks/mockAdminCategoryStatistics";
 
 export function StatisticsContents() {
@@ -66,20 +68,37 @@ export function StatisticsContents() {
 
           <div className="flex-1 flex items-center justify-center">
             <div className="w-full flex flex-col items-center justify-center py-10 border border-ot-gray-600 rounded-lg bg-ot-gray-800/50">
-              <div className="flex items-center justify-center gap-3">
-                <span className="text-[48px] font-bold text-ot-primary-100">
-                  {shortFormConversion?.thisMonthRate.toFixed(1)}%
-                </span>
-                <span className="text-ot-primary-200 text-[18px] font-semibold">
-                  {shortFormConversion?.rateDiff !== undefined && (
-                    <>
-                      {shortFormConversion.rateDiff >= 0 ? "+" : ""}
-                      {shortFormConversion.rateDiff.toFixed(1)}%
-                      {shortFormConversion.rateDiff >= 0 ? "↑" : "↓"}
-                    </>
-                  )}
-                </span>
-              </div>
+              {shortFormConversion ? (
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-[48px] font-bold text-ot-primary-100">
+                    {shortFormConversion.thisMonthRate.toFixed(1)}%
+                  </span>
+                  <span className="text-ot-primary-200 text-[18px] font-semibold">
+                    {shortFormConversion.rateDiff !== undefined && (
+                      <>
+                        {shortFormConversion.rateDiff >= 0 ? "+" : ""}
+                        {shortFormConversion.rateDiff.toFixed(1)}%
+                        {shortFormConversion.rateDiff >= 0 ? "↑" : "↓"}
+                      </>
+                    )}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="flex items-center justify-center gap-3 opacity-30">
+                    <span className="text-ot-placeholder text-[24px]">ex)</span>
+                    <span className="text-[48px] font-bold text-ot-primary-100">
+                      18.5%
+                    </span>
+                    <span className="text-ot-primary-200 text-[18px] font-semibold">
+                      +2.1% ↑
+                    </span>
+                  </div>
+                  <p className="text-ot-placeholder text-sm">
+                    전환율 데이터가 없습니다.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
