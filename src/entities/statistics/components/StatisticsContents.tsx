@@ -69,7 +69,7 @@ export function StatisticsContents() {
           <div className="flex-1 flex items-center justify-center">
             <div className="w-full flex flex-col items-center justify-center py-10 border border-ot-gray-600 rounded-lg bg-ot-gray-800/50">
               {shortFormConversion ? (
-                <div className="flex items-center justify-center gap-3">
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-1 lg:gap-3">
                   <span className="text-[48px] font-bold text-ot-primary-100">
                     {shortFormConversion.thisMonthRate.toFixed(1)}%
                   </span>
