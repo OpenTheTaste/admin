@@ -13,9 +13,25 @@ export interface AdminFileUploadProps {
 export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const MIN_FILE_SIZE = 5 * 1024 * 1024; // 5MB (최소)
+  const MAX_FILE_SIZE = 200 * 1024 * 1024 * 1024; // 200GB (최대)
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // 파일 크기 검증
+    if (file.size < MIN_FILE_SIZE) {
+      alert("영상 파일은 5MB 이상이어야 합니다.");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      alert("영상 파일은 200GB 이하이어야 합니다.");
+      e.target.value = "";
+      return;
+    }
+
     const video = document.createElement("video");
     video.preload = "metadata";
     video.src = URL.createObjectURL(file);
@@ -77,7 +93,7 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
             클릭하여 파일 선택 또는 드래그 앤 드롭
           </span>
           <span className="text-xs text-ot-gray-700 mt-1">
-            MP4, MOV, AVI (최대 10GB)
+            MP4, MOV, WEBM (5MB 이상 · 최대 200GB)
           </span>
         </label>
       )}
