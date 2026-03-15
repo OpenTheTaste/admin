@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 import { AdminCategoryDropdown } from "@entities/category/components";
@@ -12,6 +13,7 @@ import { AdminTagDropdown } from "@entities/tag/components";
 import {
   SeriesTitleItem,
   UploadVideoRequest,
+  completeMultipartUploadApi,
 } from "@entities/video-contents/apis";
 import { useUploadVideoContents } from "@entities/video-contents/hooks";
 import {
@@ -24,7 +26,12 @@ import {
   PosterState,
 } from "@shared/components";
 import { useIsMounted } from "@shared/hooks";
-import { uploadFileToS3 } from "@shared/lib";
+import {
+  UploadedPart,
+  getContentsPartUploadUrls,
+  uploadFileToS3,
+  uploadVideoMultipart,
+} from "@shared/lib";
 import { ContentType, VideoFileMeta } from "@shared/types";
 
 interface AdminUploadModalProps {
@@ -51,6 +58,7 @@ export function AdminVideoContentsUploadModal({
 }
 
 function ModalInner({ onClose }: { onClose: () => void }) {
+  const queryClient = useQueryClient();
   const { mutateAsync: uploadVideo, isPending } = useUploadVideoContents();
   const { data: categories } = useCategories();
 
@@ -73,6 +81,8 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   const { data: tagList } = useTagsByCategory(selectedCategory);
   const formRef = useRef<HTMLFormElement>(null);
 
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const isLoading = isPending || isUploading;
   // pendingTagNames 있으면 tagList 로드 후 세팅
   useEffect(() => {
     if (!pendingTagNames || !tagList) return;
@@ -139,12 +149,21 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   };
 
   const handleClose = () => {
-    if (isPending) return;
+    if (isLoading) return;
     onClose();
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // 5MB 미만 파일 업로드 차단
+    const MIN_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    if (videoFile!.size < MIN_FILE_SIZE) {
+      alert("영상 파일은 5MB 이상이어야 합니다.");
+      return;
+    }
+
+    setIsUploading(true);
 
     const body: UploadVideoRequest = {
       title,
@@ -154,7 +173,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
       categoryId: selectedCategory!,
       tagIdList: selectedTags,
       duration: videoFile!.duration,
-      videoSize: videoFile!.size,
+      videoSize: Math.ceil(videoFile!.size / 1024),
       seriesId:
         contentType === "시리즈" ? (selectedSeries ?? undefined) : undefined,
       posterFileName: poster.posterFile?.name,
@@ -166,11 +185,18 @@ function ModalInner({ onClose }: { onClose: () => void }) {
       // throw new Error("강제 에러 테스트"); // error 테스트 시 주석 해제
 
       // 1. 메타데이터 전송 → Presigned URL 수신
-      const { posterUploadUrl, thumbnailUploadUrl, originUploadUrl } =
-        await uploadVideo(body);
+      const {
+        contentsId,
+        posterUploadUrl,
+        thumbnailUploadUrl,
+        originUploadId,
+        originObjectKey,
+        originTotalPartCount,
+        originPartSizeBytes,
+      } = await uploadVideo(body);
 
       // 2. S3 직접 업로드 (병렬)
-      await Promise.all([
+      const [, , parts] = await Promise.all([
         poster.posterFile
           ? uploadFileToS3(posterUploadUrl, poster.posterFile)
           : Promise.resolve(),
@@ -178,14 +204,31 @@ function ModalInner({ onClose }: { onClose: () => void }) {
           ? uploadFileToS3(thumbnailUploadUrl, poster.thumbnailFile)
           : Promise.resolve(),
         videoFile!.file
-          ? uploadFileToS3(originUploadUrl, videoFile!.file)
-          : Promise.resolve(),
+          ? uploadVideoMultipart(
+              contentsId,
+              originUploadId,
+              originObjectKey,
+              videoFile!.file,
+              originPartSizeBytes,
+              originTotalPartCount,
+              getContentsPartUploadUrls,
+            )
+          : Promise.resolve([]),
       ]);
 
+      // 3. 멀티파트 완료 요청
+      await completeMultipartUploadApi(contentsId, {
+        objectKey: originObjectKey,
+        uploadId: originUploadId,
+        parts: parts as UploadedPart[],
+      });
+      queryClient.invalidateQueries({ queryKey: ["contents", "list"] });
       onClose();
     } catch (error) {
       console.error("업로드 실패:", error);
-      setUploadError(true);
+      setUploadError(true); // 실패 시 재시도 모달만 뜸, onClose() 안 탐
+    } finally {
+      setIsUploading(false); // 성공/실패 모두 로딩 해제
     }
   };
 
@@ -283,16 +326,16 @@ function ModalInner({ onClose }: { onClose: () => void }) {
                   onClick={handleClose}
                   className="py-3 font-semibold"
                   variant="outline"
-                  disabled={isPending}
+                  disabled={isLoading}
                 >
                   취소
                 </CommonButton>
                 <CommonButton
                   type="submit"
                   className="py-3 font-semibold"
-                  disabled={isPending || !isFormValid}
+                  disabled={isLoading || !isFormValid}
                 >
-                  {isPending ? "업로드 중..." : "업로드 시작"}
+                  {isLoading ? "업로드 중..." : "업로드 시작"}
                 </CommonButton>
               </div>
             </form>
