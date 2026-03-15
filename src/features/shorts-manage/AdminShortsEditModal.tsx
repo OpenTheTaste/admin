@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { uploadFileToS3 } from "@/shared/lib";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { OriginMediaItem } from "@entities/originMedia/apis";
 import { AdminOriginalContentsDropdown } from "@entities/originMedia/components";
@@ -27,6 +28,7 @@ export function AdminShortsEditModal({
   mediaId,
   onClose,
 }: AdminShortsEditModalProps) {
+  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useShortsDetail(mediaId);
   const { mutateAsync: updateShorts, isPending } = useUpdateShorts();
 
@@ -106,6 +108,7 @@ export function AdminShortsEditModal({
         if (poster.posterFile) {
           await uploadFileToS3(posterUploadUrl, poster.posterFile);
         }
+        queryClient.invalidateQueries({ queryKey: ["shorts", "list"] });
         onClose();
       } catch (error) {
         setUploadError(true);
