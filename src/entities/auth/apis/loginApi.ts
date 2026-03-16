@@ -9,6 +9,8 @@ export interface AdminLoginRequest {
 export interface AdminLoginResponse {
   memberId: number;
   role: Role;
+  email: string;
+  nickname: string;
 }
 
 export const loginApi = async (body: AdminLoginRequest) => {

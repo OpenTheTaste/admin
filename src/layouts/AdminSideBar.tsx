@@ -52,7 +52,7 @@ const menus = [
 export const AdminSideBar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { role, clearAuth } = useAuthStore();
+  const { role, email, nickname, clearAuth } = useAuthStore();
 
   const filteredMenus = menus.filter((menu) =>
     role ? menu.roles.includes(role) : false,
@@ -101,11 +101,8 @@ export const AdminSideBar = () => {
 
       <div className="mt-auto py-3 border-t border-ot-gray-600 px-4 flex items-center justify-between">
         <div>
-          {/* TODO: 실제 user api 데이터 들어갈 자리 */}
-          <p className="font-semibold text-ot-text text-md">
-            {role === "ADMIN" ? "관리자" : "에디터"}
-          </p>
-          <p className="text-ot-placeholder text-sm">-</p>
+          <p className="font-semibold text-ot-text text-md">{nickname}</p>
+          <p className="text-ot-placeholder text-sm">{email}</p>
         </div>
         <button className="cursor-pointer" onClick={handleLogout}>
           <LogOut

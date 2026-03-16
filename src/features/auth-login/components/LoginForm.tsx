@@ -17,8 +17,13 @@ export function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { memberId, role } = await loginApi({ email, password });
-      setAuth(memberId, role); // auth 상태 저장
+      const {
+        memberId,
+        role,
+        email: userEmail,
+        nickname,
+      } = await loginApi({ email, password });
+      setAuth(memberId, role, userEmail, nickname); // auth 상태 저장
 
       router.push("/");
     } catch (error) {
