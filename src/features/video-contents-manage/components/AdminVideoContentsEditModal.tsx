@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTagsByCategory } from "@/entities/statistics/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 import { AdminCategoryDropdown } from "@entities/category/components";
@@ -34,6 +35,7 @@ export function AdminVideoContentsEditModal({
   mediaId,
   onClose,
 }: AdminVideoContentsEditModalProps) {
+  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useContentDetail(mediaId);
   const { data: categories } = useCategories();
   const { mutateAsync: updateVideo, isPending } = useUpdateVideoContents();
@@ -200,10 +202,10 @@ export function AdminVideoContentsEditModal({
 
       const failed = s3Results.filter((r) => r.status === "rejected");
       if (failed.length > 0) {
-        console.error("실패한 업로드:", failed);
         setUploadError(true);
         return;
       }
+      queryClient.invalidateQueries({ queryKey: ["contents", "list"] });
       onClose();
     } catch (error) {
       console.error("수정 실패:", error);

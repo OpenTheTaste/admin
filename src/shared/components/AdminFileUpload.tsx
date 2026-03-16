@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Film, Upload, X } from "lucide-react";
+import { MAX_FILE_SIZE, MIN_FILE_SIZE } from "@shared/constants";
 import { formatDuration, formatSize } from "@shared/lib";
 import { VideoFileMeta } from "@shared/types";
 
@@ -16,6 +17,19 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // 파일 크기 검증
+    if (file.size < MIN_FILE_SIZE) {
+      alert("영상 파일은 5MB 이상이어야 합니다.");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      alert("영상 파일은 200GB 이하여야 합니다.");
+      e.target.value = "";
+      return;
+    }
+
     const video = document.createElement("video");
     video.preload = "metadata";
     video.src = URL.createObjectURL(file);
@@ -77,7 +91,7 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
             클릭하여 파일 선택 또는 드래그 앤 드롭
           </span>
           <span className="text-xs text-ot-gray-700 mt-1">
-            MP4, MOV, AVI (최대 10GB)
+            MP4, MOV, WEBM (5MB 이상 · 최대 200GB)
           </span>
         </label>
       )}

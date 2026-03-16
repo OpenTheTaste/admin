@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { UploadedPart } from "@shared/lib";
 import { ApiResponse, PublicStatus } from "@shared/types";
 
 export interface UploadShortsRequest {
@@ -22,7 +23,9 @@ export interface UploadShortsResponse {
   masterPlaylistObjectKey: string;
   posterUploadUrl: string; // S3에 업로드할 때 사용할 URL - 포스터 이미지 파일
   thumbnailUploadUrl: string; // S3에 업로드할 때 사용할 URL - 썸네일 이미지 파일
-  originUploadUrl: string; // S3에 업로드할 때 사용할 URL - 원본 영상 파일
+  originUploadId: string;
+  originTotalPartCount: number;
+  originPartSizeBytes: number;
 }
 
 // 콘텐츠 업로드 API
@@ -32,6 +35,24 @@ export const uploadShortsApi = async (body: UploadShortsRequest) => {
     body,
   );
   return res.data.data;
+};
+
+// 멀티파트 완료 post
+export interface CompleteMultipartRequest {
+  objectKey: string;
+  uploadId: string;
+  parts: UploadedPart[];
+}
+
+export const completeMultipartUploadApi = async (
+  shortformId: number,
+  body: CompleteMultipartRequest,
+) => {
+  const res = await api.post<ApiResponse<void>>(
+    `/short-forms/${shortformId}/upload/complete`,
+    body,
+  );
+  return res.data;
 };
 
 export interface UpdateShortsRequest {

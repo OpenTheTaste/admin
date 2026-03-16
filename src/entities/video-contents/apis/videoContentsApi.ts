@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { UploadedPart } from "@shared/lib";
 import { ApiResponse, PublicStatus } from "@shared/types";
 
 export interface UploadVideoRequest {
@@ -22,9 +23,11 @@ export interface UploadVideoResponse {
   thumbnailObjectKey: string;
   originObjectKey: string;
   masterPlaylistObjectKey: string;
-  posterUploadUrl: string; // S3에 업로드할 때 사용할 URL - 포스터 이미지 파일
-  thumbnailUploadUrl: string; // S3에 업로드할 때 사용할 URL - 썸네일 이미지 파일
-  originUploadUrl: string; // S3에 업로드할 때 사용할 URL - 원본 영상 파일 (n개 예정)
+  posterUploadUrl: string;
+  thumbnailUploadUrl: string;
+  originUploadId: string;
+  originTotalPartCount: number;
+  originPartSizeBytes: number;
 }
 
 // 콘텐츠 업로드 API
@@ -34,6 +37,24 @@ export const uploadVideoApi = async (body: UploadVideoRequest) => {
     body,
   );
   return res.data.data;
+};
+
+// 멀티파트 완료 post
+export interface CompleteMultipartRequest {
+  objectKey: string;
+  uploadId: string;
+  parts: UploadedPart[];
+}
+
+export const completeMultipartUploadApi = async (
+  contentsId: number,
+  body: CompleteMultipartRequest,
+) => {
+  const res = await api.post<ApiResponse<void>>(
+    `/admin/contents/${contentsId}/upload/complete`,
+    body,
+  );
+  return res.data;
 };
 
 export interface UpadteVideoRequest {
@@ -52,11 +73,8 @@ export interface UpadteVideoResponse {
   contentsId: number;
   posterObjectKey: string;
   thumbnailObjectKey: string;
-  originObjectKey: string;
-  masterPlaylistObjectKey: string;
   posterUploadUrl: string; // S3에 업로드할 때 사용할 URL - 포스터 이미지 파일
   thumbnailUploadUrl: string; // S3에 업로드할 때 사용할 URL - 썸네일 이미지 파일
-  originUploadUrl: string; // S3에 업로드할 때 사용할 URL - 원본 영상 파일 (n개 예정)
 }
 
 // 콘텐츠 수정 API

@@ -2,12 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useIsMounted } from "@/shared/hooks";
-import { uploadFileToS3 } from "@/shared/lib";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { OriginMediaItem } from "@entities/originMedia/apis";
 import { AdminOriginalContentsDropdown } from "@entities/originMedia/components";
-import { UploadShortsRequest } from "@entities/shorts/apis";
+import {
+  UploadShortsRequest,
+  completeMultipartUploadApi,
+} from "@entities/shorts/apis";
 import { useUploadShorts } from "@entities/shorts/hooks";
 import {
   AdminFileUpload,
@@ -18,6 +20,14 @@ import {
   ConfirmModal,
   PosterState,
 } from "@shared/components";
+import { MAX_FILE_SIZE, MIN_FILE_SIZE } from "@shared/constants";
+import { useIsMounted } from "@shared/hooks";
+import {
+  UploadedPart,
+  getShortFormPartUploadUrls,
+  uploadFileToS3,
+  uploadVideoMultipart,
+} from "@shared/lib";
 import { VideoFileMeta } from "@shared/types";
 
 interface AdminShortsUploadModalProps {
@@ -30,6 +40,7 @@ export function AdminShortsUploadModal({
   onClose,
 }: AdminShortsUploadModalProps) {
   const mounted = useIsMounted();
+  const queryClient = useQueryClient();
   const { mutateAsync: uploadShorts, isPending } = useUploadShorts();
 
   const [title, setTitle] = useState<string>("");
@@ -42,6 +53,7 @@ export function AdminShortsUploadModal({
     posterUrl: null,
   });
   const [uploadError, setUploadError] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const formRef = useRef<HTMLFormElement>(null);
   const isFormValid =
@@ -69,9 +81,28 @@ export function AdminShortsUploadModal({
 
   if (!mounted || !open) return null;
 
+  const isLoading = isPending || isUploading;
+
+  const handleClose = () => {
+    if (isLoading) return;
+    onClose();
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!videoFile || !selectedOriginal) return;
+
+    // 5MB 미만, 200GB 초과 파일 업로드 차단
+    if (videoFile.size < MIN_FILE_SIZE) {
+      alert("영상 파일은 5MB 이상이어야 합니다.");
+      return;
+    }
+    if (videoFile!.size > MAX_FILE_SIZE) {
+      alert("영상 파일은 200GB 이하여야 합니다.");
+      return;
+    }
+
+    setIsUploading(true);
 
     const body: UploadShortsRequest = {
       title,
@@ -80,34 +111,58 @@ export function AdminShortsUploadModal({
       publicStatus: isPublic ? "PUBLIC" : "PRIVATE",
       originId: selectedOriginal.originId,
       duration: videoFile.duration,
-      videoSize: videoFile.size,
+      videoSize: Math.ceil(videoFile.size / 1024), // bytes → KB 변환 과정
       posterFileName: poster.posterFile?.name,
       thumbnailFileName: poster.thumbnailFile?.name,
-      originFileName: videoFile!.name,
+      originFileName: videoFile.name,
     };
+
     try {
       // throw new Error("강제 에러 테스트"); // error 테스트 시 주석 해제
-      const { posterUploadUrl, originUploadUrl } = await uploadShorts(body);
 
-      // S3 직접 업로드 (병렬)
-      await Promise.all([
+      // 1. 메타데이터 전송 → Presigned URL 수신
+      const {
+        shortFormId,
+        posterUploadUrl,
+        originUploadId,
+        originObjectKey,
+        originTotalPartCount,
+        originPartSizeBytes,
+      } = await uploadShorts(body);
+
+      // 2. S3 직접 업로드 (병렬)
+      const [, parts] = await Promise.all([
         poster.posterFile
           ? uploadFileToS3(posterUploadUrl, poster.posterFile)
           : Promise.resolve(),
         videoFile.file
-          ? uploadFileToS3(originUploadUrl, videoFile.file)
-          : Promise.resolve(),
+          ? uploadVideoMultipart(
+              shortFormId,
+              originUploadId,
+              originObjectKey,
+              videoFile.file,
+              originPartSizeBytes,
+              originTotalPartCount,
+              getShortFormPartUploadUrls,
+            )
+          : Promise.resolve([]),
       ]);
+
+      // 3. 멀티파트 완료 요청
+      await completeMultipartUploadApi(shortFormId, {
+        objectKey: originObjectKey,
+        uploadId: originUploadId,
+        parts: parts as UploadedPart[],
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["shorts", "list"] }); // 영상 업로드 completed 성공 시 list invalidate
       onClose();
     } catch (error) {
       console.error("업로드 실패:", error);
-      setUploadError(true);
+      setUploadError(true); //실패 시 재시도 모달만 뜸, onClose() 안 탐
+    } finally {
+      setIsUploading(false);
     }
-  };
-
-  const handleClose = () => {
-    if (isPending) return;
-    onClose();
   };
 
   const handleRetry = () => {
@@ -189,16 +244,16 @@ export function AdminShortsUploadModal({
                   onClick={handleClose}
                   className="py-3 font-semibold"
                   variant="outline"
-                  disabled={isPending}
+                  disabled={isLoading}
                 >
                   취소
                 </CommonButton>
                 <CommonButton
                   type="submit"
                   className="py-3 font-semibold"
-                  disabled={isPending || !isFormValid}
+                  disabled={isLoading || !isFormValid}
                 >
-                  {isPending ? "업로드 중..." : "업로드 시작"}
+                  {isLoading ? "업로드 중..." : "업로드 시작"}
                 </CommonButton>
               </div>
             </form>
@@ -213,7 +268,7 @@ export function AdminShortsUploadModal({
         cancelText="취소"
         onConfirm={handleRetry}
         onClose={() => setUploadError(false)}
-        disabled={isPending}
+        disabled={isLoading}
       />
     </>
   );
