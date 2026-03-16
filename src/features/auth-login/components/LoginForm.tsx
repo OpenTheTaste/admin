@@ -5,17 +5,20 @@ import { useState } from "react";
 import { loginApi } from "@entities/auth/apis";
 import { EmailField, PasswordField } from "@entities/auth/components";
 import { CommonButton } from "@shared/components";
+import { useAuthStore } from "@shared/store";
 
 export function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const setAuth = useAuthStore((s) => s.setAuth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await loginApi({ email, password });
+      const { memberId, role } = await loginApi({ email, password });
+      setAuth(memberId, role); // auth 상태 저장
 
       router.push("/");
     } catch (error) {
