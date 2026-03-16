@@ -3,8 +3,8 @@ import "./globals.css";
 import Providers from "./provider";
 
 export const metadata: Metadata = {
-  title: "Admin",
-  description: "Admin",
+  title: "O+T Admin",
+  description: "O+T Admin",
 };
 
 export default function RootLayout({
