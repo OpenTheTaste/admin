@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { MAX_FILE_SIZE, MIN_FILE_SIZE } from "@/shared/constants";
 import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
@@ -157,9 +158,12 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     e.preventDefault();
 
     // 5MB 미만 파일 업로드 차단
-    const MIN_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     if (videoFile!.size < MIN_FILE_SIZE) {
       alert("영상 파일은 5MB 이상이어야 합니다.");
+      return;
+    }
+    if (videoFile!.size > MAX_FILE_SIZE) {
+      alert("영상 파일은 200GB 이하여야 합니다.");
       return;
     }
 

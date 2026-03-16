@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Film, Upload, X } from "lucide-react";
+import { MAX_FILE_SIZE, MIN_FILE_SIZE } from "@shared/constants";
 import { formatDuration, formatSize } from "@shared/lib";
 import { VideoFileMeta } from "@shared/types";
 
@@ -12,9 +13,6 @@ export interface AdminFileUploadProps {
 
 export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const MIN_FILE_SIZE = 5 * 1024 * 1024; // 5MB (최소)
-  const MAX_FILE_SIZE = 200 * 1024 * 1024 * 1024; // 200GB (최대)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -27,7 +25,7 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      alert("영상 파일은 200GB 이하이어야 합니다.");
+      alert("영상 파일은 200GB 이하여야 합니다.");
       e.target.value = "";
       return;
     }
