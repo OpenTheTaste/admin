@@ -28,6 +28,12 @@ export const useAuthStore = create<AuthState>()(
       clearAuth: () =>
         set({ memberId: null, role: null, email: null, nickname: null }),
     }),
-    { name: "auth-storage" },
+    {
+      name: "auth-storage",
+      partialize: (state) => ({
+        memberId: state.memberId,
+        role: state.role,
+      }),
+    },
   ),
 );
