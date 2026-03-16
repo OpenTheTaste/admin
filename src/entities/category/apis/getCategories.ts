@@ -7,7 +7,6 @@ export interface CategoryResponse {
 }
 
 export const getCategoriespi = async () => {
-  const res =
-    await api.get<ApiResponse<CategoryResponse[]>>("/admin/categories");
+  const res = await api.get<ApiResponse<CategoryResponse[]>>("/categories");
   return res.data.data;
 };

@@ -11,3 +11,4 @@ export { AdminPosterUpload } from "./AdminPosterUpload";
 export { AdminPublicBadge } from "./AdminPublicBadge";
 export { ConfirmModal } from "./ConfirmModal";
 export type { PosterState } from "./AdminPosterUpload";
+export { RoleGuard } from "./RoleGuard";
