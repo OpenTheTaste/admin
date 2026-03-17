@@ -52,7 +52,9 @@ const menus = [
 export const AdminSideBar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { role, email, nickname, clearAuth } = useAuthStore();
+  const { role, email, nickname, clearAuth, _hasHydrated } = useAuthStore();
+
+  if (!_hasHydrated) return null;
 
   const filteredMenus = menus.filter((menu) =>
     role ? menu.roles.includes(role) : false,
