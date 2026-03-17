@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { useUploadSeries } from "@entities/series/hooks";
@@ -41,6 +42,7 @@ export function AdminSeriesUploadModal({
 }
 
 function ModalInner({ onClose }: { onClose: () => void }) {
+  const queryClient = useQueryClient();
   const { mutateAsync: uploadSeries, isPending } = useUploadSeries();
 
   const [title, setTitle] = useState("");
@@ -106,6 +108,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
         uploadFileToS3(thumbnailUploadUrl, poster.thumbnailFile!),
       ]);
 
+      queryClient.invalidateQueries({ queryKey: ["series", "list"] });
       onClose();
     } catch (error) {
       console.error("업로드 실패:", error);

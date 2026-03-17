@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { useCategories } from "@entities/category/hooks";
 import { SeriesListItem } from "@entities/series/apis";
-import { useFixSeries } from "@entities/series/hooks";
-import { useSeriesDetail } from "@entities/series/hooks";
+import { useFixSeries, useSeriesDetail } from "@entities/series/hooks";
 import { useTagsByCategory } from "@entities/statistics/hooks";
 import { AdminTagDropdown } from "@entities/tag/components";
 import {
@@ -31,6 +31,7 @@ export function AdminSeriesEditModal({
   onClose,
   onUpdate,
 }: AdminSeriesFixModalProps) {
+  const queryClient = useQueryClient();
   const { data: categories } = useCategories();
   const { data: seriesDetail } = useSeriesDetail(series?.mediaId ?? null);
   const { mutateAsync: fixSeries, isPending } = useFixSeries();
@@ -149,6 +150,7 @@ export function AdminSeriesEditModal({
         await Promise.all(s3Uploads);
       }
 
+      queryClient.invalidateQueries({ queryKey: ["series", "list"] });
       onUpdate();
     } catch (error) {
       console.error("수정 실패:", error);
