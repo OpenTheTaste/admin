@@ -4,13 +4,14 @@ import { useState } from "react";
 import { AdminUserContents } from "@entities/user/components";
 import { AdminSearch } from "@shared/components";
 
-const ROLE_OPTIONS = ["전체사용자", "사용자", "관리자", "에디터"];
+const ROLE_OPTIONS = ["전체 사용자", "사용자", "관리자", "에디터", "중지됨"];
 
 const ROLE_OPTION_TO_API: Record<string, string | undefined> = {
   전체사용자: undefined,
   사용자: "MEMBER",
   관리자: "ADMIN",
   에디터: "EDITOR",
+  중지됨: "SUSPENDED",
 };
 
 export function AdminUserSection() {
