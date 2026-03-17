@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/shared/utils";
 import { Loader2, RotateCw } from "lucide-react";
 import { IngestStatus } from "@entities/monitoring/apis";
 import {
@@ -10,11 +9,8 @@ import {
 } from "@entities/monitoring/components";
 import { useIngestJobs } from "@entities/monitoring/hooks";
 import { AdminSearch } from "@shared/components";
-
-const formatSize = (mb: number) => {
-  if (mb >= 1024) return `${(mb / 1024).toFixed(1)}GB`;
-  return `${mb}MB`;
-};
+import { formatSize } from "@shared/lib";
+import { cn } from "@shared/utils";
 
 const STATUS_LABEL_TO_VALUE: Record<string, IngestStatus | null> = {
   전체: null,
