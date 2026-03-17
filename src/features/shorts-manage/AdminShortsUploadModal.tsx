@@ -118,8 +118,6 @@ export function AdminShortsUploadModal({
     };
 
     try {
-      // throw new Error("강제 에러 테스트"); // error 테스트 시 주석 해제
-
       // 1. 메타데이터 전송 → Presigned URL 수신
       const {
         shortFormId,

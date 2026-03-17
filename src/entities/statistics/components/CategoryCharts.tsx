@@ -31,10 +31,9 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
     labels: data.labels,
     datasets: [
       {
-        // data: data.data,  // 기본 숫자대로 막대바 올림
         data: data.data.map((val) =>
           total > 0 ? parseFloat(((val / total) * 100).toFixed(1)) : 0,
-        ), // % 단위로 막대바 올림
+        ),
         backgroundColor: "#ffd1d7",
         borderRadius: 4,
         barThickness: 50,
@@ -68,7 +67,7 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
           width: 1,
         },
         ticks: {
-          stepSize: 20, // y축 단위 0%, 20%, 40%, ... 20씩
+          stepSize: 20,
           color: "#ffecef",
           callback: (value: number | string) => `${value}%`,
         },
