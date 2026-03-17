@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from "chart.js";
 import { TooltipItem } from "chart.js";
-import { CategoryStatistic } from "@shared/mocks/mockAdminCategoryStatistics";
+import { CategoryStatistic } from "@entities/statistics/apis";
 
 ChartJS.register(
   CategoryScale,
