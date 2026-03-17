@@ -182,3 +182,11 @@ body[style*="overflow: hidden"] .w-full.h-100 {
 .animate-spin-once {
   animation: spin-once 0.5s ease-in-out;
 }
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

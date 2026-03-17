@@ -2,33 +2,27 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Loader2, RotateCw } from "lucide-react";
-import { IngestStatus } from "@entities/monitoring/apis";
 import {
-  UploadProgressBar,
-  UploadStatusBadge,
-} from "@entities/monitoring/components";
+  INGEST_STATUS,
+  INGEST_STATUS_LABEL,
+  IngestStatus,
+} from "@entities/monitoring/apis";
+import { UploadStatusBadge } from "@entities/monitoring/components";
 import { useIngestJobs } from "@entities/monitoring/hooks";
 import { AdminSearch } from "@shared/components";
 import { formatSize } from "@shared/lib";
 import { cn } from "@shared/utils";
 
+const STATUS_OPTIONS = ["전체", "대기", "작업 중", "부분 성공", "성공", "실패"];
+
 const STATUS_LABEL_TO_VALUE: Record<string, IngestStatus | null> = {
   전체: null,
-  "S3 업로드 완료": "ORIGIN_UPLOADED",
-  트랜스코딩: "TRANSCODING",
-  "재업로드 중": "UPLOADING",
-  완료: "COMPLETED",
+  대기: INGEST_STATUS.PENDING,
+  "작업 중": INGEST_STATUS.PROCESSING,
+  "부분 성공": INGEST_STATUS.PARTIAL_SUCCESS,
+  성공: INGEST_STATUS.SUCCESS,
+  실패: INGEST_STATUS.FAIL,
 };
-
-// 상태 더 추가될 수 있다고 해주셨음
-const STATUS_PROGRESS: Record<IngestStatus, number> = {
-  ORIGIN_UPLOADED: 25,
-  TRANSCODING: 50,
-  UPLOADING: 75,
-  COMPLETED: 100,
-};
-
-const STATUS_OPTIONS = Object.keys(STATUS_LABEL_TO_VALUE);
 
 export function MonitoringContents() {
   const [searchUploadList, setSearchUploadList] = useState<string>("");
@@ -57,7 +51,6 @@ export function MonitoringContents() {
   }, [dataUpdatedAt]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
-
   const prevUpdatedAtRef = useRef(dataUpdatedAt);
 
   useEffect(() => {
@@ -95,109 +88,99 @@ export function MonitoringContents() {
       </div>
 
       <div className="flex flex-col rounded-xl overflow-hidden bg-ot-gray-700">
-        <div className="w-full">
-          {/* thead 고정 - 스크롤 밖 */}
-          <table className="w-full text-left border-collapse table-fixed">
-            <thead className="sticky top-0 bg-ot-gray-700 z-5">
-              <tr className="text-ot-text text-center font-semibold bg-ot-gray-800">
-                <th className="pl-8 py-3 w-[35%]">파일명</th>
-                <th className="px-3 w-[15%]">크기</th>
-                <th className="px-3 w-[15%]">업로더</th>
-                <th className="px-3 w-[15%]">상태</th>
-                <th className="pr-8 w-[20%]">진행률</th>
-              </tr>
-            </thead>
-          </table>
+        {/* thead 고정 - 스크롤 밖 */}
+        <table className="w-full table-fixed text-ot-text border-collapse">
+          <colgroup>
+            <col className="w-[55%]" />
+            <col className="w-[15%]" />
+            <col className="w-[15%]" />
+            <col className="w-[15%]" />
+          </colgroup>
+          <thead className="bg-ot-gray-800 text-md font-bold">
+            <tr>
+              <th className="py-3">파일명</th>
+              <th>크기</th>
+              <th>업로더</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+        </table>
 
-          {/* tbody - 스크롤 안 */}
-          <div
-            ref={scrollRef}
-            className={cn(
-              "max-h-100 min-h-100 overflow-y-auto",
-              "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent",
-              "[&::-webkit-scrollbar-thumb]:bg-ot-gray-500 [&::-webkit-scrollbar-thumb]:rounded-full",
-            )}
-          >
-            <table className="w-full text-left border-collapse table-fixed">
-              <tbody className="divide-y divide-ot-gray-800">
-                {isPending && (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="text-center py-10 text-ot-placeholder"
-                    >
-                      불러오는 중...
-                    </td>
-                  </tr>
-                )}
-                {isError && (
-                  <tr>
-                    <td colSpan={5} className="text-center py-10 text-red-500">
-                      데이터를 불러오지 못했습니다.
-                    </td>
-                  </tr>
-                )}
-                {!isPending && !isError && filtered.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="text-center py-10 text-ot-placeholder"
-                    >
-                      검색 결과가 없습니다.
-                    </td>
-                  </tr>
-                )}
-                {filtered.map((item) => (
-                  <tr
-                    key={item.ingestJobId}
-                    className="hover:bg-ot-gray-700/50 transition-colors"
-                  >
-                    <td className="pl-8 py-4 text-ot-text truncate text-center max-w-0 overflow-hidden w-[35%]">
-                      {item.title}
-                    </td>
-                    <td className="px-3 py-4 text-ot-text text-center w-[15%]">
-                      {formatSize(item.videoSize)}
-                    </td>
-                    <td className="px-3 py-4 text-ot-text text-center w-[15%]">
-                      {item.uploaderName}
-                    </td>
-                    <td className="px-3 py-4 text-center w-[15%]">
-                      <UploadStatusBadge
-                        status={item.ingestStatus}
-                        text={
-                          item.ingestStatus === "ORIGIN_UPLOADED"
-                            ? "S3 업로드 완료"
-                            : item.ingestStatus === "TRANSCODING"
-                              ? "트랜스코딩"
-                              : item.ingestStatus === "UPLOADING"
-                                ? "재업로드 중"
-                                : "완료"
-                        }
-                      />
-                    </td>
-                    <td className="pr-8 py-4 text-center w-[20%]">
-                      <UploadProgressBar
-                        progress={STATUS_PROGRESS[item.ingestStatus]}
-                      />
-                    </td>
-                  </tr>
-                ))}
+        {/* tbody - 스크롤 안 */}
+        <div
+          ref={scrollRef}
+          className="max-h-100 min-h-100 overflow-y-auto scrollbar-hide"
+        >
+          <table className="w-full table-fixed text-ot-text border-collapse">
+            <colgroup>
+              <col className="w-[55%]" />
+              <col className="w-[15%]" />
+              <col className="w-[15%]" />
+              <col className="w-[15%]" />
+            </colgroup>
+            <tbody className="divide-y divide-ot-gray-800">
+              {isPending && (
                 <tr>
-                  <td colSpan={5}>
-                    <div className="py-1 flex justify-center">
-                      {isFetchingNextPage && (
-                        <Loader2
-                          className="animate-spin text-ot-placeholder"
-                          size={20}
-                        />
-                      )}
-                    </div>
+                  <td
+                    colSpan={4}
+                    className="text-center py-10 text-ot-placeholder"
+                  >
+                    불러오는 중...
                   </td>
                 </tr>
-              </tbody>
-            </table>
-            <div ref={observerRef} className="h-1" />
-          </div>
+              )}
+              {isError && (
+                <tr>
+                  <td colSpan={4} className="text-center py-10 text-red-500">
+                    데이터를 불러오지 못했습니다.
+                  </td>
+                </tr>
+              )}
+              {!isPending && !isError && filtered.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="text-center py-10 text-ot-placeholder"
+                  >
+                    검색 결과가 없습니다.
+                  </td>
+                </tr>
+              )}
+              {filtered.map((item) => (
+                <tr
+                  key={item.ingestJobId}
+                  className="hover:bg-ot-gray-700/30 transition-colors"
+                >
+                  <td className="py-5 text-center truncate max-w-0 overflow-hidden">
+                    {item.title}
+                  </td>
+                  <td className="py-5 text-center">
+                    {formatSize(item.videoSize)}
+                  </td>
+                  <td className="py-5 text-center">{item.uploaderName}</td>
+                  <td className="py-5 text-center">
+                    <UploadStatusBadge
+                      status={item.ingestStatus}
+                      text={INGEST_STATUS_LABEL[item.ingestStatus]}
+                    />
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td colSpan={4}>
+                  <div className="py-1 flex justify-center">
+                    {isFetchingNextPage && (
+                      <Loader2
+                        className="animate-spin text-ot-placeholder"
+                        size={20}
+                      />
+                    )}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div ref={observerRef} className="h-1" />
         </div>
       </div>
     </div>
