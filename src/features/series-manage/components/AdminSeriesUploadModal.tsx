@@ -56,6 +56,8 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     thumbnailUrl: null,
   });
   const [uploadError, setUploadError] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const isLoading = isPending || isUploading;
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -82,12 +84,13 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   };
 
   const handleClose = () => {
-    if (isPending) return;
+    if (isLoading) return;
     onClose();
   };
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsUploading(true);
 
     try {
       // 1. 메타데이터 전송 → Presigned URL 수신
@@ -113,6 +116,8 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     } catch (error) {
       console.error("업로드 실패:", error);
       setUploadError(true);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -193,16 +198,16 @@ function ModalInner({ onClose }: { onClose: () => void }) {
                   onClick={handleClose}
                   className="py-3 font-semibold"
                   variant="outline"
-                  disabled={isPending}
+                  disabled={isLoading}
                 >
                   취소
                 </CommonButton>
                 <CommonButton
                   type="submit"
                   className="py-3 font-semibold"
-                  disabled={isPending || !isFormValid}
+                  disabled={isLoading || !isFormValid}
                 >
-                  {isPending ? "업로드 중..." : "업로드 시작"}
+                  {isLoading ? "업로드 중..." : "업로드 시작"}
                 </CommonButton>
               </div>
             </form>
@@ -218,7 +223,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
         cancelText="취소"
         onConfirm={handleRetry}
         onClose={() => setUploadError(false)}
-        disabled={isPending}
+        disabled={isLoading}
       />
     </>
   );
