@@ -1,21 +1,23 @@
+import { INGEST_STATUS, IngestStatus } from "@entities/monitoring/apis";
 import { cn } from "@shared/utils";
 
 interface UploadStatusBadgeProps {
   text: string;
-  status: "ORIGIN_UPLOADED" | "TRANSCODING" | "UPLOADING" | "COMPLETED";
+  status: IngestStatus;
   className?: string;
 }
 
 export function UploadStatusBadge({
   text,
-  status = "ORIGIN_UPLOADED",
+  status = INGEST_STATUS.PENDING,
   className,
 }: UploadStatusBadgeProps) {
-  const statusStyles = {
-    ORIGIN_UPLOADED: "bg-ot-green",
-    TRANSCODING: "bg-ot-orange",
-    UPLOADING: "bg-ot-blue",
-    COMPLETED: "bg-ot-pink",
+  const statusStyles: Record<IngestStatus, string> = {
+    PENDING: "bg-ot-green",
+    PROCESSING: "bg-ot-blue",
+    PARTIAL_SUCCESS: "bg-ot-orange",
+    SUCCESS: "bg-ot-pink",
+    FAIL: "bg-red-600",
   };
 
   return (

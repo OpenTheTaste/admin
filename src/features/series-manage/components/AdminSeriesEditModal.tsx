@@ -2,9 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { useCategories } from "@entities/category/hooks";
+import { SeriesListItem } from "@entities/series/apis";
+import { useFixSeries, useSeriesDetail } from "@entities/series/hooks";
+import { useTagsByCategory } from "@entities/statistics/hooks";
 import { AdminTagDropdown } from "@entities/tag/components";
 import {
   AdminPosterUpload,
@@ -14,10 +18,6 @@ import {
   ConfirmModal,
   PosterState,
 } from "@shared/components";
-import { SeriesListItem } from "@entities/series/apis";
-import { useFixSeries } from "@entities/series/hooks";
-import { useSeriesDetail } from "@entities/series/hooks";
-import { useTagsByCategory } from "@entities/statistics/hooks";
 import { uploadFileToS3 } from "@shared/lib";
 
 interface AdminSeriesFixModalProps {
@@ -31,6 +31,7 @@ export function AdminSeriesEditModal({
   onClose,
   onUpdate,
 }: AdminSeriesFixModalProps) {
+  const queryClient = useQueryClient();
   const { data: categories } = useCategories();
   const { data: seriesDetail } = useSeriesDetail(series?.mediaId ?? null);
   const { mutateAsync: fixSeries, isPending } = useFixSeries();
@@ -149,6 +150,7 @@ export function AdminSeriesEditModal({
         await Promise.all(s3Uploads);
       }
 
+      queryClient.invalidateQueries({ queryKey: ["series", "list"] });
       onUpdate();
     } catch (error) {
       console.error("수정 실패:", error);
@@ -197,14 +199,14 @@ export function AdminSeriesEditModal({
             >
               <AdminTextInput
                 label="제목"
-                placeholder="콘텐츠 제목을 입력하세요"
+                placeholder="시리즈 제목을 입력하세요"
                 value={title}
                 onChange={setTitle}
               />
 
               <AdminTextInput
                 label="설명"
-                placeholder="콘텐츠 설명을 입력하세요"
+                placeholder="시리즈 설명을 입력하세요"
                 multiline
                 value={description}
                 onChange={setDescription}

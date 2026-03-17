@@ -64,7 +64,8 @@ export function AdminFileUpload({ value, onChange }: AdminFileUploadProps) {
             <div>
               <p className="text-sm text-ot-background">{value.name}</p>
               <p className="text-xs text-ot-gray-600 mt-0.5">
-                {formatSize(value.size)} | {formatDuration(value.duration)}
+                {formatSize(value.size / 1024)} |{" "}
+                {formatDuration(value.duration)}
               </p>
             </div>
           </div>

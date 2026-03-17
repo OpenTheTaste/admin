@@ -95,7 +95,7 @@ export function AdminShortsList({
                       )}
                     </div>
                   </td>
-                  <td className="py-3">
+                  <td className="py-3 text-center">
                     <div className="flex flex-col font-semibold">
                       <span>{short.title}</span>
                     </div>

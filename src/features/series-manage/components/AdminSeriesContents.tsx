@@ -92,7 +92,7 @@ export function AdminSeriesContents({ searchWord }: AdminSeriesContentsProps) {
                     className="hover:bg-ot-gray-800/30 transition-colors cursor-pointer"
                   >
                     <td className="py-3">
-                      <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
+                      <div className="relative aspect-4/3 max-w-22 w-full mx-auto">
                         {content.thumbnailUrl ? (
                           <Image
                             src={content.thumbnailUrl}

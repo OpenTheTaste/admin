@@ -82,10 +82,10 @@ export function AdminVideoContentsList({
                   className="hover:bg-ot-gray-800/30 transition-colors cursor-pointer"
                 >
                   <td className="py-3">
-                    <div className="relative aspect-5/7 max-w-12 w-full mx-auto">
-                      {content.posterUrl ? (
+                    <div className="relative aspect-4/3 max-w-22 w-full mx-auto">
+                      {content.thumbnailUrl ? (
                         <Image
-                          src={content.posterUrl}
+                          src={content.thumbnailUrl}
                           alt={content.title}
                           fill
                           className="object-cover rounded-md"
@@ -97,7 +97,7 @@ export function AdminVideoContentsList({
                       )}
                     </div>
                   </td>
-                  <td className="py-3">
+                  <td className="py-3 text-center">
                     <div className="flex flex-col font-semibold">
                       <span>{content.title}</span>
                     </div>

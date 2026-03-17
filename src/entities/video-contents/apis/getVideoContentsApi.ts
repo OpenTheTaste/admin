@@ -9,7 +9,7 @@ import {
 
 export interface ContentListItem {
   mediaId: number;
-  posterUrl: string;
+  thumbnailUrl: string;
   title: string;
   publicStatus?: PublicStatus;
   uploadedDate: string;

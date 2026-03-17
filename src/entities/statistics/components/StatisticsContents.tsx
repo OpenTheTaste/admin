@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useCategories } from "@entities/category/hooks";
+import { CategoryStatistic } from "@entities/statistics/apis";
 import {
   CategoryCharts,
   MonitoringCategoryTabs,
@@ -9,7 +10,6 @@ import {
   useShortFormConversion,
   useTagStatsByCategory,
 } from "@entities/statistics/hooks";
-import { CategoryStatistic } from "@shared/mocks/mockAdminCategoryStatistics";
 
 export function StatisticsContents() {
   const { data: categories } = useCategories();
@@ -41,9 +41,9 @@ export function StatisticsContents() {
         </div>
       </section>
 
-      <section className="grid grid-cols-12 gap-6 items-start">
+      <section className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         {/* [왼쪽] 카테고리별 #태그 시청 통계 그래프 모음 */}
-        <div className="col-span-8 bg-ot-gray-700 rounded-xl p-8 h-90 flex flex-col">
+        <div className="xl:col-span-8 bg-ot-gray-700 rounded-xl p-8 h-90 flex flex-col">
           <h3 className="text-ot-text font-bold text-[18px] mb-3">
             카테고리별 #태그 시청 통계 (월별) : {currentMonth}월
           </h3>
@@ -61,19 +61,19 @@ export function StatisticsContents() {
         </div>
 
         {/* [오른쪽] 숏폼 콘텐츠 전환율 값 */}
-        <div className="flex flex-col col-span-4 rounded-xl p-6 h-90 bg-ot-gray-700">
-          <h3 className="text-ot-text font-bold text-[18px]">
+        <div className="flex flex-col xl:col-span-4 rounded-xl p-6 h-90 bg-ot-gray-700">
+          <h3 className="text-ot-text font-bold text-lg">
             숏폼 → 콘텐츠 전환율 (월별) : {currentMonth}월
           </h3>
 
           <div className="flex-1 flex items-center justify-center">
             <div className="w-full flex flex-col items-center justify-center py-10 border border-ot-gray-600 rounded-lg bg-ot-gray-800/50">
               {shortFormConversion ? (
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-1 lg:gap-3">
-                  <span className="text-[48px] font-bold text-ot-primary-100">
+                <div className="flex flex-col h-16 lg:flex-row items-center justify-center gap-1 lg:gap-3">
+                  <span className="text-5xl font-bold text-ot-primary-100">
                     {shortFormConversion.thisMonthRate.toFixed(1)}%
                   </span>
-                  <span className="text-ot-primary-200 text-[18px] font-semibold">
+                  <span className="text-ot-primary-200 text-lg font-semibold">
                     {shortFormConversion.rateDiff !== undefined && (
                       <>
                         {shortFormConversion.rateDiff >= 0 ? "+" : ""}
@@ -84,16 +84,7 @@ export function StatisticsContents() {
                   </span>
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-2">
-                  <div className="flex items-center justify-center gap-3 opacity-30">
-                    <span className="text-ot-placeholder text-[24px]">ex)</span>
-                    <span className="text-[48px] font-bold text-ot-primary-100">
-                      18.5%
-                    </span>
-                    <span className="text-ot-primary-200 text-[18px] font-semibold">
-                      +2.1% ↑
-                    </span>
-                  </div>
+                <div className="flex flex-col items-center justify-center gap-2 h-16">
                   <p className="text-ot-placeholder text-sm">
                     전환율 데이터가 없습니다.
                   </p>

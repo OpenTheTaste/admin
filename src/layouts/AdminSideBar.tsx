@@ -52,7 +52,9 @@ const menus = [
 export const AdminSideBar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { role, email, nickname, clearAuth } = useAuthStore();
+  const { role, email, nickname, clearAuth, _hasHydrated } = useAuthStore();
+
+  if (!_hasHydrated) return null;
 
   const filteredMenus = menus.filter((menu) =>
     role ? menu.roles.includes(role) : false,
@@ -75,7 +77,6 @@ export const AdminSideBar = () => {
           O+T 관리
         </span>
       </Link>
-
       <nav className="flex flex-col px-3">
         {filteredMenus.map((menu) => {
           const isActive = pathname.startsWith(menu.href);
@@ -99,12 +100,15 @@ export const AdminSideBar = () => {
         })}
       </nav>
 
-      <div className="mt-auto py-3 border-t border-ot-gray-600 px-4 flex items-center justify-between">
-        <div>
+      <div className="mt-auto py-3 border-t border-ot-gray-600 px-4 flex items-center justify-between min-h-15">
+        <div className="hidden md:block">
           <p className="font-semibold text-ot-text text-md">{nickname}</p>
           <p className="text-ot-placeholder text-sm">{email}</p>
         </div>
-        <button className="cursor-pointer" onClick={handleLogout}>
+        <button
+          className="cursor-pointer md:ml-0 ml-auto"
+          onClick={handleLogout}
+        >
           <LogOut
             className="stroke-ot-text hover:stroke-ot-gray-600"
             size={22}

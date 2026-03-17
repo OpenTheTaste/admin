@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { useUploadSeries } from "@entities/series/hooks";
@@ -41,6 +42,7 @@ export function AdminSeriesUploadModal({
 }
 
 function ModalInner({ onClose }: { onClose: () => void }) {
+  const queryClient = useQueryClient();
   const { mutateAsync: uploadSeries, isPending } = useUploadSeries();
 
   const [title, setTitle] = useState("");
@@ -54,6 +56,8 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     thumbnailUrl: null,
   });
   const [uploadError, setUploadError] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const isLoading = isPending || isUploading;
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -80,12 +84,13 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   };
 
   const handleClose = () => {
-    if (isPending) return;
+    if (isLoading) return;
     onClose();
   };
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsUploading(true);
 
     try {
       // 1. 메타데이터 전송 → Presigned URL 수신
@@ -106,10 +111,13 @@ function ModalInner({ onClose }: { onClose: () => void }) {
         uploadFileToS3(thumbnailUploadUrl, poster.thumbnailFile!),
       ]);
 
+      queryClient.invalidateQueries({ queryKey: ["series", "list"] });
       onClose();
     } catch (error) {
       console.error("업로드 실패:", error);
       setUploadError(true);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -148,14 +156,14 @@ function ModalInner({ onClose }: { onClose: () => void }) {
             >
               <AdminTextInput
                 label="제목"
-                placeholder="콘텐츠 제목을 입력하세요"
+                placeholder="시리즈 제목을 입력하세요"
                 value={title}
                 onChange={setTitle}
               />
 
               <AdminTextInput
                 label="설명"
-                placeholder="콘텐츠 설명을 입력하세요"
+                placeholder="시리즈 설명을 입력하세요"
                 multiline
                 value={description}
                 onChange={setDescription}
@@ -190,16 +198,16 @@ function ModalInner({ onClose }: { onClose: () => void }) {
                   onClick={handleClose}
                   className="py-3 font-semibold"
                   variant="outline"
-                  disabled={isPending}
+                  disabled={isLoading}
                 >
                   취소
                 </CommonButton>
                 <CommonButton
                   type="submit"
                   className="py-3 font-semibold"
-                  disabled={isPending || !isFormValid}
+                  disabled={isLoading || !isFormValid}
                 >
-                  {isPending ? "업로드 중..." : "업로드 시작"}
+                  {isLoading ? "업로드 중..." : "업로드 시작"}
                 </CommonButton>
               </div>
             </form>
@@ -215,7 +223,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
         cancelText="취소"
         onConfirm={handleRetry}
         onClose={() => setUploadError(false)}
-        disabled={isPending}
+        disabled={isLoading}
       />
     </>
   );

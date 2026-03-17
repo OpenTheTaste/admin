@@ -98,9 +98,7 @@ export function AdminSeriesDetailModal({
               <p className="text-base text-ot-background font-semibold">
                 시리즈 제목
               </p>
-              <p className="text-sm font-semibold text-ot-background">
-                {series.title}
-              </p>
+              <p className="text-sm text-ot-background">{series.title}</p>
             </section>
 
             {/* 설명 */}

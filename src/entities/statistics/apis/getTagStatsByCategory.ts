@@ -2,6 +2,11 @@
 import { api } from "@shared/api";
 import { ApiResponse } from "@shared/types";
 
+export interface CategoryStatistic {
+  labels: string[];
+  data: number[];
+}
+
 export interface TagStat {
   tagName: string;
   viewCount: number;

@@ -7,7 +7,7 @@ import { useCategories } from "@entities/category/hooks";
 import { useShortsDetail } from "@entities/shorts/hooks";
 import { TagBadge } from "@entities/tag/components";
 import { AdminPublicBadge } from "@shared/components";
-import { formatSize } from "@shared/lib";
+import { formatDuration, formatSize } from "@shared/lib";
 
 interface AdminShortsDetailModalProps {
   mediaId: number;
@@ -95,7 +95,7 @@ export function AdminShortsDetailModal({
             <div className="grid grid-cols-2">
               <div>
                 <p className="text-base font-semibold">재생 시간</p>
-                <p className="text-sm">{data.duration}</p>
+                <p className="text-sm">{formatDuration(data.duration)}</p>
               </div>
               <div>
                 <p className="text-base font-semibold">파일 크기</p>
