@@ -148,14 +148,14 @@ function ModalInner({ onClose }: { onClose: () => void }) {
             >
               <AdminTextInput
                 label="제목"
-                placeholder="콘텐츠 제목을 입력하세요"
+                placeholder="시리즈 제목을 입력하세요"
                 value={title}
                 onChange={setTitle}
               />
 
               <AdminTextInput
                 label="설명"
-                placeholder="콘텐츠 설명을 입력하세요"
+                placeholder="시리즈 설명을 입력하세요"
                 multiline
                 value={description}
                 onChange={setDescription}
