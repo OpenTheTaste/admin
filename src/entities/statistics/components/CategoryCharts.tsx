@@ -50,10 +50,9 @@ export function CategoryCharts({ data }: CategoryChartsProps) {
       tooltip: {
         callbacks: {
           label: (context: TooltipItem<"bar">) => {
-            // any -> TooptipItem 변경
             const percent = context.parsed.y; // % 로 변환된 값
             const value = data.data[context.dataIndex]; // 실제 횟수
-            return `[${value}/${total}] (${percent}%)`; // [카테고리 전체/해당 태그](%정도) 커서 출력
+            return `${value}/${total}건 (${percent}%)`; // n/n건 (%) 형태로 커서 출력
           },
         },
       },
