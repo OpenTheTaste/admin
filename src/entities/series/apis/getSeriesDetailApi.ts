@@ -1,4 +1,5 @@
 import { api } from "@/shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse, Category, PublicStatus } from "@shared/types";
 
 export interface SeriesDetail {
@@ -17,7 +18,7 @@ export interface SeriesDetail {
 
 export const getSeriesDetailApi = async (mediaId: number) => {
   const res = await api.get<ApiResponse<SeriesDetail>>(
-    `admin/series/${mediaId}`,
+    END_POINTS.SERIES_DETAIL(mediaId),
   );
   return res.data.data;
 };

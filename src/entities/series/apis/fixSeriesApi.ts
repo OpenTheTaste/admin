@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse, PublicStatus } from "@shared/types";
 
 export interface FixSeriesRequest {
@@ -24,7 +25,7 @@ export interface FixSeriesResponse {
 export const fixSeriesApi = async ({ seriesId, ...body }: FixSeriesRequest) => {
   console.log("[fixSeriesApi] seriesId:", seriesId, "body:", body);
   const res = await api.patch<ApiResponse<FixSeriesResponse>>(
-    `admin/series/${seriesId}/upload`,
+    END_POINTS.SERIES_FIX(seriesId),
     body,
   );
   return res.data.data;
