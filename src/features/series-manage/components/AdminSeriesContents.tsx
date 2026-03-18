@@ -6,7 +6,10 @@ import { Edit, Loader2 } from "lucide-react";
 import { AdminSeriesEditModal } from "@features/series-manage/components";
 import { CategoryBadge } from "@entities/category/components";
 import { useCategories } from "@entities/category/hooks";
-import { AdminSeriesDetailModal } from "@entities/series/components";
+import {
+  AdminSeriesDetailModal,
+  AdminSeriesPageSkeleton,
+} from "@entities/series/components";
 import { useInfiniteSeriesList } from "@entities/series/hooks";
 import { TagBadge } from "@entities/tag/components";
 import { AdminPublicBadge } from "@shared/components";
@@ -54,7 +57,7 @@ export function AdminSeriesContents({ searchWord }: AdminSeriesContentsProps) {
     router.push(`?id=${mediaId}&action=edit`, { scroll: false });
   };
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) return <AdminSeriesPageSkeleton />;
   if (isError) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (

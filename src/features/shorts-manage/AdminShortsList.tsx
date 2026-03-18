@@ -3,7 +3,10 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Edit, Loader2 } from "lucide-react";
 import { AdminShortsEditModal } from "@features/shorts-manage";
-import { AdminShortsDetailModal } from "@entities/shorts/components";
+import {
+  AdminShortsDetailModal,
+  AdminShortsPageSkeleton,
+} from "@entities/shorts/components";
 import { useInfiniteShortsList } from "@entities/shorts/hooks";
 import { AdminPublicBadge } from "@shared/components";
 import { toPublicStatus } from "@shared/lib";
@@ -46,7 +49,7 @@ export function AdminShortsList({
     router.push(`?id=${mediaId}&action=edit`, { scroll: false });
   };
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) return <AdminShortsPageSkeleton />;
   if (isError) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (
