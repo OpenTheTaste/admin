@@ -1,7 +1,7 @@
+import { UploadShortsResponse } from "@entities/shorts/apis";
 import { api } from "@shared/api";
 import { END_POINTS } from "@shared/constants";
 import { ApiResponse, PublicStatus } from "@shared/types";
-import { UploadShortsResponse } from "./postshortsApi";
 
 export interface UpdateShortsRequest {
   originId: number;

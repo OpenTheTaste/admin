@@ -1,7 +1,10 @@
+import {
+  UploadVideoRequest,
+  UploadVideoResponse,
+} from "@entities/video-contents/apis";
 import { api } from "@shared/api";
 import { END_POINTS } from "@shared/constants";
 import { ApiResponse } from "@shared/types";
-import { UploadVideoRequest, UploadVideoResponse } from "./videoContentsApi";
 
 // 콘텐츠 수정 API
 export const updateVideoApi = async (
