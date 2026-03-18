@@ -77,15 +77,3 @@ export interface UpadteVideoResponse {
   posterUploadUrl: string; // S3에 업로드할 때 사용할 URL - 포스터 이미지 파일
   thumbnailUploadUrl: string; // S3에 업로드할 때 사용할 URL - 썸네일 이미지 파일
 }
-
-// 콘텐츠 수정 API
-export const updateVideoApi = async (
-  contentsId: number,
-  body: UploadVideoRequest,
-) => {
-  const res = await api.patch<ApiResponse<UploadVideoResponse>>(
-    END_POINTS.CONTENTS_UPDATE(contentsId),
-    body,
-  );
-  return res.data.data;
-};
