@@ -55,24 +55,3 @@ export const completeMultipartUploadApi = async (
   );
   return res.data;
 };
-
-export interface UpdateShortsRequest {
-  originId: number;
-  mediaType: "CONTENTS" | "SERIES";
-  title?: string;
-  description?: string;
-  publicStatus: PublicStatus;
-  posterFileName?: string;
-}
-
-// 콘텐츠 수정 API
-export const updateShortsApi = async (
-  shortformId: number,
-  body: UpdateShortsRequest,
-) => {
-  const res = await api.patch<ApiResponse<UploadShortsResponse>>(
-    END_POINTS.SHORT_FORMS_UPDATE(shortformId),
-    body,
-  );
-  return res.data.data;
-};
