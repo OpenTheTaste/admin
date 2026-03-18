@@ -25,7 +25,7 @@ export function AdminUserSection() {
   return (
     <>
       <AdminSearch
-        placeholder="이름 또는 이메일을 검색하세요."
+        placeholder="이름을 검색하세요."
         options={ROLE_OPTIONS}
         onSubmitSearch={(value) => setSearchWord(value || undefined)}
         onSelect={handleSelect}

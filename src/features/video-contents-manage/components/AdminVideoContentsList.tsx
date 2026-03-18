@@ -5,7 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Edit, Loader2 } from "lucide-react";
 import { AdminVideoContentsEditModal } from "@features/video-contents-manage/components";
 import "@entities/video-contents/apis";
-import { AdminVideoContentsDetailModal } from "@entities/video-contents/components";
+import {
+  AdminVideoContentsDetailModal,
+  AdminVideoContentsPageSkeleton,
+} from "@entities/video-contents/components";
 import { useInfiniteContentList } from "@entities/video-contents/hooks";
 import { AdminPublicBadge } from "@shared/components";
 import { toPublicStatus } from "@shared/lib";
@@ -48,7 +51,7 @@ export function AdminVideoContentsList({
     router.push(`?id=${mediaId}&action=edit`, { scroll: false });
   };
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) return <AdminVideoContentsPageSkeleton />;
   if (isError) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (

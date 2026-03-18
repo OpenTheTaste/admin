@@ -6,6 +6,7 @@ import { AdminChangeRoleModal } from "@features/user-manage/components";
 import { MemberListItem } from "@entities/user/apis";
 import { useInfiniteMemberList } from "@entities/user/hooks";
 import { AdminBadge } from "@shared/components";
+import { AdminUserPageSkeleton } from "./AdminUserPageSkeleton";
 
 const ROLE_TO_USER_TYPE: Record<string, UserType> = {
   ADMIN: "관리자",
@@ -40,7 +41,7 @@ export function AdminUserContents({
 
   const isRoleChangeable = (memberRole: string) =>
     memberRole === "EDITOR" || memberRole === "SUSPENDED";
-
+  if (isLoading) return <AdminUserPageSkeleton />;
   return (
     <div className="mt-4">
       <div className="rounded-lg overflow-hidden">
