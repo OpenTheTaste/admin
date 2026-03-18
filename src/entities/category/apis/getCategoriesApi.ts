@@ -7,7 +7,7 @@ export interface CategoryResponse {
   categoryName: string;
 }
 
-export const getCategoriespi = async () => {
+export const getCategoriesApi = async () => {
   const res = await api.get<ApiResponse<CategoryResponse[]>>(
     END_POINTS.CATEGORIES,
   );
