@@ -1,8 +1,6 @@
 import { Suspense } from "react";
-import {
-  AdminShortsPageSkeleton,
-  AdminShortsSection,
-} from "@features/shorts-manage";
+import { AdminShortsSection } from "@features/shorts-manage";
+import { AdminShortsPageSkeleton } from "@entities/shorts/components";
 
 export default function AdminShortsPage() {
   return (

@@ -1,8 +1,6 @@
 import { Suspense } from "react";
-import {
-  AdminVideoContentsPageSkeleton,
-  AdminVideoContentsSection,
-} from "@features/video-contents-manage/components";
+import { AdminVideoContentsSection } from "@features/video-contents-manage/components";
+import { AdminVideoContentsPageSkeleton } from "@entities/video-contents/components";
 
 export default function AdminVideoContentsPage() {
   return (

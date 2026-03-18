@@ -3,4 +3,3 @@ export { AdminSeriesUploadModal } from "./AdminSeriesUploadModal";
 export { AdminSeriesUploadButton } from "./AdminSeriesUploadButton";
 export { AdminSeriesEditModal } from "./AdminSeriesEditModal";
 export { AdminSeriesSection } from "./AdminSeriesSection";
-export { AdminSeriesPageSkeleton } from "./AdminSeriesPageSkeleton";

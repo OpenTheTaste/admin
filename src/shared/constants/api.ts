@@ -7,11 +7,11 @@ export const END_POINTS = {
   CATEGORIES: "/categories",
 
   // 시리즈 관리 페이지
-  SERIES: "admin/series",
+  SERIES: "/admin/series",
   SERIES_TITLES: "/admin/series/titles",
-  SERIES_DETAIL: (mediaId: number) => `admin/series/${mediaId}`,
-  SERIES_UPLOAD: "admin/series/upload",
-  SERIES_FIX: (seriesId: number) => `admin/series/${seriesId}/upload`,
+  SERIES_DETAIL: (mediaId: number) => `/admin/series/${mediaId}`,
+  SERIES_UPLOAD: "/admin/series/upload",
+  SERIES_FIX: (seriesId: number) => `/admin/series/${seriesId}/upload`,
 
   // 콘텐츠 관리 페이지
   CONTENTS: "/admin/contents",

@@ -23,7 +23,6 @@ export interface FixSeriesResponse {
 }
 
 export const fixSeriesApi = async ({ seriesId, ...body }: FixSeriesRequest) => {
-  console.log("[fixSeriesApi] seriesId:", seriesId, "body:", body);
   const res = await api.patch<ApiResponse<FixSeriesResponse>>(
     END_POINTS.SERIES_FIX(seriesId),
     body,

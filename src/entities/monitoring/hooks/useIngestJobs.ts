@@ -1,7 +1,7 @@
 import {
-  useInfiniteQuery,
   useQuery,
   useQueryClient,
+  useSuspenseInfiniteQuery,
 } from "@tanstack/react-query";
 import { IngestJob, getIngestJobs } from "@entities/monitoring/apis";
 import { useInfiniteScroll } from "@shared/hooks";
@@ -59,7 +59,7 @@ export const useIngestJobs = ({
   });
 
   // 무한스크롤 useInfiniteQuery
-  const query = useInfiniteQuery({
+  const query = useSuspenseInfiniteQuery({
     queryKey: ["ingestJobs", { size, searchWord: searchWord || undefined }],
     queryFn: ({ pageParam = 0 }) =>
       getIngestJobs({

@@ -1,8 +1,6 @@
 import { Suspense } from "react";
-import {
-  AdminSeriesPageSkeleton,
-  AdminSeriesSection,
-} from "@features/series-manage/components";
+import { AdminSeriesSection } from "@features/series-manage/components";
+import { AdminSeriesPageSkeleton } from "@entities/series/components";
 
 export default function SeriesPage() {
   return (
