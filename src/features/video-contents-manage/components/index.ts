@@ -4,3 +4,4 @@ export { AdminVideoContentsSection } from "./AdminVideoContentsSection";
 export { AdminVideoContentsUploadButton } from "./AdminVideoContentsUploadButton";
 export { AdminVideoContentsUploadModal } from "./AdminVideoContentsUploadModal";
 export { AdminContentTypeSelector } from "./AdminContentTypeSelector";
+export { AdminVideoContentsPageSkeleton } from "./AdminVideoContentsPageSkeleton";
