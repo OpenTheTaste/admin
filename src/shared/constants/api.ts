@@ -28,6 +28,10 @@ export const END_POINTS = {
     `/short-forms/${shortformId}/upload/complete`,
   SHORT_FORMS_ORIGIN_MEDIA: "/short-forms/origin-media",
 
+  // 사용자 관리
+  MEMBERS: "/admin/members",
+  MEMBERS_CHANGE_ROLE: (memberId: number) => `/admin/members/${memberId}/role`,
+
   // 모니터링 페이지
   INGEST_JOBS: "/ingest-jobs",
   SHORT_FORM_CONVERSION: "/admin/short-form-conversion",
