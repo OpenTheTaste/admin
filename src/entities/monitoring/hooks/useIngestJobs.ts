@@ -3,7 +3,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { IngestJob, getIngestJobs } from "@entities/monitoring/apis";
+import { IngestJob, getIngestJobsApi } from "@entities/monitoring/apis";
 import { useInfiniteScroll } from "@shared/hooks";
 
 const POLL_INTERVAL = 20000; // polling 간격 초
@@ -29,7 +29,7 @@ export const useIngestJobs = ({
     ],
     queryFn: async () => {
       // 최신 page 0을 가져옴 -> latest
-      const latest = await getIngestJobs({
+      const latest = await getIngestJobsApi({
         page: 0,
         size,
         searchWord: searchWord || undefined,
@@ -62,7 +62,7 @@ export const useIngestJobs = ({
   const query = useInfiniteQuery({
     queryKey: ["ingestJobs", { size, searchWord: searchWord || undefined }],
     queryFn: ({ pageParam = 0 }) =>
-      getIngestJobs({
+      getIngestJobsApi({
         page: pageParam as number,
         size,
         searchWord: searchWord || undefined,

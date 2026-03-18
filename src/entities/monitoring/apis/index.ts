@@ -1,1 +1,1 @@
-export * from "./getIngestJobs";
+export * from "./getIngestJobsApi";
