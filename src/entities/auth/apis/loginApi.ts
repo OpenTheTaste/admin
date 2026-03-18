@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse, Role } from "@shared/types";
 
 export interface AdminLoginRequest {
@@ -15,7 +16,7 @@ export interface AdminLoginResponse {
 
 export const loginApi = async (body: AdminLoginRequest) => {
   const { data } = await api.post<ApiResponse<AdminLoginResponse>>(
-    "/login",
+    END_POINTS.LOGIN,
     body,
   );
   return data.data;

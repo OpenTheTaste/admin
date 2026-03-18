@@ -1,4 +1,8 @@
 export const END_POINTS = {
+  // 로그인/로그아웃 관련
+  LOGIN: "/login",
+  LOGOUT: "/logout",
+
   // 카테고리
   CATEGORIES: "/categories",
 
@@ -28,7 +32,7 @@ export const END_POINTS = {
     `/short-forms/${shortformId}/upload/complete`,
   SHORT_FORMS_ORIGIN_MEDIA: "/short-forms/origin-media",
 
-  // 사용자 관리
+  // 사용자 관리 페이지
   MEMBERS: "/admin/members",
   MEMBERS_CHANGE_ROLE: (memberId: number) => `/admin/members/${memberId}/role`,
 
