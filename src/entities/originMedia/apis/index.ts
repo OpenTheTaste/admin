@@ -1,1 +1,1 @@
-export * from "./getOriginMedia";
+export * from "./getOriginMediaApi";
