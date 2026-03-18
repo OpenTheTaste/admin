@@ -1,9 +1,12 @@
 import { Suspense } from "react";
-import { AdminShortsSection } from "@features/shorts-manage";
+import {
+  AdminShortsPageSkeleton,
+  AdminShortsSection,
+} from "@features/shorts-manage";
 
 export default function AdminShortsPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<AdminShortsPageSkeleton />}>
       <AdminShortsSection />
     </Suspense>
   );
