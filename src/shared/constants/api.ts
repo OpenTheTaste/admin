@@ -2,11 +2,21 @@ export const END_POINTS = {
   // 카테고리
   CATEGORIES: "/categories",
 
-  // 시리즈
+  // 시리즈 관리 페이지
   SERIES: "admin/series",
+  SERIES_TITLES: "/admin/series/titles",
   SERIES_DETAIL: (mediaId: number) => `admin/series/${mediaId}`,
   SERIES_UPLOAD: "admin/series/upload",
   SERIES_FIX: (seriesId: number) => `admin/series/${seriesId}/upload`,
+
+  // 콘텐츠
+  CONTENTS: "/admin/contents",
+  CONTENTS_DETAIL: (mediaId: number) => `/admin/contents/${mediaId}`,
+  CONTENTS_UPLOAD: "/admin/contents/upload",
+  CONTENTS_UPDATE: (contentsId: number) =>
+    `/admin/contents/${contentsId}/upload`,
+  CONTENTS_MULTIPART_COMPLETE: (contentsId: number) =>
+    `/admin/contents/${contentsId}/upload/complete`,
 
   // 모니터링 페이지
   INGEST_JOBS: "/ingest-jobs",
