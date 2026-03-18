@@ -1,4 +1,5 @@
 import { api } from "@/shared/api";
+import { END_POINTS } from "@shared/constants";
 import {
   ApiResponse,
   BasePaginationParams,
@@ -30,7 +31,7 @@ export interface GetSeriesListParams extends BasePaginationParams {
 
 export const getSeriesListApi = async (params: GetSeriesListParams) => {
   const res = await api.get<ApiResponse<SeriesListResponse>>(
-    "admin/series",
+    END_POINTS.SERIES,
     { params },
   );
   return res.data.data;

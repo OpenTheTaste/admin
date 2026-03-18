@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { UploadedPart } from "@shared/lib";
 import { ApiResponse, PublicStatus } from "@shared/types";
 
@@ -31,7 +32,7 @@ export interface UploadShortsResponse {
 // 콘텐츠 업로드 API
 export const uploadShortsApi = async (body: UploadShortsRequest) => {
   const res = await api.post<ApiResponse<UploadShortsResponse>>(
-    "/short-forms/upload",
+    END_POINTS.SHORT_FORMS_UPLOAD,
     body,
   );
   return res.data.data;
@@ -49,7 +50,7 @@ export const completeMultipartUploadApi = async (
   body: CompleteMultipartRequest,
 ) => {
   const res = await api.post<ApiResponse<void>>(
-    `/short-forms/${shortformId}/upload/complete`,
+    END_POINTS.SHORT_FORMS_MULTIPART_COMPLETE(shortformId),
     body,
   );
   return res.data;
@@ -70,7 +71,7 @@ export const updateShortsApi = async (
   body: UpdateShortsRequest,
 ) => {
   const res = await api.patch<ApiResponse<UploadShortsResponse>>(
-    `/short-forms/${shortformId}/upload`,
+    END_POINTS.SHORT_FORMS_UPDATE(shortformId),
     body,
   );
   return res.data.data;

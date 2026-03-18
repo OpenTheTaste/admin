@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { UploadedPart } from "@shared/lib";
 import { ApiResponse, PublicStatus } from "@shared/types";
 
@@ -33,7 +34,7 @@ export interface UploadVideoResponse {
 // 콘텐츠 업로드 API
 export const uploadVideoApi = async (body: UploadVideoRequest) => {
   const res = await api.post<ApiResponse<UploadVideoResponse>>(
-    "/admin/contents/upload",
+    END_POINTS.CONTENTS_UPLOAD,
     body,
   );
   return res.data.data;
@@ -51,7 +52,7 @@ export const completeMultipartUploadApi = async (
   body: CompleteMultipartRequest,
 ) => {
   const res = await api.post<ApiResponse<void>>(
-    `/admin/contents/${contentsId}/upload/complete`,
+    END_POINTS.CONTENTS_MULTIPART_COMPLETE(contentsId),
     body,
   );
   return res.data;
@@ -83,7 +84,7 @@ export const updateVideoApi = async (
   body: UploadVideoRequest,
 ) => {
   const res = await api.patch<ApiResponse<UploadVideoResponse>>(
-    `/admin/contents/${contentsId}/upload`,
+    END_POINTS.CONTENTS_UPDATE(contentsId),
     body,
   );
   return res.data.data;

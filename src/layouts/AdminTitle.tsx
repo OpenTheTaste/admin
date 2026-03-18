@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 export interface AdminTitleProps {
   title: string;
   description?: string;
-  action?: ReactNode; // 버튼 영역
+  action?: ReactNode;
 }
 
 export function AdminTitle({ title, description, action }: AdminTitleProps) {

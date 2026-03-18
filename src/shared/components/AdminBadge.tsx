@@ -1,7 +1,7 @@
-import { UserType } from "@shared/mocks/mockAdminUsers";
 import { cn } from "@shared/utils";
 
-// 뱃지 또 추가할 것 있으면 추가하기
+export type UserType = "사용자" | "에디터" | "관리자" | "중지됨";
+
 export interface AdminBadgeProps {
   variant: UserType;
   className?: string;

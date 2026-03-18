@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse } from "@shared/types";
 
 export interface ShortFormConversion {
@@ -8,7 +9,7 @@ export interface ShortFormConversion {
 
 export const getShortFormConversion = async () => {
   const res = await api.get<ApiResponse<ShortFormConversion>>(
-    "/admin/short-form-conversion",
+    END_POINTS.SHORT_FORM_CONVERSION,
   );
   return res.data.data;
 };

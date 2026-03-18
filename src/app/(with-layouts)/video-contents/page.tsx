@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { AdminVideoContentsSection } from "@features/video-contents-manage/components";
+import { AdminVideoContentsPageSkeleton } from "@entities/video-contents/components";
 
 export default function AdminVideoContentsPage() {
   return (
-    <Suspense fallback={null}>
-      {/*Pre-rendering 지금은 아무것도 없음*/}
+    <Suspense fallback={<AdminVideoContentsPageSkeleton />}>
       <AdminVideoContentsSection />
     </Suspense>
   );

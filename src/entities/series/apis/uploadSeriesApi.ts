@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse, PublicStatus } from "@shared/types";
 
 export interface UploadSeriesRequest {
@@ -22,7 +23,7 @@ export interface UploadSeriesResponse {
 
 export const uploadSeriesApi = async (body: UploadSeriesRequest) => {
   const res = await api.post<ApiResponse<UploadSeriesResponse>>(
-    "admin/series/upload",
+    END_POINTS.SERIES_UPLOAD,
     body,
   );
   return res.data.data;

@@ -10,7 +10,7 @@ export interface TagStat {
 }
 
 export const TAGS: Record<number, Tag[]> = {
-  // 드라마, 영화, 예능, 다큐
+  // [순서] 드라마, 영화, 예능, 다큐
   1: [
     { tagId: 1, name: "로맨스" },
     { tagId: 2, name: "스릴러" },

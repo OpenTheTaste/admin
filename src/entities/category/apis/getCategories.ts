@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse } from "@shared/types";
 
 export interface CategoryResponse {
@@ -7,6 +8,8 @@ export interface CategoryResponse {
 }
 
 export const getCategoriespi = async () => {
-  const res = await api.get<ApiResponse<CategoryResponse[]>>("/categories");
+  const res = await api.get<ApiResponse<CategoryResponse[]>>(
+    END_POINTS.CATEGORIES,
+  );
   return res.data.data;
 };

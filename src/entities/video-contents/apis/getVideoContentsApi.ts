@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import {
   ApiResponse,
   BasePaginationParams,
@@ -30,7 +31,7 @@ export interface GetContentListParams extends BasePaginationParams {
 // 콘텐츠 리스트 조회 API
 export const getContentListApi = async (params: GetContentListParams) => {
   const res = await api.get<ApiResponse<ContentListResponse>>(
-    "/admin/contents",
+    END_POINTS.CONTENTS,
     { params },
   );
   return res.data.data;
@@ -58,8 +59,7 @@ export interface ContentDetailResponse {
 // 콘텐츠 상세 조회 API
 export const getContentDetailApi = async (mediaId: number) => {
   const res = await api.get<ApiResponse<ContentDetailResponse>>(
-    `/admin/contents/${mediaId}`,
+    END_POINTS.CONTENTS_DETAIL(mediaId),
   );
-
   return res.data.data;
 };

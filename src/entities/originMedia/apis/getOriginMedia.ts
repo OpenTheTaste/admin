@@ -1,5 +1,6 @@
 import { api } from "@/shared/api";
 import { ApiResponse, BasePaginationParams, PageInfo } from "@/shared/types";
+import { END_POINTS } from "@shared/constants";
 
 export type OriginMediaType = "CONTENTS" | "SERIES";
 
@@ -17,7 +18,7 @@ export interface OriginMediaResponse {
 // 원본콘텐츠 조회 API
 export const getOriginMediaApi = async (params: BasePaginationParams) => {
   const res = await api.get<ApiResponse<OriginMediaResponse>>(
-    "/short-forms/origin-media",
+    END_POINTS.SHORT_FORMS_ORIGIN_MEDIA,
     { params },
   );
   return res.data.data;

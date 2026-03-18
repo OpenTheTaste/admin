@@ -1,5 +1,6 @@
 // 태그별 시청 통계 조회
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse } from "@shared/types";
 
 export interface CategoryStatistic {
@@ -14,7 +15,7 @@ export interface TagStat {
 
 export const getTagStatsByCategory = async (categoryId: number) => {
   const res = await api.get<ApiResponse<TagStat[]>>(
-    `/admin/tags/stats/${categoryId}`,
+    END_POINTS.TAG_STATS_BY_CATEGORY(categoryId),
   );
   return res.data.data;
 };

@@ -1,4 +1,5 @@
 import { api } from "@shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse, BasePaginationParams, PageInfo } from "@shared/types";
 
 export type IngestStatus =
@@ -44,10 +45,8 @@ export const getIngestJobs = async ({
   searchWord,
 }: BasePaginationParams) => {
   const res = await api.get<ApiResponse<IngestJobListResponse>>(
-    "/ingest-jobs",
-    {
-      params: { page, size, searchWord },
-    },
+    END_POINTS.INGEST_JOBS,
+    { params: { page, size, searchWord } },
   );
   return res.data.data;
 };

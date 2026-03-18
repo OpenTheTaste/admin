@@ -1,4 +1,5 @@
 import { api } from "@/shared/api";
+import { END_POINTS } from "@shared/constants";
 import { ApiResponse, BasePaginationParams, PageInfo } from "@shared/types";
 
 export interface SeriesTitleItem {
@@ -21,10 +22,8 @@ export interface GetSeriesTitleParams extends BasePaginationParams {
 
 export const getSeriesTitleApi = async (params: GetSeriesTitleParams) => {
   const res = await api.get<ApiResponse<SeriesTitleResponse>>(
-    "/admin/series/titles",
-    {
-      params,
-    },
+    END_POINTS.SERIES_TITLES,
+    { params },
   );
   return res.data.data;
 };
