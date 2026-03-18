@@ -39,7 +39,7 @@ export interface IngestJobListResponse {
   dataList: IngestJob[];
 }
 
-export const getIngestJobs = async ({
+export const getIngestJobsApi = async ({
   page,
   size,
   searchWord,

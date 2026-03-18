@@ -1,2 +1,3 @@
 export * from "./getShortsApi";
-export * from "./shortsApi";
+export * from "./postshortsApi";
+export * from "./updateShortsApi";

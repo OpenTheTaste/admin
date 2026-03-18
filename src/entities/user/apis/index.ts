@@ -1,2 +1,2 @@
 export * from "./getMembersApi";
-export * from "./changeRole";
+export * from "./changeRoleApi";
