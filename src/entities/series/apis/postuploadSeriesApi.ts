@@ -21,7 +21,7 @@ export interface UploadSeriesResponse {
   thumbnailUploadUrl: string;
 }
 
-export const uploadSeriesApi = async (body: UploadSeriesRequest) => {
+export const postuploadSeriesApi = async (body: UploadSeriesRequest) => {
   const res = await api.post<ApiResponse<UploadSeriesResponse>>(
     END_POINTS.SERIES_UPLOAD,
     body,

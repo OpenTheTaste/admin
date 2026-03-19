@@ -6,10 +6,10 @@ export type {
 } from "./getSeriesApi";
 export { getSeriesDetailApi } from "./getSeriesDetailApi";
 export type { SeriesDetail } from "./getSeriesDetailApi";
-export { uploadSeriesApi } from "./uploadSeriesApi";
+export { postuploadSeriesApi } from "./postuploadSeriesApi";
 export type {
   UploadSeriesRequest,
   UploadSeriesResponse,
-} from "./uploadSeriesApi";
+} from "./postuploadSeriesApi";
 export { patchfixSeriesApi } from "./patchfixSeriesApi";
 export type { FixSeriesRequest, FixSeriesResponse } from "./patchfixSeriesApi";
