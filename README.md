@@ -24,7 +24,7 @@
 
 |                    시리즈 조회                     |                    시리즈 등록                     |
 | :------------------------------------------------: | :------------------------------------------------: |
-| ![series-detail](.github/readme/series-detail.gif) | ![series-detail](.github/readme/series-upload.gif) |
+| ![series-detail](.github/readme/series-detail.gif) | ![series-upload](.github/readme/series-upload.gif) |
 
 - 드라마, 영화, 예능 등 콘텐츠 시리즈 목록 관리 가능
 - 시리즈 제목 검색을 통해 특정 시리즈를 바로 조회 가능
@@ -37,7 +37,7 @@
 
 |                      콘텐츠 조회                       |                     콘텐츠 업로드                      |
 | :----------------------------------------------------: | :----------------------------------------------------: |
-| ![contents-detail](.github/readme/contents-detail.gif) | ![contents-detail](.github/readme/contents-upload.gif) |
+| ![contents-detail](.github/readme/contents-detail.gif) | ![contents-upload](.github/readme/contents-upload.gif) |
 
 - 개별 영상 콘텐츠 목록 관리 가능
 - 콘텐츠 업로드 버튼을 통해 새로운 단편 콘텐츠 업로드
@@ -49,7 +49,7 @@
 
 |                        숏폼 조회                         |                       숏폼 업로드                        |
 | :------------------------------------------------------: | :------------------------------------------------------: |
-| ![shortform-detail](.github/readme/shortform-detail.gif) | ![shortform-detail](.github/readme/shortform-upload.gif) |
+| ![shortform-detail](.github/readme/shortform-detail.gif) | ![shortform-upload](.github/readme/shortform-upload.gif) |
 
 - 해당 탭의 리스트에서 각 숏폼의 썸네일, 제목, 공개 여부, 업로드 날짜 확인 가능
 - **관리자**는 모든 사용자의 숏폼을, **에디터**는 본인이 올린 숏폼만 조회 가능
