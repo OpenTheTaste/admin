@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { uploadFileToS3 } from "@/shared/lib";
 import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { OriginMediaItem } from "@entities/originMedia/apis";
@@ -17,6 +16,7 @@ import {
   ConfirmModal,
   PosterState,
 } from "@shared/components";
+import { uploadFileToS3 } from "@shared/lib";
 import { PublicStatus } from "@shared/types";
 
 interface AdminShortsEditModalProps {

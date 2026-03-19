@@ -1,20 +1,22 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useTagsByCategory } from "@/entities/statistics/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
 import { AdminCategoryDropdown } from "@entities/category/components";
 import { useCategories } from "@entities/category/hooks";
 import { AdminSeriesDropdown } from "@entities/series/components";
+import { useTagsByCategory } from "@entities/statistics/hooks";
 import { AdminTagDropdown } from "@entities/tag/components";
 import {
   SeriesTitleItem,
   UploadVideoRequest,
 } from "@entities/video-contents/apis";
-import { useContentDetail } from "@entities/video-contents/hooks";
-import { useUpdateVideoContents } from "@entities/video-contents/hooks";
+import {
+  useContentDetail,
+  useUpdateVideoContents,
+} from "@entities/video-contents/hooks";
 import {
   AdminPosterUpload,
   AdminPublicStatus,

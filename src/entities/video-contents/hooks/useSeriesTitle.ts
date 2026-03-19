@@ -1,9 +1,9 @@
-import { useInfiniteScroll } from "@/shared/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import {
   SeriesTitleItem,
   getSeriesTitleApi,
 } from "@entities/video-contents/apis";
+import { useInfiniteScroll } from "@shared/hooks";
 
 interface UseInfiniteSeriesTitleParams {
   size?: number;

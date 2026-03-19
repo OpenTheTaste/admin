@@ -1,4 +1,3 @@
-import { PublicStatus } from "@/shared/types";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   ContentListItem,
@@ -6,6 +5,7 @@ import {
   getContentListApi,
 } from "@entities/video-contents/apis";
 import { useInfiniteScroll } from "@shared/hooks";
+import { PublicStatus } from "@shared/types";
 
 interface UseInfiniteContentListParams {
   size?: number;

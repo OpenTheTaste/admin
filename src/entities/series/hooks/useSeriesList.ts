@@ -1,6 +1,6 @@
-import { useInfiniteScroll } from "@/shared/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { SeriesListItem, getSeriesListApi } from "@entities/series/apis";
+import { useInfiniteScroll } from "@shared/hooks";
 
 interface UseInfiniteSeriesListParams {
   size?: number;
