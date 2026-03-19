@@ -36,7 +36,7 @@ export function StatisticsContents() {
           </p>
           {/* 설명글 */}
           <p className="text-ot-placeholder text-md">
-            실시간 콘텐츠 업로드 및 트랜스코딩 작업 현황을 파악합니다.
+            특정 카테고리 태그의 당월 시청 수와 숏폼 전환율을 조회합니다.
           </p>
         </div>
       </section>
