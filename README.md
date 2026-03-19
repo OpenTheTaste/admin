@@ -56,14 +56,14 @@
                                                                                                             
 ## 🛠️ 기술 스택
 
-| 분야                 | 기술 스택   |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 분야                 | 기술 스택                                                                                                                                                                                                                                                                                                                                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Frontend**         | ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=black) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=flat&logo=TailwindCSS&logoColor=white) |
-| **State Management** | ![TanStack Query](https://img.shields.io/badge/TanStack_Query-FF4154?style=flat&logo=reactquery&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-000000?style=flat&logo=zustand&logoColor=white)                                                                                                                                                                                                                 |
-| **API 통신**         | ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat)                                                                                                                                                                                                                                                                                                                                                                     |
-| **데이터 시각화**    | ![Recharts](https://img.shields.io/badge/Recharts-FF7300?style=flat) ![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=flat&logo=chartdotjs&logoColor=white)     |
-| **Code Quality**     | ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat&logo=ESLint&logoColor=white) ![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=flat&logo=Prettier&logoColor=black) ![Husky](https://img.shields.io/badge/Husky-000000?style=flat)  |
-| **UI / 유틸리티**    | ![Lucide](https://img.shields.io/badge/Lucide_Icons-000000?style=flat) |
+| **State Management** | ![TanStack Query](https://img.shields.io/badge/TanStack_Query-FF4154?style=flat&logo=reactquery&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-000000?style=flat&logo=zustand&logoColor=white)                                                                                                                                                                                                 |
+| **API 통신**         | ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat)                                                                                                                                                                                                                                                                                                                                                   |
+| **데이터 시각화**    | ![Recharts](https://img.shields.io/badge/Recharts-FF7300?style=flat) ![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=flat&logo=chartdotjs&logoColor=white)                                                                                                                                                                                                                                        |
+| **Code Quality**     | ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat&logo=ESLint&logoColor=white) ![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=flat&logo=Prettier&logoColor=black) ![Husky](https://img.shields.io/badge/Husky-000000?style=flat)                                                                                                                                                   |
+| **UI / 유틸리티**    | ![Lucide](https://img.shields.io/badge/Lucide_Icons-000000?style=flat)                                                                                                                                                                                                                                                                                                                                           |
 
 <br/>
 
@@ -97,7 +97,7 @@ src/
    ```
 2. **환경변수 설정**
    - `.env` 파일에 API 서버 주소등 입력
-  
+
 3. **개발 서버 실행**
    ```bash
    npm run dev
@@ -107,8 +107,8 @@ src/
 
 ## 📌 WE ARE TEAM OF O+T
 
-|                  이름                   | 역할           |
-| :-------------------------------------: | :------------- |
-| [강현우](https://github.com/hyunw-kang) | TL, FE, Design |
-|   [김주희](https://github.com/joooii)   | Front Leader, FE, Design     |
-| [유재휘](https://github.com/RyuJaeHwi)  | FE, Design     |
+|                  이름                   | 역할                     |
+| :-------------------------------------: | :----------------------- |
+| [강현우](https://github.com/hyunw-kang) | TL, FE, Design           |
+|   [김주희](https://github.com/joooii)   | Front Leader, FE, Design |
+| [유재휘](https://github.com/RyuJaeHwi)  | FE, Design               |
