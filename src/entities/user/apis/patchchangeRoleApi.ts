@@ -5,7 +5,7 @@ export interface ChangeRoleParams {
   role: "EDITOR" | "SUSPENDED";
 }
 
-export const changeRoleApi = async (
+export const patchchangeRoleApi = async (
   memberId: number,
   params: ChangeRoleParams,
 ) => {

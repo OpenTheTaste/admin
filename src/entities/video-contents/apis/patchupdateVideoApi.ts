@@ -7,7 +7,7 @@ import { END_POINTS } from "@shared/constants";
 import { ApiResponse } from "@shared/types";
 
 // 콘텐츠 수정 API
-export const updateVideoApi = async (
+export const patchupdateVideoApi = async (
   contentsId: number,
   body: UploadVideoRequest,
 ) => {

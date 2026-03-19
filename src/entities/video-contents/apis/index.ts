@@ -1,4 +1,4 @@
 export * from "./getVideoContentsApi";
-export * from "./videoContentsApi";
+export * from "./postvideoContentsApi";
 export * from "./getSeriesTitleApi";
-export * from "./updateVideoApi";
+export * from "./patchupdateVideoApi";

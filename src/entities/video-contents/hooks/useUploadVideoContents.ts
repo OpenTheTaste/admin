@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   UploadVideoRequest,
-  updateVideoApi,
+  patchupdateVideoApi,
   uploadVideoApi,
 } from "@entities/video-contents/apis";
 
@@ -19,6 +19,6 @@ export const useUpdateVideoContents = () => {
     }: {
       contentsId: number;
       body: UploadVideoRequest;
-    }) => updateVideoApi(contentsId, body),
+    }) => patchupdateVideoApi(contentsId, body),
   });
 };

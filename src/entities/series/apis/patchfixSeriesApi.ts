@@ -22,7 +22,10 @@ export interface FixSeriesResponse {
   thumbnailUploadUrl?: string;
 }
 
-export const fixSeriesApi = async ({ seriesId, ...body }: FixSeriesRequest) => {
+export const patchfixSeriesApi = async ({
+  seriesId,
+  ...body
+}: FixSeriesRequest) => {
   const res = await api.patch<ApiResponse<FixSeriesResponse>>(
     END_POINTS.SERIES_FIX(seriesId),
     body,

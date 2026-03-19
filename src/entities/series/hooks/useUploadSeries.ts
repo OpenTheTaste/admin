@@ -1,8 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { UploadSeriesRequest, uploadSeriesApi } from "@entities/series/apis";
+import {
+  UploadSeriesRequest,
+  postuploadSeriesApi,
+} from "@entities/series/apis";
 
 export const useUploadSeries = () => {
   return useMutation({
-    mutationFn: (body: UploadSeriesRequest) => uploadSeriesApi(body),
+    mutationFn: (body: UploadSeriesRequest) => postuploadSeriesApi(body),
   });
 };

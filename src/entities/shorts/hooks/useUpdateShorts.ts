@@ -1,5 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { UpdateShortsRequest, updateShortsApi } from "@entities/shorts/apis";
+import {
+  UpdateShortsRequest,
+  patchupdateShortsApi,
+} from "@entities/shorts/apis";
 
 // 숏폼 수정
 export const useUpdateShorts = () => {
@@ -10,6 +13,6 @@ export const useUpdateShorts = () => {
     }: {
       shortformId: number;
       body: UpdateShortsRequest;
-    }) => updateShortsApi(shortformId, body),
+    }) => patchupdateShortsApi(shortformId, body),
   });
 };

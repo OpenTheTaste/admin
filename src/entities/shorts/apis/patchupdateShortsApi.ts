@@ -12,7 +12,7 @@ export interface UpdateShortsRequest {
   posterFileName?: string;
 }
 
-export const updateShortsApi = async (
+export const patchupdateShortsApi = async (
   shortformId: number,
   body: UpdateShortsRequest,
 ) => {
