@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { formatDuration, formatSize } from "@/shared/lib";
 import { Bookmark, X } from "lucide-react";
 import { CategoryBadge } from "@entities/category/components";
 import { useCategories } from "@entities/category/hooks";
 import { TagBadge } from "@entities/tag/components";
 import { useContentDetail } from "@entities/video-contents/hooks";
 import { AdminPublicBadge } from "@shared/components";
+import { formatDuration, formatSize } from "@shared/lib";
 
 interface AdminVideoContentsDetailModalProps {
   mediaId: number;

@@ -1,5 +1,5 @@
-import { api } from "@/shared/api";
 import { OriginMediaType } from "@entities/originMedia/apis";
+import { api } from "@shared/api";
 import { END_POINTS } from "@shared/constants";
 import {
   ApiResponse,

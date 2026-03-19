@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { MAX_FILE_SIZE, MIN_FILE_SIZE } from "@/shared/constants";
 import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { AdminContentTypeSelector } from "@features/video-contents-manage/components";
@@ -26,6 +25,7 @@ import {
   ConfirmModal,
   PosterState,
 } from "@shared/components";
+import { MAX_FILE_SIZE, MIN_FILE_SIZE } from "@shared/constants";
 import { useIsMounted } from "@shared/hooks";
 import {
   UploadedPart,

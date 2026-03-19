@@ -1,6 +1,6 @@
-import { api } from "@/shared/api";
-import { ApiResponse, BasePaginationParams, PageInfo } from "@/shared/types";
+import { api } from "@shared/api";
 import { END_POINTS } from "@shared/constants";
+import { ApiResponse, BasePaginationParams, PageInfo } from "@shared/types";
 
 export type OriginMediaType = "CONTENTS" | "SERIES";
 

@@ -1,11 +1,11 @@
-import { useInfiniteScroll } from "@/shared/hooks";
-import { PublicStatus } from "@/shared/types";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   ShortsListItem,
   getShortsDetailApi,
   getShortsListApi,
 } from "@entities/shorts/apis";
+import { useInfiniteScroll } from "@shared/hooks";
+import { PublicStatus } from "@shared/types";
 
 interface UseInfiniteShortsListParams {
   size?: number;

@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { type UserType } from "@/entities/user/types/user";
 import { AdminChangeRoleModal } from "@features/user-manage/components";
 import { MemberListItem } from "@entities/user/apis";
+import { AdminUserPageSkeleton } from "@entities/user/components";
 import { useInfiniteMemberList } from "@entities/user/hooks";
+import { type UserType } from "@entities/user/types";
 import { AdminBadge } from "@shared/components";
-import { AdminUserPageSkeleton } from "./AdminUserPageSkeleton";
 
 const ROLE_TO_USER_TYPE: Record<string, UserType> = {
   ADMIN: "관리자",
