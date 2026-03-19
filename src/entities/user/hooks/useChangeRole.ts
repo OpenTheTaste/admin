@@ -19,7 +19,8 @@ export const useChangeRole = () => {
     onSuccess: (_, { memberId, params }) => {
       const queries = queryClient.getQueriesData<{
         pages: MemberListResponse[];
-      }>({ queryKey: ["members"] });
+        pageParams: number[];
+      }>({ queryKey: ["members", "list"] });
 
       queries.forEach(([queryKey]) => {
         const filters = queryKey[2] as { role?: string };
