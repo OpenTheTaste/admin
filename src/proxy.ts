@@ -26,10 +26,10 @@ export function proxy(request: NextRequest) {
   if (isDev) {
     return NextResponse.next();
   }
-  // const accessToken = request.cookies.get("accessToken")?.value;
-  const refreshToken = request.cookies.get("refreshToken")?.value;
 
-  if (!refreshToken) {
+  const adminRefreshToken = request.cookies.get("adminRefreshToken")?.value;
+
+  if (!adminRefreshToken) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
   return NextResponse.next();

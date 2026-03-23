@@ -1,6 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
+import { reissueApi } from "@shared/api";
 import { ApiError } from "@shared/types";
-import { reissueApi } from "./reissueApi";
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -37,7 +37,9 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
     const apiError = error.response?.data as ApiError | undefined;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
